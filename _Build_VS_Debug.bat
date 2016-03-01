@@ -8,7 +8,7 @@ if defined PROGRAMFILES(X86) set PF=%PROGRAMFILES(X86)%
 if not defined PROGRAMFILES(X86) set PF=%PROGRAMFILES%
 
 set BUILD_SOLUTION=%CD%\cURL.sln
-set BUILD_CONFIG=Release
+set BUILD_CONFIG=Debug
 set BUILD_VERBOSITY=normal
 :: Verbosity: quiet, minimal, normal, detailed, diagnostic
 
