@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cURL", "cURL.vcxproj", "{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{46CF2D25-6A36-4189-B59C-E4815388E554} = {46CF2D25-6A36-4189-B59C-E4815388E554}
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D} = {F86DD584-0786-46C5-A4FD-79948C3E6A4D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmbedtls", "libmbedtls.vcxproj", "{46CF2D25-6A36-4189-B59C-E4815388E554}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcurl", "libcurl.vcxproj", "{F86DD584-0786-46C5-A4FD-79948C3E6A4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Debug|Win32.Build.0 = Debug|Win32
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Debug|x64.ActiveCfg = Debug|x64
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Debug|x64.Build.0 = Debug|x64
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Release|Win32.ActiveCfg = Release|Win32
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Release|Win32.Build.0 = Release|Win32
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Release|x64.ActiveCfg = Release|x64
+		{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}.Release|x64.Build.0 = Release|x64
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Debug|Win32.ActiveCfg = Debug|Win32
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Debug|Win32.Build.0 = Debug|Win32
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Debug|x64.ActiveCfg = Debug|x64
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Debug|x64.Build.0 = Debug|x64
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Release|Win32.ActiveCfg = Release|Win32
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Release|Win32.Build.0 = Release|Win32
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Release|x64.ActiveCfg = Release|x64
+		{46CF2D25-6A36-4189-B59C-E4815388E554}.Release|x64.Build.0 = Release|x64
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Debug|Win32.Build.0 = Debug|Win32
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Debug|x64.ActiveCfg = Debug|x64
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Debug|x64.Build.0 = Debug|x64
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Release|Win32.ActiveCfg = Release|Win32
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Release|Win32.Build.0 = Release|Win32
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Release|x64.ActiveCfg = Release|x64
+		{F86DD584-0786-46C5-A4FD-79948C3E6A4D}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

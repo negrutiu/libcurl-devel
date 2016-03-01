@@ -1,0 +1,263 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>cURL</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)\Temp-$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)\Temp-$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)\Temp-$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)\Temp-$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;CURL_STATICLIB;HTTP_ONLY;USE_MBEDTLS;have_curlssl_ca_path=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>curl\lib;curl\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl.lib;libmbedtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>curl\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;CURL_STATICLIB;HTTP_ONLY;USE_MBEDTLS;have_curlssl_ca_path=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>curl\lib;curl\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl.lib;libmbedtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>curl\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;CURL_STATICLIB;HTTP_ONLY;USE_MBEDTLS;have_curlssl_ca_path=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>curl\lib;curl\include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl.lib;libmbedtls.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>curl\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;CURL_STATICLIB;HTTP_ONLY;USE_MBEDTLS;have_curlssl_ca_path=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>curl\lib;curl\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl.lib;libmbedtls.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>curl\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ResourceCompile Include="cURL\src\curl.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cURL\src\slist_wc.c" />
+    <ClCompile Include="cURL\src\tool_binmode.c" />
+    <ClCompile Include="cURL\src\tool_bname.c" />
+    <ClCompile Include="cURL\src\tool_cb_dbg.c" />
+    <ClCompile Include="cURL\src\tool_cb_hdr.c" />
+    <ClCompile Include="cURL\src\tool_cb_prg.c" />
+    <ClCompile Include="cURL\src\tool_cb_rea.c" />
+    <ClCompile Include="cURL\src\tool_cb_see.c" />
+    <ClCompile Include="cURL\src\tool_cb_wrt.c" />
+    <ClCompile Include="cURL\src\tool_cfgable.c" />
+    <ClCompile Include="cURL\src\tool_convert.c" />
+    <ClCompile Include="cURL\src\tool_dirhie.c" />
+    <ClCompile Include="cURL\src\tool_doswin.c" />
+    <ClCompile Include="cURL\src\tool_easysrc.c" />
+    <ClCompile Include="cURL\src\tool_formparse.c" />
+    <ClCompile Include="cURL\src\tool_getparam.c" />
+    <ClCompile Include="cURL\src\tool_getpass.c" />
+    <ClCompile Include="cURL\src\tool_help.c" />
+    <ClCompile Include="cURL\src\tool_helpers.c" />
+    <ClCompile Include="cURL\src\tool_homedir.c" />
+    <ClCompile Include="cURL\src\tool_hugehelp.c" />
+    <ClCompile Include="cURL\src\tool_libinfo.c" />
+    <ClCompile Include="cURL\src\tool_main.c" />
+    <ClCompile Include="cURL\src\tool_metalink.c" />
+    <ClCompile Include="cURL\src\tool_mfiles.c" />
+    <ClCompile Include="cURL\src\tool_msgs.c" />
+    <ClCompile Include="cURL\src\tool_operate.c" />
+    <ClCompile Include="cURL\src\tool_operhlp.c" />
+    <ClCompile Include="cURL\src\tool_panykey.c" />
+    <ClCompile Include="cURL\src\tool_paramhlp.c" />
+    <ClCompile Include="cURL\src\tool_parsecfg.c" />
+    <ClCompile Include="cURL\src\tool_setopt.c" />
+    <ClCompile Include="cURL\src\tool_sleep.c" />
+    <ClCompile Include="cURL\src\tool_strdup.c" />
+    <ClCompile Include="cURL\src\tool_urlglob.c" />
+    <ClCompile Include="cURL\src\tool_util.c" />
+    <ClCompile Include="cURL\src\tool_vms.c" />
+    <ClCompile Include="cURL\src\tool_writeenv.c" />
+    <ClCompile Include="cURL\src\tool_writeout.c" />
+    <ClCompile Include="cURL\src\tool_xattr.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cURL\src\slist_wc.h" />
+    <ClInclude Include="cURL\src\tool_binmode.h" />
+    <ClInclude Include="cURL\src\tool_bname.h" />
+    <ClInclude Include="cURL\src\tool_cb_dbg.h" />
+    <ClInclude Include="cURL\src\tool_cb_hdr.h" />
+    <ClInclude Include="cURL\src\tool_cb_prg.h" />
+    <ClInclude Include="cURL\src\tool_cb_rea.h" />
+    <ClInclude Include="cURL\src\tool_cb_see.h" />
+    <ClInclude Include="cURL\src\tool_cb_wrt.h" />
+    <ClInclude Include="cURL\src\tool_cfgable.h" />
+    <ClInclude Include="cURL\src\tool_convert.h" />
+    <ClInclude Include="cURL\src\tool_dirhie.h" />
+    <ClInclude Include="cURL\src\tool_doswin.h" />
+    <ClInclude Include="cURL\src\tool_easysrc.h" />
+    <ClInclude Include="cURL\src\tool_formparse.h" />
+    <ClInclude Include="cURL\src\tool_getparam.h" />
+    <ClInclude Include="cURL\src\tool_getpass.h" />
+    <ClInclude Include="cURL\src\tool_help.h" />
+    <ClInclude Include="cURL\src\tool_helpers.h" />
+    <ClInclude Include="cURL\src\tool_homedir.h" />
+    <ClInclude Include="cURL\src\tool_hugehelp.h" />
+    <ClInclude Include="cURL\src\tool_libinfo.h" />
+    <ClInclude Include="cURL\src\tool_main.h" />
+    <ClInclude Include="cURL\src\tool_metalink.h" />
+    <ClInclude Include="cURL\src\tool_mfiles.h" />
+    <ClInclude Include="cURL\src\tool_msgs.h" />
+    <ClInclude Include="cURL\src\tool_operate.h" />
+    <ClInclude Include="cURL\src\tool_operhlp.h" />
+    <ClInclude Include="cURL\src\tool_panykey.h" />
+    <ClInclude Include="cURL\src\tool_paramhlp.h" />
+    <ClInclude Include="cURL\src\tool_parsecfg.h" />
+    <ClInclude Include="cURL\src\tool_sdecls.h" />
+    <ClInclude Include="cURL\src\tool_setopt.h" />
+    <ClInclude Include="cURL\src\tool_setup.h" />
+    <ClInclude Include="cURL\src\tool_sleep.h" />
+    <ClInclude Include="cURL\src\tool_strdup.h" />
+    <ClInclude Include="cURL\src\tool_urlglob.h" />
+    <ClInclude Include="cURL\src\tool_util.h" />
+    <ClInclude Include="cURL\src\tool_version.h" />
+    <ClInclude Include="cURL\src\tool_vms.h" />
+    <ClInclude Include="cURL\src\tool_writeenv.h" />
+    <ClInclude Include="cURL\src\tool_writeout.h" />
+    <ClInclude Include="cURL\src\tool_xattr.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

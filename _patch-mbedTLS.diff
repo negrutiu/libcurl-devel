@@ -1,0 +1,55 @@
+ library/debug.c    |  2 +-
+ library/net.c      | 11 +++++++----
+ library/platform.c |  2 +-
+ 3 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/library/debug.c b/library/debug.c
+index 4752ab1..e4eb1ec 100644
+--- a/library/debug.c
++++ b/library/debug.c
+@@ -90,7 +90,7 @@ void mbedtls_debug_print_msg( const mbedtls_ssl_context *ssl, int level,
+ 
+     va_start( argp, format );
+ #if defined(_WIN32)
+-#if defined(_TRUNCATE)
++#if defined(_TRUNCATE) && (_WIN32_WINNT >= 0x0600)
+     ret = _vsnprintf_s( str, DEBUG_BUF_SIZE, _TRUNCATE, format, argp );
+ #else
+     ret = _vsnprintf( str, DEBUG_BUF_SIZE, format, argp );
+diff --git a/library/net.c b/library/net.c
+index a77268c..02dced3 100644
+--- a/library/net.c
++++ b/library/net.c
+@@ -34,12 +34,15 @@
+ #if (defined(_WIN32) || defined(_WIN32_WCE)) && !defined(EFIX64) && \
+     !defined(EFI32)
+ 
+-#ifdef _WIN32_WINNT
+-#undef _WIN32_WINNT
+-#endif
+-/* Enables getaddrinfo() & Co */
++#ifndef _WIN32_WINNT
+ #define _WIN32_WINNT 0x0501
++#endif
++#if _WIN32_WINNT >= 0x0501
+ #include <ws2tcpip.h>
++#else
++#include <wspiapi.h> /* Enables getaddrinfo() & Co */
++#endif
++
+ 
+ #include <winsock2.h>
+ #include <windows.h>
+diff --git a/library/platform.c b/library/platform.c
+index d634c62..0b61fa6 100644
+--- a/library/platform.c
++++ b/library/platform.c
+@@ -74,7 +74,7 @@ int mbedtls_platform_win32_snprintf( char *s, size_t n, const char *fmt, ... )
+         return( -1 );
+ 
+     va_start( argp, fmt );
+-#if defined(_TRUNCATE)
++#if defined(_TRUNCATE) && (_WIN32_WINNT >= 0x0600)
+     ret = _vsnprintf_s( s, n, _TRUNCATE, fmt, argp );
+ #else
+     ret = _vsnprintf( s, n, fmt, argp );

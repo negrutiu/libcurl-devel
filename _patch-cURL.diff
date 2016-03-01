@@ -1,0 +1,30 @@
+ lib/Makefile.m32 | 2 +-
+ src/Makefile.m32 | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/Makefile.m32 b/lib/Makefile.m32
+index fbc38de..db63d51 100644
+--- a/lib/Makefile.m32
++++ b/lib/Makefile.m32
+@@ -298,7 +298,7 @@ ifndef USE_LDAP_OPENLDAP
+   DLL_LIBS += -lwldap32
+ endif
+ endif
+-DLL_LIBS += -lws2_32
++DLL_LIBS += -lws2_32 $(CURL_LDFLAG_EXTRAS2)
+ 
+ # Makefile.inc provides the CSOURCES and HHEADERS defines
+ include Makefile.inc
+diff --git a/src/Makefile.m32 b/src/Makefile.m32
+index 64c65a6..860460e 100644
+--- a/src/Makefile.m32
++++ b/src/Makefile.m32
+@@ -319,7 +319,7 @@ ifndef USE_LDAP_OPENLDAP
+ curl_LDADD += -lwldap32
+ endif
+ endif
+-curl_LDADD += -lws2_32
++curl_LDADD += -lws2_32 $(CURL_LDFLAG_EXTRAS2)
+ 
+ # Makefile.inc provides the CSOURCES and HHEADERS defines
+ include Makefile.inc
