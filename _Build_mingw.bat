@@ -12,7 +12,6 @@ if /I "%1" equ "x86-libs" (
 	set BUILD_ARCH=X86
 	set BUILD_MBEDTLS_DLL=0
 	set BUILD_CURL_DLL=0
-	set BUILD_CURL_EXE=1
 	goto :BUILD
 )
 
@@ -21,7 +20,6 @@ if /I "%1" equ "x64-libs" (
 	set BUILD_ARCH=X64
 	set BUILD_MBEDTLS_DLL=0
 	set BUILD_CURL_DLL=0
-	set BUILD_CURL_EXE=1
 	goto :BUILD
 )
 
@@ -30,7 +28,6 @@ if /I "%1" equ "x86-dlls" (
 	set BUILD_ARCH=X86
 	set BUILD_MBEDTLS_DLL=1
 	set BUILD_CURL_DLL=1
-	set BUILD_CURL_EXE=1
 	goto :BUILD
 )
 
@@ -39,7 +36,6 @@ if /I "%1" equ "x64-dlls" (
 	set BUILD_ARCH=X64
 	set BUILD_MBEDTLS_DLL=1
 	set BUILD_CURL_DLL=1
-	set BUILD_CURL_EXE=1
 	goto :BUILD
 )
 
@@ -133,8 +129,6 @@ if %ERRORLEVEL% neq 0 pause && goto :EOF
 
 
 :CURL
-if "%BUILD_CURL_EXE%" neq "1" goto :EXE
-
 echo.
 echo -----------------------------------
 echo  curl.exe
@@ -164,10 +158,11 @@ if %ERRORLEVEL% neq 0 pause && goto :EOF
 echo.
 if "%BUILD_MBEDTLS_DLL%" equ "1" xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.dll" "%BUILD_OUTDIR%" /YF
 if "%BUILD_CURL_DLL%"    equ "1" xcopy "%BUILD_OUTDIR%\cURL\lib\*.dll" "%BUILD_OUTDIR%" /YF
-if "%BUILD_CURL_EXE%"    equ "1" xcopy "%BUILD_OUTDIR%\cURL\src\*.exe" "%BUILD_OUTDIR%" /YF
+xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.a" "%BUILD_OUTDIR%" /YF
+xcopy "%BUILD_OUTDIR%\cURL\lib\*.a" "%BUILD_OUTDIR%" /YF
+xcopy "%BUILD_OUTDIR%\cURL\src\*.exe" "%BUILD_OUTDIR%" /YF
 
 :: ObjDump
 objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS.txt"
 objdump -d -S "%BUILD_OUTDIR%\cURL\lib\*.o"        > "%BUILD_OUTDIR%\asm-cURL-lib.txt"
 objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o"        > "%BUILD_OUTDIR%\asm-cURL-src.txt"
-objdump -d -S "%BUILD_OUTDIR%\*.o"                 > "%BUILD_OUTDIR%\asm-HttpsClient.txt"
