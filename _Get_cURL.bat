@@ -21,6 +21,6 @@ if /I "%answer%" equ "y" goto :_patch
 goto :EOF
 :_patch
 cd /d "%~dp0"
-"%GIT%" apply --verbose --directory=cURL _patch-cURL.diff
+"%GIT%" apply --verbose --whitespace=fix --directory=cURL _patch-cURL.diff
 
 pause

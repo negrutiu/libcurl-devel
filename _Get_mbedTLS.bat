@@ -19,6 +19,6 @@ if /I "%answer%" equ "y" goto :_patch
 goto :EOF
 :_patch
 cd /d "%~dp0"
-"%GIT%" apply --verbose --directory=mbedTLS _patch-mbedTLS.diff
+"%GIT%" apply --verbose --whitespace=fix --directory=mbedTLS _patch-mbedTLS.diff
 
 pause
