@@ -1,6 +1,7 @@
 cURL
 mbedTLS
 OpenSSL
+zlib
 
 Debug-*
 Release-*

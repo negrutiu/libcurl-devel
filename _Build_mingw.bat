@@ -68,6 +68,8 @@ xcopy "cURL\include" "%BUILD_OUTDIR%\cURL\include" /EIYD
 xcopy "cURL\lib" "%BUILD_OUTDIR%\cURL\lib" /EIYD
 xcopy "cURL\src" "%BUILD_OUTDIR%\cURL\src" /EIYD
 
+xcopy "zlib" "%BUILD_OUTDIR%\zlib" /EIYD
+
 if exist cacert.pem xcopy cacert.pem "%BUILD_OUTDIR%" /FIYD
 
 
@@ -78,11 +80,31 @@ set CURL_CFLAGS=-DUSE_MBEDTLS -Dhave_curlssl_ca_path -I../../mbedTLS/include
 if /I "%BUILD_ARCH%" equ "x64" (
 	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -D_WIN32_WINNT=0x0502
 	set GLOBAL_LFLAGS=-m64 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
+	set GLOBAL_RFLAGS=-F pe-x86-64
 	set MBEDTLS_CFLAGS=!MBEDTLS_CFLAGS! -DMBEDTLS_HAVE_SSE2
 ) else (
 	set GLOBAL_CFLAGS=-m32 -mtune=i386 -march=i386 -D_WIN32_WINNT=0x0400
 	set GLOBAL_LFLAGS=-m32 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
+	set GLOBAL_RFLAGS=-F pe-i386
 )
+
+
+:ZLIB
+echo.
+echo -----------------------------------
+echo  zlib
+echo -----------------------------------
+:: NOTE: Must build in ANSI code page
+cd /d "%BUILD_OUTDIR%\zlib"
+title mingw-%BUILD_ARCH%-zlib
+
+set MYCFLAGS=%GLOBAL_CFLAGS%
+set MYLDFLAGS=%GLOBAL_LFLAGS%
+set MYRCFLAGS=%GLOBAL_RFLAGS%
+mingw32-make -f win32/Makefile.gcc libz.a
+echo.
+echo ERRORLEVEL = %ERRORLEVEL%
+if %ERRORLEVEL% neq 0 pause && goto :EOF
 
 
 :MBEDTLS
@@ -122,19 +144,21 @@ echo -----------------------------------
 cd /d "%BUILD_OUTDIR%\cURL\lib"
 title mingw-%BUILD_ARCH%-libcurl
 
+set ZLIB=1
+set ZLIB_PATH=../../zlib
+
 if %BUILD_LIBCURL_DLL% equ 0 set CFG=
 if %BUILD_LIBCURL_DLL% neq 0 set CFG=-dyn
 
 if /I %BUILD_ARCH% equ x64 set ARCH=w64
 if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
-if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
-if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
+set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS%
+set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% -L../../mbedTLS/library
+if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
+if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
 
-mingw32-make -f Makefile.m32 ^
-	"CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS%" ^
-	"CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS%" ^
-	all
+mingw32-make -f Makefile.m32 all
 echo.
 echo ERRORLEVEL = %ERRORLEVEL%
 if %ERRORLEVEL% neq 0 pause && goto :EOF
@@ -158,9 +182,9 @@ if /I %BUILD_ARCH% equ x64 set ARCH=w64
 if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
 set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS%
-set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS%
-if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32 -Wl,--exclude-libs=ALL
-if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
+set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% -L../../mbedTLS/library
+if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
+if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
 
 :: curl.exe (dynamic)
 if "%BUILD_LIBCURL_DLL%" equ "1" (
@@ -182,6 +206,7 @@ if "%BUILD_LIBCURL_DLL%" equ "1" (
 
 :: curl.exe (static)
 title mingw-%BUILD_ARCH%-curl.exe
+::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS2! -Wl,--exclude-libs=ALL
 mingw32-make -f Makefile.m32 CFG= all
 echo.
 echo ERRORLEVEL = %ERRORLEVEL%

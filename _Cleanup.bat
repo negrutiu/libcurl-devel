@@ -3,12 +3,15 @@
 cd /d "%~dp0"
 
 call :CLEANUP
+ping -n 2 127.0.0.1 > NUL
 call :CLEANUP
+ping -n 2 127.0.0.1 > NUL
 call :CLEANUP
 goto :EOF
 
 
 :CLEANUP
+echo ----------
 rd /S /Q .vs
 rd /S /Q ipch
 
