@@ -92,6 +92,7 @@ echo  libmbedTLS
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
 cd /d "%BUILD_OUTDIR%\mbedTLS\library"
+title mingw-%BUILD_ARCH%-libmbedtls
 
 if %BUILD_MBEDTLS_DLL% equ 0 set SHARED=
 if %BUILD_MBEDTLS_DLL% neq 0 set SHARED=1
@@ -119,6 +120,7 @@ echo  libcurl
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
 cd /d "%BUILD_OUTDIR%\cURL\lib"
+title mingw-%BUILD_ARCH%-libcurl
 
 if %BUILD_LIBCURL_DLL% equ 0 set CFG=
 if %BUILD_LIBCURL_DLL% neq 0 set CFG=-dyn
@@ -163,6 +165,7 @@ if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\l
 :: curl.exe (dynamic)
 if "%BUILD_LIBCURL_DLL%" equ "1" (
 
+	title mingw-%BUILD_ARCH%-libcurl.exe
 	mingw32-make -f Makefile.m32 CFG=-dyn clean all
 	echo.
 	echo ERRORLEVEL = %ERRORLEVEL%
@@ -178,6 +181,7 @@ if "%BUILD_LIBCURL_DLL%" equ "1" (
 )
 
 :: curl.exe (static)
+title mingw-%BUILD_ARCH%-curl.exe
 mingw32-make -f Makefile.m32 CFG= all
 echo.
 echo ERRORLEVEL = %ERRORLEVEL%
