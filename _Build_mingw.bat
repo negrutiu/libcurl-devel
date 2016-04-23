@@ -7,49 +7,52 @@ if not exist "%MINGW%\bin\mingw32-make.exe" echo ERROR: "%MINGW%\bin\mingw32-mak
 call "%MINGW%\mingwvars.bat"
 
 
-if /I "%1" equ "x86-libs" (
-	set BUILD_OUTDIR=%~dp0\Release-Win32-mbedTLS
+:: ----------------------------------------------------------------
+:PARALLEL
+:: ----------------------------------------------------------------
+if /I "%1" equ "/build-x86" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-Win32
 	set BUILD_ARCH=X86
 	set BUILD_MBEDTLS_DLL=0
-	set BUILD_CURL_DLL=0
+	set BUILD_LIBCURL_DLL=1
 	goto :BUILD
 )
 
-if /I "%1" equ "x64-libs" (
-	set BUILD_OUTDIR=%~dp0\Release-x64-mbedTLS
+if /I "%1" equ "/build-x64" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-x64
 	set BUILD_ARCH=X64
 	set BUILD_MBEDTLS_DLL=0
-	set BUILD_CURL_DLL=0
+	set BUILD_LIBCURL_DLL=1
 	goto :BUILD
 )
 
-if /I "%1" equ "x86-dlls" (
-	set BUILD_OUTDIR=%~dp0\Release-Win32-mbedTLS-dll
+if /I "%1" equ "/build-x86-mbedtls_dll" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS_dll-Win32
 	set BUILD_ARCH=X86
 	set BUILD_MBEDTLS_DLL=1
-	set BUILD_CURL_DLL=1
+	set BUILD_LIBCURL_DLL=1
 	goto :BUILD
 )
 
-if /I "%1" equ "x64-dlls" (
-	set BUILD_OUTDIR=%~dp0\Release-x64-mbedTLS-dll
+if /I "%1" equ "/build-x64-mbedtls_dll" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS_dll-x64
 	set BUILD_ARCH=X64
 	set BUILD_MBEDTLS_DLL=1
-	set BUILD_CURL_DLL=1
+	set BUILD_LIBCURL_DLL=1
 	goto :BUILD
 )
 
-start "x86-libs" "%COMSPEC%" /C "%~f0" x86-libs
-start "x64-libs" "%COMSPEC%" /C "%~f0" x64-libs
-start "x86-dlls" "%COMSPEC%" /C "%~f0" x86-dlls
-start "x64-dlls" "%COMSPEC%" /C "%~f0" x64-dlls
+:: Re-launch this script to build multiple targets in parallel
+start "mingw32" "%COMSPEC%" /C "%~f0" /build-x86
+start "mingw64" "%COMSPEC%" /C "%~f0" /build-x64
+::start "mingw32 (mbedtls_dll)" "%COMSPEC%" /C "%~f0" /build-x86-mbedtls_dll
+::start "mingw64 (mbedtls_dll)" "%COMSPEC%" /C "%~f0" /build-x64-mbedtls_dll
 goto :EOF
 
 
 :: ----------------------------------------------------------------
-::  Build one platform
-:: ----------------------------------------------------------------
 :BUILD
+:: ----------------------------------------------------------------
 
 if not exist "%BUILD_OUTDIR%" mkdir "%BUILD_OUTDIR%"
 
@@ -68,8 +71,9 @@ xcopy "cURL\src" "%BUILD_OUTDIR%\cURL\src" /EIYD
 if exist cacert.pem xcopy cacert.pem "%BUILD_OUTDIR%" /FIYD
 
 
-set MBEDTLS_CFLAGS=-DMBEDTLS_CONFIG_FILE='^<%~dp0libmbedtls.config.h^>'
-set CURL_CFLAGS=-DHTTP_ONLY -DUSE_MBEDTLS -Dhave_curlssl_ca_path -I../../mbedTLS/include
+::set MBEDTLS_CFLAGS=-DMBEDTLS_CONFIG_FILE='^<%~dp0libmbedtls.config.h^>'
+set CURL_CFLAGS=-DUSE_MBEDTLS -Dhave_curlssl_ca_path -I../../mbedTLS/include
+::set CURL_CFLAGS=!CURL_CFLAGS! -DHTTP_ONLY
 
 if /I "%BUILD_ARCH%" equ "x64" (
 	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -D_WIN32_WINNT=0x0502
@@ -86,11 +90,11 @@ echo.
 echo -----------------------------------
 echo  libmbedTLS
 echo -----------------------------------
-:: NOTE: Must be built with ANSI code page
+:: NOTE: Must build in ANSI code page
 cd /d "%BUILD_OUTDIR%\mbedTLS\library"
 
-if "%BUILD_MBEDTLS_DLL%" equ "1" set SHARED=1
-if "%BUILD_MBEDTLS_DLL%" neq "1" set SHARED=
+if %BUILD_MBEDTLS_DLL% equ 0 set SHARED=
+if %BUILD_MBEDTLS_DLL% neq 0 set SHARED=1
 
 mingw32-make ^
 	WINDOWS=1 CC=gcc ^
@@ -101,23 +105,29 @@ echo.
 echo ERRORLEVEL = %ERRORLEVEL%
 if %ERRORLEVEL% neq 0 pause && goto :EOF
 
+:: Collect
+echo.
+xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.dll" "%BUILD_OUTDIR%" /YF
+xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.a"   "%BUILD_OUTDIR%" /YF
+objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS.txt"
+
 
 :LIBCURL
 echo.
 echo -----------------------------------
 echo  libcurl
 echo -----------------------------------
-:: NOTE: Must be built with ANSI code page
+:: NOTE: Must build in ANSI code page
 cd /d "%BUILD_OUTDIR%\cURL\lib"
 
-if "%BUILD_CURL_DLL%" equ "1" set CFG=-dyn
-if "%BUILD_CURL_DLL%" neq "1" set CFG=
+if %BUILD_LIBCURL_DLL% equ 0 set CFG=
+if %BUILD_LIBCURL_DLL% neq 0 set CFG=-dyn
 
-if /I "%BUILD_ARCH%" equ "x64" set ARCH=w64
-if /I "%BUILD_ARCH%" neq "x64" set ARCH=w32
+if /I %BUILD_ARCH% equ x64 set ARCH=w64
+if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
-if "%BUILD_MBEDTLS_DLL%" equ "1" set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
-if "%BUILD_MBEDTLS_DLL%" neq "1" set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
+if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
+if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
 
 mingw32-make -f Makefile.m32 ^
 	"CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS%" ^
@@ -126,6 +136,12 @@ mingw32-make -f Makefile.m32 ^
 echo.
 echo ERRORLEVEL = %ERRORLEVEL%
 if %ERRORLEVEL% neq 0 pause && goto :EOF
+
+:: Collect
+echo.
+xcopy "%BUILD_OUTDIR%\cURL\lib\*.dll" "%BUILD_OUTDIR%" /YF
+xcopy "%BUILD_OUTDIR%\cURL\lib\*.a"   "%BUILD_OUTDIR%" /YF
+objdump -d -S "%BUILD_OUTDIR%\cURL\lib\*.o" > "%BUILD_OUTDIR%\asm-cURL-lib.txt"
 
 
 :CURL
@@ -133,36 +149,41 @@ echo.
 echo -----------------------------------
 echo  curl.exe
 echo -----------------------------------
-:: NOTE: Must be built with ANSI code page
+:: NOTE: Must build in ANSI code page
 cd /d "%BUILD_OUTDIR%\cURL\src"
 
-if "%BUILD_CURL_DLL%" equ "1" set CFG=-dyn
-if "%BUILD_CURL_DLL%" neq "1" set CFG=
+if /I %BUILD_ARCH% equ x64 set ARCH=w64
+if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
-if /I "%BUILD_ARCH%" equ "x64" set ARCH=w64
-if /I "%BUILD_ARCH%" neq "x64" set ARCH=w32
+set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS%
+set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS%
+if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32 -Wl,--exclude-libs=ALL
+if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
 
-if "%BUILD_MBEDTLS_DLL%" equ "1" set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
-if "%BUILD_MBEDTLS_DLL%" neq "1" set CURL_LDFLAG_EXTRAS2=-L'%BUILD_OUTDIR%\mbedTLS\library' -lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
+:: curl.exe (dynamic)
+if "%BUILD_LIBCURL_DLL%" equ "1" (
 
-mingw32-make -f Makefile.m32 ^
-	"CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS%" ^
-	"CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS%" ^
-	all
+	mingw32-make -f Makefile.m32 CFG=-dyn clean all
+	echo.
+	echo ERRORLEVEL = %ERRORLEVEL%
+	if %ERRORLEVEL% neq 0 pause && goto :EOF
+
+	echo.
+	move /Y "%BUILD_OUTDIR%\cURL\src\curl.exe" "%BUILD_OUTDIR%\cURL\src\libcurl.exe"
+	xcopy "%BUILD_OUTDIR%\cURL\src\*.exe" "%BUILD_OUTDIR%" /YF
+	objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-libcURL-src.txt"
+
+	mingw32-make -f Makefile.m32 clean
+	echo -----------------------------------
+)
+
+:: curl.exe (static)
+mingw32-make -f Makefile.m32 CFG= all
 echo.
 echo ERRORLEVEL = %ERRORLEVEL%
 if %ERRORLEVEL% neq 0 pause && goto :EOF
 
-
-:COLLECT
+::Collect
 echo.
-if "%BUILD_MBEDTLS_DLL%" equ "1" xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.dll" "%BUILD_OUTDIR%" /YF
-if "%BUILD_CURL_DLL%"    equ "1" xcopy "%BUILD_OUTDIR%\cURL\lib\*.dll" "%BUILD_OUTDIR%" /YF
-xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.a" "%BUILD_OUTDIR%" /YF
-xcopy "%BUILD_OUTDIR%\cURL\lib\*.a" "%BUILD_OUTDIR%" /YF
 xcopy "%BUILD_OUTDIR%\cURL\src\*.exe" "%BUILD_OUTDIR%" /YF
-
-:: ObjDump
-objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS.txt"
-objdump -d -S "%BUILD_OUTDIR%\cURL\lib\*.o"        > "%BUILD_OUTDIR%\asm-cURL-lib.txt"
-objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o"        > "%BUILD_OUTDIR%\asm-cURL-src.txt"
+objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
