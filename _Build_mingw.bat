@@ -59,6 +59,9 @@ if not exist "%BUILD_OUTDIR%" mkdir "%BUILD_OUTDIR%"
 :: Duplicate the relevant sources so we can build in parallel
 cd /d "%~dp0"
 
+xcopy "zlib" "%BUILD_OUTDIR%\zlib" /EIYD
+xcopy "nghttp2\lib" "%BUILD_OUTDIR%\nghttp2\lib" /EIYD
+
 xcopy "mbedTLS\*.*" "%BUILD_OUTDIR%\mbedTLS" /IYD
 xcopy "mbedTLS\include" "%BUILD_OUTDIR%\mbedTLS\include" /EIYD
 xcopy "mbedTLS\library" "%BUILD_OUTDIR%\mbedTLS\library" /EIYD
@@ -66,24 +69,24 @@ xcopy "mbedTLS\library" "%BUILD_OUTDIR%\mbedTLS\library" /EIYD
 xcopy "cURL\*.*" "%BUILD_OUTDIR%\cURL" /IYD
 xcopy "cURL\include" "%BUILD_OUTDIR%\cURL\include" /EIYD
 xcopy "cURL\lib" "%BUILD_OUTDIR%\cURL\lib" /EIYD
+
 xcopy "cURL\src" "%BUILD_OUTDIR%\cURL\src" /EIYD
 
-xcopy "zlib" "%BUILD_OUTDIR%\zlib" /EIYD
 
 if exist cacert.pem xcopy cacert.pem "%BUILD_OUTDIR%" /FIYD
 
-
+set NGHTTP2_CFLAGS=-DNGHTTP2_STATICLIB
 ::set MBEDTLS_CFLAGS=-DMBEDTLS_CONFIG_FILE='^<%~dp0libmbedtls.config.h^>'
 set CURL_CFLAGS=-DUSE_MBEDTLS -Dhave_curlssl_ca_path -I../../mbedTLS/include
 ::set CURL_CFLAGS=!CURL_CFLAGS! -DHTTP_ONLY
 
 if /I "%BUILD_ARCH%" equ "x64" (
-	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -D_WIN32_WINNT=0x0502
+	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -DWIN32 -D_WIN32_WINNT=0x0502
 	set GLOBAL_LFLAGS=-m64 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-x86-64
 	set MBEDTLS_CFLAGS=!MBEDTLS_CFLAGS! -DMBEDTLS_HAVE_SSE2
 ) else (
-	set GLOBAL_CFLAGS=-m32 -mtune=i386 -march=i386 -D_WIN32_WINNT=0x0400
+	set GLOBAL_CFLAGS=-m32 -mtune=i386 -march=i386 -DWIN32 -D_WIN32_WINNT=0x0400
 	set GLOBAL_LFLAGS=-m32 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-i386
 )
@@ -95,8 +98,8 @@ echo -----------------------------------
 echo  zlib
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
-cd /d "%BUILD_OUTDIR%\zlib"
 title mingw-%BUILD_ARCH%-zlib
+cd /d "%BUILD_OUTDIR%\zlib"
 
 set MYCFLAGS=%GLOBAL_CFLAGS%
 set MYLDFLAGS=%GLOBAL_LFLAGS%
@@ -107,14 +110,38 @@ echo ERRORLEVEL = %ERRORLEVEL%
 if %ERRORLEVEL% neq 0 pause && goto :EOF
 
 
+:NGHTTP2
+echo.
+echo -----------------------------------
+echo  nghttp2
+echo -----------------------------------
+:: NOTE: Must build in ANSI code page
+title mingw-%BUILD_ARCH%-nghttp2
+cd /d "%BUILD_OUTDIR%\nghttp2"
+if not exist "include" mklink /J "include" "lib\includes"
+
+cd lib
+set MYCFLAGS=%GLOBAL_CFLAGS% %NGHTTP2_CFLAGS%
+set MYLFLAGS=%GLOBAL_LFLAGS%
+mingw32-make static
+echo.
+echo ERRORLEVEL = %ERRORLEVEL%
+if %ERRORLEVEL% neq 0 pause && goto :EOF
+
+:: Collect
+echo.
+xcopy "%BUILD_OUTDIR%\nghttp2\lib\*.a" "%BUILD_OUTDIR%" /YF
+objdump -d -S "%BUILD_OUTDIR%\nghttp2\lib\*.o" > "%BUILD_OUTDIR%\asm-nghttp2.txt"
+
+
 :MBEDTLS
 echo.
 echo -----------------------------------
 echo  libmbedTLS
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
-cd /d "%BUILD_OUTDIR%\mbedTLS\library"
 title mingw-%BUILD_ARCH%-libmbedtls
+cd /d "%BUILD_OUTDIR%\mbedTLS\library"
 
 if %BUILD_MBEDTLS_DLL% equ 0 set SHARED=
 if %BUILD_MBEDTLS_DLL% neq 0 set SHARED=1
@@ -141,11 +168,14 @@ echo -----------------------------------
 echo  libcurl
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
-cd /d "%BUILD_OUTDIR%\cURL\lib"
 title mingw-%BUILD_ARCH%-libcurl
+cd /d "%BUILD_OUTDIR%\cURL\lib"
 
 set ZLIB=1
 set ZLIB_PATH=../../zlib
+
+set NGHTTP2=1
+set NGHTTP2_PATH=../../nghttp2
 
 if %BUILD_LIBCURL_DLL% equ 0 set CFG=
 if %BUILD_LIBCURL_DLL% neq 0 set CFG=-dyn
@@ -153,7 +183,7 @@ if %BUILD_LIBCURL_DLL% neq 0 set CFG=-dyn
 if /I %BUILD_ARCH% equ x64 set ARCH=w64
 if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
-set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS%
+set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS% %NGHTTP2_CFLAGS%
 set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% -L../../mbedTLS/library
 if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
 if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
@@ -181,7 +211,7 @@ cd /d "%BUILD_OUTDIR%\cURL\src"
 if /I %BUILD_ARCH% equ x64 set ARCH=w64
 if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
-set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS%
+set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS% %NGHTTP2_CFLAGS%
 set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% -L../../mbedTLS/library
 if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
 if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll

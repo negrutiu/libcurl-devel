@@ -1,6 +1,7 @@
 cURL
 mbedTLS
 OpenSSL
+nghttp2
 zlib
 
 Debug-*

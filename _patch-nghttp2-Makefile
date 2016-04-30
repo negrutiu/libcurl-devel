@@ -1,0 +1,43 @@
+
+# Makefile for TDM-GCC x64
+# Marius Negrutiu (April 2016)
+
+STATICBIN = libnghttp2.a
+OBJ = \
+	nghttp2_buf.o \
+	nghttp2_callbacks.o \
+	nghttp2_frame.o \
+	nghttp2_hd.o \
+	nghttp2_hd_huffman.o \
+	nghttp2_hd_huffman_data.o \
+	nghttp2_helper.o \
+	nghttp2_http.o \
+	nghttp2_map.o \
+	nghttp2_mem.o \
+	nghttp2_npn.o \
+	nghttp2_option.o \
+	nghttp2_outbound_item.o \
+	nghttp2_pq.o \
+	nghttp2_priority_spec.o \
+	nghttp2_queue.o \
+	nghttp2_rcbuf.o \
+	nghttp2_session.o \
+	nghttp2_stream.o \
+	nghttp2_submit.o \
+	nghttp2_version.o
+
+CFLAGS = $(MYCFLAGS) -I"includes" -D_U_=
+
+.PHONY: all static clean
+
+all: static
+
+clean:
+	del /q *.o *.a *.dll
+
+static: $(OBJ)
+	ar r $(STATICBIN) $(OBJ)
+	ranlib $(STATICBIN)
+
+.c.o:
+	gcc $(CFLAGS) -c $<
