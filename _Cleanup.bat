@@ -3,15 +3,18 @@
 cd /d "%~dp0"
 
 call :CLEANUP
-ping -n 2 127.0.0.1 > NUL
 call :CLEANUP
-ping -n 2 127.0.0.1 > NUL
+call :CLEANUP
+call :CLEANUP
 call :CLEANUP
 goto :EOF
 
 
 :CLEANUP
-echo ----------
+echo.
+echo.
+echo.
+
 rd /S /Q .vs
 rd /S /Q ipch
 
@@ -36,11 +39,3 @@ del *.log
 del buildfre*.*
 del buildchk*.*
 del prefast*.*
-
-:CLEANUP_MBEDTLS
-del mbedTLS\library\*.a mbedTLS\library\*.o mbedTLS\library\*.dll
-
-:CLEANUP_CURL
-del cURL\lib\*.a cURL\lib\*.o cURL\lib\*.res cURL\lib\*.dll
-del cURL\lib\vtls\*.o
-del cURL\src\*.a cURL\src\*.o cURL\src\*.res cURL\src\*.exe
