@@ -3,6 +3,10 @@ set GIT=%PROGRAMFILES%\Git\bin\git.exe
 
 cd /d "%~dp0"
 
+:: NOTE
+:: "master" branch has the latest stable version
+:: "development" branch has the latest commit
+
 set LIBNAME=mbedTLS
 set URL=https://github.com/ARMmbed/mbedtls.git
 set BRANCH=master

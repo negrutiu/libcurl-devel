@@ -3,9 +3,18 @@ set GIT=%PROGRAMFILES%\Git\bin\git.exe
 
 cd /d "%~dp0"
 
+:: NOTE
+:: "master" branch is the development branch
+:: cURL doesn't have a "latest stable" branch
+:: We'll clone the latest tag, but it'll require manual modification each time a new stable version is released
+
 set LIBNAME=cURL
 set URL=https://github.com/curl/curl.git
-set BRANCH=master
+set BRANCH=curl-7_48_0
+
+echo Working with "%BRANCH%" tag
+echo Verify if newer (stable) %LIBNAME% versions are available!
+echo.
 
 if exist "%LIBNAME%\.git" (
 	cd %LIBNAME%
