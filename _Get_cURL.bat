@@ -5,7 +5,7 @@ cd /d "%~dp0"
 
 :: NOTE
 :: "master" branch is the development branch
-:: cURL doesn't have a "latest stable" branch
+:: The project doesn't have a "latest stable" branch
 :: We'll clone the latest tag, but it'll require manual modification each time a new stable version is released
 
 set LIBNAME=cURL
@@ -22,7 +22,7 @@ if exist "%LIBNAME%\.git" (
 	call buildconf.bat
 ) else (
 	"%GIT%" clone --verbose --progress -b "%BRANCH%" %URL% %LIBNAME%
-	cd cURL
+	cd %LIBNAME%
 	call buildconf.bat
 )
 
