@@ -13,38 +13,85 @@ call "%MINGW%\mingwvars.bat"
 if /I "%1" equ "/build-x86" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-Win32
 	set BUILD_ARCH=X86
+	set BUILD_USE_ZLIB=1
+	set BUILD_USE_NGHTTP2=1
+	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
+	set CURL_CFLAGS=
+	set MBEDTLS_CFLAGS=
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-x64" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-x64
 	set BUILD_ARCH=X64
+	set BUILD_USE_ZLIB=1
+	set BUILD_USE_NGHTTP2=1
+	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
+	set CURL_CFLAGS=
+	set MBEDTLS_CFLAGS=
+	goto :BUILD
+)
+
+if /I "%1" equ "/build-x86-HTTP_ONLY" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-Win32-HTTP_ONLY
+	set BUILD_ARCH=X86
+	set BUILD_USE_ZLIB=0
+	set BUILD_USE_NGHTTP2=0
+	set BUILD_USE_MBEDTLS=1
+	set BUILD_MBEDTLS_DLL=0
+	set BUILD_LIBCURL_DLL=1
+	set CURL_CFLAGS=-DHTTP_ONLY
+	set MBEDTLS_CFLAGS=
+	goto :BUILD
+)
+
+if /I "%1" equ "/build-x64-HTTP_ONLY" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-x64-HTTP_ONLY
+	set BUILD_ARCH=X64
+	set BUILD_USE_ZLIB=0
+	set BUILD_USE_NGHTTP2=0
+	set BUILD_USE_MBEDTLS=1
+	set BUILD_MBEDTLS_DLL=0
+	set BUILD_LIBCURL_DLL=1
+	set CURL_CFLAGS=-DHTTP_ONLY
+	set MBEDTLS_CFLAGS=
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-x86-mbedtls_dll" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS_dll-Win32
 	set BUILD_ARCH=X86
+	set BUILD_USE_ZLIB=1
+	set BUILD_USE_NGHTTP2=1
+	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=1
 	set BUILD_LIBCURL_DLL=1
+	set MBEDTLS_CFLAGS=
+	set CURL_CFLAGS=
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-x64-mbedtls_dll" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS_dll-x64
 	set BUILD_ARCH=X64
+	set BUILD_USE_ZLIB=1
+	set BUILD_USE_NGHTTP2=1
 	set BUILD_MBEDTLS_DLL=1
 	set BUILD_LIBCURL_DLL=1
+	set MBEDTLS_CFLAGS=
+	set CURL_CFLAGS=
 	goto :BUILD
 )
 
 :: Re-launch this script to build multiple targets in parallel
 start "mingw32" "%COMSPEC%" /C "%~f0" /build-x86
 start "mingw64" "%COMSPEC%" /C "%~f0" /build-x64
+::start "mingw32 (HTTP_ONLY)" "%COMSPEC%" /C "%~f0" /build-x86-HTTP_ONLY
+::start "mingw64 (HTTP_ONLY)" "%COMSPEC%" /C "%~f0" /build-x64-HTTP_ONLY
 ::start "mingw32 (mbedtls_dll)" "%COMSPEC%" /C "%~f0" /build-x86-mbedtls_dll
 ::start "mingw64 (mbedtls_dll)" "%COMSPEC%" /C "%~f0" /build-x64-mbedtls_dll
 goto :EOF
@@ -55,36 +102,12 @@ goto :EOF
 :: ----------------------------------------------------------------
 
 if not exist "%BUILD_OUTDIR%" mkdir "%BUILD_OUTDIR%"
-
-:: Duplicate the relevant sources so we can build in parallel
-cd /d "%~dp0"
-
-xcopy "zlib" "%BUILD_OUTDIR%\zlib" /EIYD
-xcopy "nghttp2\lib" "%BUILD_OUTDIR%\nghttp2\lib" /EIYD
-
-xcopy "mbedTLS\*.*" "%BUILD_OUTDIR%\mbedTLS" /IYD
-xcopy "mbedTLS\include" "%BUILD_OUTDIR%\mbedTLS\include" /EIYD
-xcopy "mbedTLS\library" "%BUILD_OUTDIR%\mbedTLS\library" /EIYD
-
-xcopy "cURL\*.*" "%BUILD_OUTDIR%\cURL" /IYD
-xcopy "cURL\include" "%BUILD_OUTDIR%\cURL\include" /EIYD
-xcopy "cURL\lib" "%BUILD_OUTDIR%\cURL\lib" /EIYD
-
-xcopy "cURL\src" "%BUILD_OUTDIR%\cURL\src" /EIYD
-
-
 if exist cacert.pem xcopy cacert.pem "%BUILD_OUTDIR%" /FIYD
-
-set NGHTTP2_CFLAGS=-DNGHTTP2_STATICLIB
-::set MBEDTLS_CFLAGS=-DMBEDTLS_CONFIG_FILE='^<%~dp0libmbedtls.config.h^>'
-set CURL_CFLAGS=-DUSE_MBEDTLS -Dhave_curlssl_ca_path -I../../mbedTLS/include
-::set CURL_CFLAGS=!CURL_CFLAGS! -DHTTP_ONLY
 
 if /I "%BUILD_ARCH%" equ "x64" (
 	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -DWIN32 -D_WIN32_WINNT=0x0502
 	set GLOBAL_LFLAGS=-m64 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-x86-64
-	set MBEDTLS_CFLAGS=!MBEDTLS_CFLAGS! -DMBEDTLS_HAVE_SSE2
 ) else (
 	set GLOBAL_CFLAGS=-m32 -mtune=i386 -march=i386 -DWIN32 -D_WIN32_WINNT=0x0400
 	set GLOBAL_LFLAGS=-m32 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
@@ -93,12 +116,16 @@ if /I "%BUILD_ARCH%" equ "x64" (
 
 
 :ZLIB
+if "%BUILD_USE_ZLIB%" lss "1" goto :ZLIB_END
 echo.
 echo -----------------------------------
 echo  zlib
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
 title mingw-%BUILD_ARCH%-zlib
+
+cd /d "%~dp0"
+xcopy "zlib" "%BUILD_OUTDIR%\zlib" /QEIYD
 cd /d "%BUILD_OUTDIR%\zlib"
 
 set MYCFLAGS=%GLOBAL_CFLAGS%
@@ -109,18 +136,28 @@ echo.
 echo ERRORLEVEL = %ERRORLEVEL%
 if %ERRORLEVEL% neq 0 pause && goto :EOF
 
+:: Build libcurl with zlib support
+set ZLIB=1
+set ZLIB_PATH=../../zlib
+:ZLIB_END
+
 
 :NGHTTP2
+if "%BUILD_USE_NGHTTP2%" lss "1" goto :NGHTTP2_END
 echo.
 echo -----------------------------------
 echo  nghttp2
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
 title mingw-%BUILD_ARCH%-nghttp2
+
+cd /d "%~dp0"
+xcopy "nghttp2\lib" "%BUILD_OUTDIR%\nghttp2\lib" /QEIYD
 cd /d "%BUILD_OUTDIR%\nghttp2"
 if not exist "include" mklink /J "include" "lib\includes"
-
 cd lib
+
+set NGHTTP2_CFLAGS=-DNGHTTP2_STATICLIB
 set MYCFLAGS=%GLOBAL_CFLAGS% %NGHTTP2_CFLAGS%
 set MYLFLAGS=%GLOBAL_LFLAGS%
 mingw32-make static
@@ -133,15 +170,29 @@ echo.
 xcopy "%BUILD_OUTDIR%\nghttp2\lib\*.a" "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\nghttp2\lib\*.o" > "%BUILD_OUTDIR%\asm-nghttp2.txt"
 
+:: Build libcurl with nghttp2 support
+set NGHTTP2=1
+set NGHTTP2_PATH=../../nghttp2
+:NGHTTP2_END
+
 
 :MBEDTLS
+if "%BUILD_USE_MBEDTLS%" lss "1" goto :MBEDTLS_END
 echo.
 echo -----------------------------------
 echo  libmbedTLS
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
 title mingw-%BUILD_ARCH%-libmbedtls
+
+cd /d "%~dp0"
+xcopy "mbedTLS\*.*" "%BUILD_OUTDIR%\mbedTLS" /QIYD
+xcopy "mbedTLS\include" "%BUILD_OUTDIR%\mbedTLS\include" /QEIYD
+xcopy "mbedTLS\library" "%BUILD_OUTDIR%\mbedTLS\library" /QEIYD
 cd /d "%BUILD_OUTDIR%\mbedTLS\library"
+
+::set MBEDTLS_CFLAGS=!MBEDTLS_CFLAGS! -DMBEDTLS_CONFIG_FILE='^<%~dp0libmbedtls.config.h^>'
+if /I "%BUILD_ARCH%" equ "x64" set MBEDTLS_CFLAGS=!MBEDTLS_CFLAGS! -DMBEDTLS_HAVE_SSE2
 
 if %BUILD_MBEDTLS_DLL% equ 0 set SHARED=
 if %BUILD_MBEDTLS_DLL% neq 0 set SHARED=1
@@ -161,6 +212,10 @@ xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.dll" "%BUILD_OUTDIR%" /YF
 xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.a"   "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS.txt"
 
+:: Build libcurl with libmbedtls
+set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -Dhave_curlssl_ca_path -I../../mbedTLS/include
+:MBEDTLS_END
+
 
 :LIBCURL
 echo.
@@ -169,13 +224,12 @@ echo  libcurl
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
 title mingw-%BUILD_ARCH%-libcurl
+
+cd /d "%~dp0"
+xcopy "cURL\*.*" "%BUILD_OUTDIR%\cURL" /QIYD
+xcopy "cURL\include" "%BUILD_OUTDIR%\cURL\include" /QEIYD
+xcopy "cURL\lib" "%BUILD_OUTDIR%\cURL\lib" /QEIYD
 cd /d "%BUILD_OUTDIR%\cURL\lib"
-
-set ZLIB=1
-set ZLIB_PATH=../../zlib
-
-set NGHTTP2=1
-set NGHTTP2_PATH=../../nghttp2
 
 if %BUILD_LIBCURL_DLL% equ 0 set CFG=
 if %BUILD_LIBCURL_DLL% neq 0 set CFG=-dyn
@@ -206,6 +260,9 @@ echo -----------------------------------
 echo  curl.exe
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
+
+cd /d "%~dp0"
+xcopy "cURL\src" "%BUILD_OUTDIR%\cURL\src" /QEIYD
 cd /d "%BUILD_OUTDIR%\cURL\src"
 
 if /I %BUILD_ARCH% equ x64 set ARCH=w64
