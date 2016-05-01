@@ -37,4 +37,8 @@ goto :EOF
 cd /d "%~dp0"
 "%GIT%" apply --verbose --whitespace=fix --directory=%LIBNAME% _patch-%LIBNAME%.diff
 
+echo Removing "-DEV" version suffix...
+powershell -Command "(gc curl\include\curl\curlver.h) -replace '-DEV', ''| Out-File -encoding UTF8 curl\include\curl\curlver.h"
+
+
 pause
