@@ -102,14 +102,14 @@ goto :EOF
 :: ----------------------------------------------------------------
 
 if not exist "%BUILD_OUTDIR%" mkdir "%BUILD_OUTDIR%"
-if exist cacert.pem xcopy cacert.pem "%BUILD_OUTDIR%" /FIYD
+if exist "%~dp0\cacert.pem" xcopy "%~dp0\cacert.pem" "%BUILD_OUTDIR%" /FIYD
 
 if /I "%BUILD_ARCH%" equ "x64" (
 	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -DWIN32 -D_WIN32_WINNT=0x0502
 	set GLOBAL_LFLAGS=-m64 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-x86-64
 ) else (
-	set GLOBAL_CFLAGS=-m32 -mtune=i386 -march=i386 -DWIN32 -D_WIN32_WINNT=0x0400
+	set GLOBAL_CFLAGS=-m32 -march=pentium4 -DWIN32 -D_WIN32_WINNT=0x0400
 	set GLOBAL_LFLAGS=-m32 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-i386
 )
@@ -303,3 +303,8 @@ if %ERRORLEVEL% neq 0 pause && goto :EOF
 echo.
 xcopy "%BUILD_OUTDIR%\cURL\src\*.exe" "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
+
+:: test.bat
+echo curl -V> "%BUILD_OUTDIR%\test.bat"
+echo curl -L -v --cacert cacert.pem negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
+echo pause>> "%BUILD_OUTDIR%\test.bat"
