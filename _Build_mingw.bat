@@ -109,7 +109,7 @@ if /I "%BUILD_ARCH%" equ "x64" (
 	set GLOBAL_LFLAGS=-m64 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-x86-64
 ) else (
-	set GLOBAL_CFLAGS=-m32 -march=pentium4 -DWIN32 -D_WIN32_WINNT=0x0400
+	set GLOBAL_CFLAGS=-m32 -march=pentium2 -DWIN32 -D_WIN32_WINNT=0x0400
 	set GLOBAL_LFLAGS=-m32 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-i386
 )
@@ -135,6 +135,11 @@ mingw32-make -f win32/Makefile.gcc libz.a
 echo.
 echo ERRORLEVEL = %ERRORLEVEL%
 if %ERRORLEVEL% neq 0 pause && goto :EOF
+
+:: Collect
+echo.
+xcopy "%BUILD_OUTDIR%\zlib\*.a" "%BUILD_OUTDIR%" /YF
+objdump -d -S "%BUILD_OUTDIR%\zlib\*.o" > "%BUILD_OUTDIR%\asm-zlib.txt"
 
 :: Build libcurl with zlib support
 set ZLIB=1
@@ -305,6 +310,6 @@ xcopy "%BUILD_OUTDIR%\cURL\src\*.exe" "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
 
 :: test.bat
-echo curl -V> "%BUILD_OUTDIR%\test.bat"
-echo curl -L -v --cacert cacert.pem negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
+echo "%%~dp0\curl" -V> "%BUILD_OUTDIR%\test.bat"
+echo "%%~dp0\curl" -L -v --cacert "%%~dp0\cacert.pem" negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
 echo pause>> "%BUILD_OUTDIR%\test.bat"
