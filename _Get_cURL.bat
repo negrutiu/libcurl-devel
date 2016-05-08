@@ -6,14 +6,15 @@ cd /d "%~dp0"
 :: NOTE
 :: "master" branch is the development branch
 :: The project doesn't have a "latest stable" branch
-:: We'll clone the latest tag, but it'll require manual modification each time a new stable version is released
+:: We'll clone "master" branch
+:: <obsolete>We'll clone the latest tag, but it'll require manual modification each time a new stable version is released</obsolete>
 
 set LIBNAME=cURL
 set URL=https://github.com/curl/curl.git
-set BRANCH=curl-7_48_0
+set BRANCH=master
 
-echo Working with "%BRANCH%" tag
-echo Verify if newer (stable) %LIBNAME% versions are available!
+echo Retrieving "%BRANCH%"...
+:: <obsolete>echo Verify if newer (stable) %LIBNAME% versions are available!</obsolete>
 echo.
 
 if exist "%LIBNAME%\.git" (
@@ -38,7 +39,7 @@ cd /d "%~dp0"
 "%GIT%" apply --verbose --whitespace=fix --directory=%LIBNAME% _patch-%LIBNAME%.diff
 
 echo Removing "-DEV" version suffix...
-powershell -Command "(gc curl\include\curl\curlver.h) -replace '-DEV', ''| Out-File -encoding UTF8 curl\include\curl\curlver.h"
+powershell -Command "(gc curl\include\curl\curlver.h) -replace '-DEV', ''| Out-File -encoding ASCII curl\include\curl\curlver.h"
 
 
 pause
