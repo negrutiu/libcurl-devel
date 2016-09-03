@@ -1,13 +1,40 @@
- library/debug.c    |  2 +-
- library/net.c      | 11 +++++++----
- library/platform.c |  2 +-
- 3 files changed, 9 insertions(+), 6 deletions(-)
+ include/mbedtls/config.h |  2 +-
+ include/mbedtls/ssl.h    |  1 +
+ library/debug.c          |  2 +-
+ library/net.c            | 11 +++++++----
+ library/platform.c       |  2 +-
+ 5 files changed, 11 insertions(+), 7 deletions(-)
 
+diff --git a/include/mbedtls/config.h b/include/mbedtls/config.h
+index 3b7c85b..3db071f 100644
+--- a/include/mbedtls/config.h
++++ b/include/mbedtls/config.h
+@@ -1908,7 +1908,7 @@
+  *
+  * Uncomment to enable support for (rare) MD4-signed X.509 certs.
+  */
+-//#define MBEDTLS_MD4_C
++#define MBEDTLS_MD4_C		/* Needed by curl_ntlm_core.c (Marius) */
+ 
+ /**
+  * \def MBEDTLS_MD5_C
+diff --git a/include/mbedtls/ssl.h b/include/mbedtls/ssl.h
+index 82c0760..4f1892d 100644
+--- a/include/mbedtls/ssl.h
++++ b/include/mbedtls/ssl.h
+@@ -53,6 +53,7 @@
+ 
+ #if defined(MBEDTLS_HAVE_TIME)
+ #include <time.h>
++#include "platform.h"
+ #endif
+ 
+ /*
 diff --git a/library/debug.c b/library/debug.c
-index 4752ab1..e4eb1ec 100644
+index a9cd814..8faf685 100644
 --- a/library/debug.c
 +++ b/library/debug.c
-@@ -90,7 +90,7 @@ void mbedtls_debug_print_msg( const mbedtls_ssl_context *ssl, int level,
+@@ -91,7 +91,7 @@ void mbedtls_debug_print_msg( const mbedtls_ssl_context *ssl, int level,
  
      va_start( argp, format );
  #if defined(_WIN32)
@@ -17,10 +44,10 @@ index 4752ab1..e4eb1ec 100644
  #else
      ret = _vsnprintf( str, DEBUG_BUF_SIZE, format, argp );
 diff --git a/library/net.c b/library/net.c
-index a77268c..02dced3 100644
+index 4142bc0..4327aa8 100644
 --- a/library/net.c
 +++ b/library/net.c
-@@ -34,12 +34,15 @@
+@@ -46,12 +46,15 @@
  #if (defined(_WIN32) || defined(_WIN32_WCE)) && !defined(EFIX64) && \
      !defined(EFI32)
  
@@ -41,7 +68,7 @@ index a77268c..02dced3 100644
  #include <winsock2.h>
  #include <windows.h>
 diff --git a/library/platform.c b/library/platform.c
-index d634c62..0b61fa6 100644
+index 68ca45d..06db08d 100644
 --- a/library/platform.c
 +++ b/library/platform.c
 @@ -74,7 +74,7 @@ int mbedtls_platform_win32_snprintf( char *s, size_t n, const char *fmt, ... )
