@@ -393,6 +393,9 @@
     <ClCompile Include="cURL\lib\vtls\vtls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\lib\system_win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\include\curl\curl.h">
@@ -792,6 +795,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\vtls\vtls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\system_win32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -407,6 +407,7 @@
     <ClCompile Include="cURL\lib\strerror.c" />
     <ClCompile Include="cURL\lib\strtok.c" />
     <ClCompile Include="cURL\lib\strtoofft.c" />
+    <ClCompile Include="cURL\lib\system_win32.c" />
     <ClCompile Include="cURL\lib\telnet.c" />
     <ClCompile Include="cURL\lib\tftp.c" />
     <ClCompile Include="cURL\lib\timeval.c" />
@@ -551,6 +552,7 @@
     <ClInclude Include="cURL\lib\strerror.h" />
     <ClInclude Include="cURL\lib\strtok.h" />
     <ClInclude Include="cURL\lib\strtoofft.h" />
+    <ClInclude Include="cURL\lib\system_win32.h" />
     <ClInclude Include="cURL\lib\telnet.h" />
     <ClInclude Include="cURL\lib\tftp.h" />
     <ClInclude Include="cURL\lib\timeval.h" />

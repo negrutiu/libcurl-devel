@@ -144,6 +144,9 @@
     <ClCompile Include="cURL\src\tool_xattr.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\lib\system_win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\lib\config-win32.h">
@@ -291,6 +294,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\src\tool_xattr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\system_win32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
