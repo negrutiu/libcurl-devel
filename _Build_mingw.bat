@@ -80,6 +80,7 @@ if /I "%1" equ "/build-x64-mbedtls_dll" (
 	set BUILD_ARCH=X64
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
+	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=1
 	set BUILD_LIBCURL_DLL=1
 	set MBEDTLS_CFLAGS=
