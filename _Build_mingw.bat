@@ -10,91 +10,137 @@ call "%MINGW%\mingwvars.bat"
 :: ----------------------------------------------------------------
 :PARALLEL
 :: ----------------------------------------------------------------
-if /I "%1" equ "/build-x86" (
+if /I "%1" equ "/build-mbedtls-x86" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-Win32
 	set BUILD_ARCH=X86
+	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
-	set MBEDTLS_CFLAGS=
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-x64" (
+if /I "%1" equ "/build-mbedtls-x64" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-x64
 	set BUILD_ARCH=X64
+	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
-	set MBEDTLS_CFLAGS=
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-x86-HTTP_ONLY" (
+if /I "%1" equ "/build-winssl-x86" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-WinSSL-Win32
+	set BUILD_ARCH=X86
+	set BUILD_SSL_ENGINE=WINSSL
+	set BUILD_USE_ZLIB=1
+	set BUILD_USE_NGHTTP2=1
+	set BUILD_MBEDTLS_DLL=0
+	set BUILD_LIBCURL_DLL=1
+	set CURL_CFLAGS=
+	goto :BUILD
+)
+
+if /I "%1" equ "/build-winssl-x64" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-WinSSL-x64
+	set BUILD_ARCH=X64
+	set BUILD_SSL_ENGINE=WINSSL
+	set BUILD_USE_ZLIB=1
+	set BUILD_USE_NGHTTP2=1
+	set BUILD_MBEDTLS_DLL=0
+	set BUILD_LIBCURL_DLL=1
+	set CURL_CFLAGS=
+	goto :BUILD
+)
+
+if /I "%1" equ "/build-mbedtls-x86-HTTP_ONLY" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-Win32-HTTP_ONLY
 	set BUILD_ARCH=X86
+	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=0
 	set BUILD_USE_NGHTTP2=0
-	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY
-	set MBEDTLS_CFLAGS=
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-x64-HTTP_ONLY" (
+if /I "%1" equ "/build-mbedtls-x64-HTTP_ONLY" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-x64-HTTP_ONLY
 	set BUILD_ARCH=X64
+	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=0
 	set BUILD_USE_NGHTTP2=0
-	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY
-	set MBEDTLS_CFLAGS=
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-x86-mbedtls_dll" (
+if /I "%1" equ "/build-winssl-x86-HTTP_ONLY" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-WinSSL-Win32-HTTP_ONLY
+	set BUILD_ARCH=X86
+	set BUILD_SSL_ENGINE=WINSSL
+	set BUILD_USE_ZLIB=0
+	set BUILD_USE_NGHTTP2=0
+	set BUILD_MBEDTLS_DLL=0
+	set BUILD_LIBCURL_DLL=1
+	set CURL_CFLAGS=-DHTTP_ONLY
+	goto :BUILD
+)
+
+if /I "%1" equ "/build-winssl-x64-HTTP_ONLY" (
+	set BUILD_OUTDIR=%~dp0\Release-mingw-WinSSL-x64-HTTP_ONLY
+	set BUILD_ARCH=X64
+	set BUILD_SSL_ENGINE=WINSSL
+	set BUILD_USE_ZLIB=0
+	set BUILD_USE_NGHTTP2=0
+	set BUILD_MBEDTLS_DLL=0
+	set BUILD_LIBCURL_DLL=1
+	set CURL_CFLAGS=-DHTTP_ONLY
+	goto :BUILD
+)
+
+if /I "%1" equ "/build-mbedtls-x86-mbedtls_dll" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS_dll-Win32
 	set BUILD_ARCH=X86
+	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=1
 	set BUILD_LIBCURL_DLL=1
-	set MBEDTLS_CFLAGS=
 	set CURL_CFLAGS=
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-x64-mbedtls_dll" (
+if /I "%1" equ "/build-mbedtls-x64-mbedtls_dll" (
 	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS_dll-x64
 	set BUILD_ARCH=X64
+	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_USE_MBEDTLS=1
 	set BUILD_MBEDTLS_DLL=1
 	set BUILD_LIBCURL_DLL=1
-	set MBEDTLS_CFLAGS=
 	set CURL_CFLAGS=
 	goto :BUILD
 )
 
 :: Re-launch this script to build multiple targets in parallel
-start "mingw32" "%COMSPEC%" /C "%~f0" /build-x86
-start "mingw64" "%COMSPEC%" /C "%~f0" /build-x64
-::start "mingw32 (HTTP_ONLY)" "%COMSPEC%" /C "%~f0" /build-x86-HTTP_ONLY
-::start "mingw64 (HTTP_ONLY)" "%COMSPEC%" /C "%~f0" /build-x64-HTTP_ONLY
-::start "mingw32 (mbedtls_dll)" "%COMSPEC%" /C "%~f0" /build-x86-mbedtls_dll
-::start "mingw64 (mbedtls_dll)" "%COMSPEC%" /C "%~f0" /build-x64-mbedtls_dll
+start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86
+start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64
+start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86-mbedtls_dll
+start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64-mbedtls_dll
+start "" "%COMSPEC%" /C "%~f0" /build-winssl-x86-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-winssl-x86
+start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64
 goto :EOF
 
 
@@ -114,6 +160,9 @@ if /I "%BUILD_ARCH%" equ "x64" (
 	set GLOBAL_LFLAGS=-m32 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-i386
 )
+set CURL_CFG=
+set CURL_LDFLAG_EXTRAS=
+set CURL_LDFLAG_EXTRAS2=
 
 
 :ZLIB
@@ -183,7 +232,7 @@ set NGHTTP2_PATH=../../nghttp2
 
 
 :MBEDTLS
-if "%BUILD_USE_MBEDTLS%" lss "1" goto :MBEDTLS_END
+if /i "%BUILD_SSL_ENGINE%" neq "MBEDTLS" goto :MBEDTLS_END
 echo.
 echo -----------------------------------
 echo  libmbedTLS
@@ -220,7 +269,24 @@ objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS
 
 :: Build libcurl with libmbedtls
 set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -Dhave_curlssl_ca_path -I../../mbedTLS/include
+set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../../mbedTLS/library
+if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
+if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
 :MBEDTLS_END
+
+
+:WINSSL
+if /i "%BUILD_SSL_ENGINE%" neq "WINSSL" goto :WINSSL_END
+echo.
+echo -----------------------------------
+echo  WinSSL
+echo -----------------------------------
+title mingw-%BUILD_ARCH%-WinSSL
+
+:: Build libcurl with WinSSL
+set CURL_CFG=!CURL_CFG! -winssl
+set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS2! -lcrypt32
+:WINSSL_END
 
 
 :LIBCURL
@@ -237,16 +303,15 @@ xcopy "cURL\include" "%BUILD_OUTDIR%\cURL\include" /QEIYD
 xcopy "cURL\lib" "%BUILD_OUTDIR%\cURL\lib" /QEIYD
 cd /d "%BUILD_OUTDIR%\cURL\lib"
 
-if %BUILD_LIBCURL_DLL% equ 0 set CFG=
-if %BUILD_LIBCURL_DLL% neq 0 set CFG=-dyn
+if %BUILD_LIBCURL_DLL% equ 0 set CFG=!CURL_CFG!
+if %BUILD_LIBCURL_DLL% neq 0 set CFG=!CURL_CFG! -dyn
 
 if /I %BUILD_ARCH% equ x64 set ARCH=w64
 if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
 set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS% %NGHTTP2_CFLAGS%
-set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% -L../../mbedTLS/library
-if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
-if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
+set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
+::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS!
 
 mingw32-make -f Makefile.m32 all
 echo.
@@ -275,9 +340,8 @@ if /I %BUILD_ARCH% equ x64 set ARCH=w64
 if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
 set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS% %NGHTTP2_CFLAGS%
-set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% -L../../mbedTLS/library
-if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
-if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
+set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
+::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS!
 
 :: curl.exe (dynamic)
 if "%BUILD_LIBCURL_DLL%" equ "1" (
