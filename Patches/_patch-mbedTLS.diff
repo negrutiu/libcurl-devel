@@ -1,35 +1,8 @@
- include/mbedtls/config.h |  2 +-
- include/mbedtls/ssl.h    |  1 +
- library/debug.c          |  2 +-
- library/net.c            | 11 +++++++----
- library/platform.c       |  2 +-
- 5 files changed, 11 insertions(+), 7 deletions(-)
+ library/debug.c       |  2 +-
+ library/net_sockets.c | 11 +++++++----
+ library/platform.c    |  2 +-
+ 3 files changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/include/mbedtls/config.h b/include/mbedtls/config.h
-index 3b7c85b..3db071f 100644
---- a/include/mbedtls/config.h
-+++ b/include/mbedtls/config.h
-@@ -1908,7 +1908,7 @@
-  *
-  * Uncomment to enable support for (rare) MD4-signed X.509 certs.
-  */
--//#define MBEDTLS_MD4_C
-+#define MBEDTLS_MD4_C		/* Needed by curl_ntlm_core.c (Marius) */
- 
- /**
-  * \def MBEDTLS_MD5_C
-diff --git a/include/mbedtls/ssl.h b/include/mbedtls/ssl.h
-index 82c0760..4f1892d 100644
---- a/include/mbedtls/ssl.h
-+++ b/include/mbedtls/ssl.h
-@@ -53,6 +53,7 @@
- 
- #if defined(MBEDTLS_HAVE_TIME)
- #include <time.h>
-+#include "platform.h"
- #endif
- 
- /*
 diff --git a/library/debug.c b/library/debug.c
 index a9cd814..8faf685 100644
 --- a/library/debug.c
@@ -43,32 +16,32 @@ index a9cd814..8faf685 100644
      ret = _vsnprintf_s( str, DEBUG_BUF_SIZE, _TRUNCATE, format, argp );
  #else
      ret = _vsnprintf( str, DEBUG_BUF_SIZE, format, argp );
-diff --git a/library/net.c b/library/net.c
-index 4142bc0..4327aa8 100644
---- a/library/net.c
-+++ b/library/net.c
-@@ -46,12 +46,15 @@
+diff --git a/library/net_sockets.c b/library/net_sockets.c
+index cc06cbf..9bbd263 100644
+--- a/library/net_sockets.c
++++ b/library/net_sockets.c
+@@ -45,12 +45,15 @@
  #if (defined(_WIN32) || defined(_WIN32_WCE)) && !defined(EFIX64) && \
      !defined(EFI32)
  
 -#ifdef _WIN32_WINNT
 -#undef _WIN32_WINNT
--#endif
--/* Enables getaddrinfo() & Co */
 +#ifndef _WIN32_WINNT
- #define _WIN32_WINNT 0x0501
-+#endif
++    #define _WIN32_WINNT 0x0501
+ #endif
+ /* Enables getaddrinfo() & Co */
+-#define _WIN32_WINNT 0x0501
+-#include <ws2tcpip.h>
 +#if _WIN32_WINNT >= 0x0501
- #include <ws2tcpip.h>
++    #include <ws2tcpip.h>
 +#else
-+#include <wspiapi.h> /* Enables getaddrinfo() & Co */
++    #include <wspiapi.h>
 +#endif
-+
  
  #include <winsock2.h>
  #include <windows.h>
 diff --git a/library/platform.c b/library/platform.c
-index 68ca45d..06db08d 100644
+index 2591c45..803b0a1 100644
 --- a/library/platform.c
 +++ b/library/platform.c
 @@ -74,7 +74,7 @@ int mbedtls_platform_win32_snprintf( char *s, size_t n, const char *fmt, ... )
