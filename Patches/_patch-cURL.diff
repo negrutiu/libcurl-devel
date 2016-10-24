@@ -1,45 +1,28 @@
- lib/Makefile.m32  | 2 +-
- lib/curl_memory.h | 3 +--
- src/Makefile.m32  | 2 +-
- 3 files changed, 3 insertions(+), 4 deletions(-)
+ lib/Makefile.m32 | 1 +
+ src/Makefile.m32 | 1 +
+ 2 files changed, 2 insertions(+)
 
 diff --git a/lib/Makefile.m32 b/lib/Makefile.m32
-index 522dbd1..f5fac57 100644
+index 522dbd1..a3bc7f7 100644
 --- a/lib/Makefile.m32
 +++ b/lib/Makefile.m32
-@@ -309,7 +309,7 @@ ifndef USE_LDAP_OPENLDAP
-   DLL_LIBS += -lwldap32
+@@ -310,6 +310,7 @@ ifndef USE_LDAP_OPENLDAP
  endif
  endif
--DLL_LIBS += -lws2_32
-+DLL_LIBS += -lws2_32 $(CURL_LDFLAG_EXTRAS2)
+ DLL_LIBS += -lws2_32
++DLL_LIBS += $(CURL_LDFLAG_EXTRAS2)
  
  # Makefile.inc provides the CSOURCES and HHEADERS defines
  include Makefile.inc
-diff --git a/lib/curl_memory.h b/lib/curl_memory.h
-index 6f792ff..7bd4356 100644
---- a/lib/curl_memory.h
-+++ b/lib/curl_memory.h
-@@ -107,8 +107,7 @@ extern curl_calloc_callback Curl_ccalloc;
- extern curl_wcsdup_callback Curl_cwcsdup;
- #endif
- 
--#ifndef CURLDEBUG
--
-+#ifdef CURLDEBUG
- /*
-  * libcurl's 'memory tracking' system defines strdup, malloc, calloc,
-  * realloc and free, along with others, in memdebug.h in a different
 diff --git a/src/Makefile.m32 b/src/Makefile.m32
-index 40852e5..83ba969 100644
+index 40852e5..10b281d 100644
 --- a/src/Makefile.m32
 +++ b/src/Makefile.m32
-@@ -330,7 +330,7 @@ ifndef USE_LDAP_OPENLDAP
- curl_LDADD += -lwldap32
+@@ -331,6 +331,7 @@ curl_LDADD += -lwldap32
  endif
  endif
--curl_LDADD += -lws2_32
-+curl_LDADD += -lws2_32 $(CURL_LDFLAG_EXTRAS2)
+ curl_LDADD += -lws2_32
++curl_LDADD += $(CURL_LDFLAG_EXTRAS2)
  
  # Makefile.inc provides the CSOURCES and HHEADERS defines
  include Makefile.inc
