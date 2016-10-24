@@ -16,13 +16,13 @@ if exist "%LIBNAME%\.git" (
 
 
 :: Some patching is required
-echo.
-set /p answer=Apply patch? (yes/[no]) 
-if /I "%answer%" equ "yes" goto :_patch
-if /I "%answer%" equ "y" goto :_patch
-goto :EOF
-:_patch
-cd /d "%~dp0"
-"%GIT%" apply --verbose --whitespace=fix --directory=%LIBNAME% Patches\_patch-%LIBNAME%.diff
+REM echo.
+REM set /p answer=Apply patch? (yes/[no]) 
+REM if /I "%answer%" equ "yes" goto :_patch
+REM if /I "%answer%" equ "y" goto :_patch
+REM goto :EOF
+REM :_patch
+REM cd /d "%~dp0"
+REM "%GIT%" apply --verbose --whitespace=fix --directory=%LIBNAME% Patches\_patch-%LIBNAME%.diff
 
 pause

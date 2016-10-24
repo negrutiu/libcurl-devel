@@ -184,9 +184,7 @@ cd /d "%~dp0"
 xcopy "zlib" "%BUILD_OUTDIR%\zlib" /QEIYD
 cd /d "%BUILD_OUTDIR%\zlib"
 
-set MYCFLAGS=%GLOBAL_CFLAGS%
-set MYLDFLAGS=%GLOBAL_LFLAGS%
-set MYRCFLAGS=%GLOBAL_RFLAGS%
+set LOC=%GLOBAL_CFLAGS% %GLOBAL_LFLAGS%
 mingw32-make -f win32/Makefile.gcc libz.a
 echo.
 echo ERRORLEVEL = %ERRORLEVEL%
