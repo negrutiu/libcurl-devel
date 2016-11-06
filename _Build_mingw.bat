@@ -328,11 +328,46 @@ xcopy "%BUILD_OUTDIR%\cURL\lib\*.a"   "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\cURL\lib\*.o" > "%BUILD_OUTDIR%\asm-cURL-lib.txt"
 
 
-:CURL
+:LIBCURL_EXE
+if "%BUILD_LIBCURL_DLL%" equ "0" goto :LIBCURL_EXE_END
+echo.
+echo -----------------------------------
+echo  libcurl.exe
+echo -----------------------------------
+title mingw-%BUILD_ARCH%-%BUILD_SSL_ENGINE%-libcurl.exe
+:: NOTE: Must build in ANSI code page
+
+cd /d "%~dp0"
+xcopy "cURL\src" "%BUILD_OUTDIR%\cURL\src-dyn" /QEIYD
+cd /d "%BUILD_OUTDIR%\cURL\src-dyn"
+
+if /I %BUILD_ARCH% equ x64 set ARCH=w64
+if /I %BUILD_ARCH% neq x64 set ARCH=w32
+
+set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS% %NGHTTP2_CFLAGS%
+set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
+::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS!
+
+:: curl.exe (dynamic) -> libcurl.exe
+mingw32-make -f Makefile.m32 CFG=-dyn all
+echo.
+echo ERRORLEVEL = %ERRORLEVEL%
+if %ERRORLEVEL% neq 0 pause && goto :EOF
+
+:: Collect
+echo.
+move /Y "%BUILD_OUTDIR%\cURL\src-dyn\curl.exe" "%BUILD_OUTDIR%\cURL\src-dyn\libcurl.exe"
+xcopy "%BUILD_OUTDIR%\cURL\src-dyn\*.exe" "%BUILD_OUTDIR%" /YF
+objdump -d -S "%BUILD_OUTDIR%\cURL\src-dyn\*.o" > "%BUILD_OUTDIR%\asm-libcURL-src.txt"
+:LIBCURL_EXE_END
+
+
+:CURL_EXE
 echo.
 echo -----------------------------------
 echo  curl.exe
 echo -----------------------------------
+title mingw-%BUILD_ARCH%-%BUILD_SSL_ENGINE%-curl.exe
 :: NOTE: Must build in ANSI code page
 
 cd /d "%~dp0"
@@ -344,29 +379,9 @@ if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
 set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS% %NGHTTP2_CFLAGS%
 set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
-::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS!
-
-:: curl.exe (dynamic)
-if "%BUILD_LIBCURL_DLL%" equ "1" (
-
-	title mingw-%BUILD_ARCH%-%BUILD_SSL_ENGINE%-libcurl.exe
-	mingw32-make -f Makefile.m32 CFG=-dyn clean all
-	echo.
-	echo ERRORLEVEL = %ERRORLEVEL%
-	if %ERRORLEVEL% neq 0 pause && goto :EOF
-
-	echo.
-	move /Y "%BUILD_OUTDIR%\cURL\src\curl.exe" "%BUILD_OUTDIR%\cURL\src\libcurl.exe"
-	xcopy "%BUILD_OUTDIR%\cURL\src\*.exe" "%BUILD_OUTDIR%" /YF
-	objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-libcURL-src.txt"
-
-	mingw32-make -f Makefile.m32 clean
-	echo -----------------------------------
-)
+::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS! -Wl,--exclude-libs=ALL
 
 :: curl.exe (static)
-title mingw-%BUILD_ARCH%-%BUILD_SSL_ENGINE%-curl.exe
-::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS2! -Wl,--exclude-libs=ALL
 mingw32-make -f Makefile.m32 CFG= all
 echo.
 echo ERRORLEVEL = %ERRORLEVEL%
@@ -376,6 +391,8 @@ if %ERRORLEVEL% neq 0 pause && goto :EOF
 echo.
 xcopy "%BUILD_OUTDIR%\cURL\src\*.exe" "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
+:CURL_EXE_END
+
 
 :: test.bat
 echo "%%~dp0\curl" -V> "%BUILD_OUTDIR%\test.bat"
