@@ -167,7 +167,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;MBEDTLS_MD4_C;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>mbedTLS\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -181,7 +181,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;MBEDTLS_MD4_C;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>mbedTLS\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -195,7 +195,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;MBEDTLS_MD4_C;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>mbedTLS\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -209,7 +209,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;MBEDTLS_MD4_C;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>mbedTLS\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -222,7 +222,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;MBEDTLS_MD4_C;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>mbedTLS\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
@@ -245,7 +245,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;MBEDTLS_MD4_C;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>mbedTLS\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
@@ -268,7 +268,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;MBEDTLS_MD4_C;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>mbedTLS\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
@@ -289,7 +289,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_WINDOWS;_USRDLL;MBEDTLS_EXPORTS;MBEDTLS_MD4_C;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>mbedTLS\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
@@ -321,6 +321,7 @@
     <ClInclude Include="mbedTLS\include\mbedtls\check_config.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\cipher.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\cipher_internal.h" />
+    <ClInclude Include="mbedTLS\include\mbedtls\cmac.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\compat-1.3.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\config.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\ctr_drbg.h" />
@@ -344,6 +345,7 @@
     <ClInclude Include="mbedTLS\include\mbedtls\md_internal.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\memory_buffer_alloc.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\net.h" />
+    <ClInclude Include="mbedTLS\include\mbedtls\net_sockets.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\oid.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\padlock.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\pem.h" />
@@ -353,6 +355,7 @@
     <ClInclude Include="mbedTLS\include\mbedtls\pkcs12.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\pkcs5.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\platform.h" />
+    <ClInclude Include="mbedTLS\include\mbedtls\platform_time.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\ripemd160.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\rsa.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\sha1.h" />
@@ -387,6 +390,7 @@
     <ClCompile Include="mbedTLS\library\certs.c" />
     <ClCompile Include="mbedTLS\library\cipher.c" />
     <ClCompile Include="mbedTLS\library\cipher_wrap.c" />
+    <ClCompile Include="mbedTLS\library\cmac.c" />
     <ClCompile Include="mbedTLS\library\ctr_drbg.c" />
     <ClCompile Include="mbedTLS\library\debug.c" />
     <ClCompile Include="mbedTLS\library\des.c" />
@@ -408,7 +412,7 @@
     <ClCompile Include="mbedTLS\library\md5.c" />
     <ClCompile Include="mbedTLS\library\md_wrap.c" />
     <ClCompile Include="mbedTLS\library\memory_buffer_alloc.c" />
-    <ClCompile Include="mbedTLS\library\net.c" />
+    <ClCompile Include="mbedTLS\library\net_sockets.c" />
     <ClCompile Include="mbedTLS\library\oid.c" />
     <ClCompile Include="mbedTLS\library\padlock.c" />
     <ClCompile Include="mbedTLS\library\pem.c" />

@@ -15,6 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="cURL\lib\libcurl.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="cURL\lib\amigaos.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -144,9 +149,6 @@
     <ClCompile Include="cURL\lib\http.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\http2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\lib\http_chunks.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -160,6 +162,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cURL\lib\http_proxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\http2.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cURL\lib\idn_win32.c">
@@ -234,9 +239,6 @@
     <ClCompile Include="cURL\lib\progress.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\rawstr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\lib\rtsp.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -279,10 +281,10 @@
     <ClCompile Include="cURL\lib\ssh.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\strdup.c">
+    <ClCompile Include="cURL\lib\strcase.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\strequal.c">
+    <ClCompile Include="cURL\lib\strdup.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cURL\lib\strerror.c">
@@ -292,6 +294,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cURL\lib\strtoofft.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\system_win32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cURL\lib\telnet.c">
@@ -393,38 +398,8 @@
     <ClCompile Include="cURL\lib\vtls\vtls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\system_win32.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cURL\include\curl\curl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\include\curl\curlbuild.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\include\curl\curlrules.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\include\curl\curlver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\include\curl\easy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\include\curl\mprintf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\include\curl\multi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\include\curl\stdcheaders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\include\curl\typecheck-gcc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cURL\lib\amigaos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -474,9 +449,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\cookie.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\curlx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\curl_addrinfo.h">
@@ -551,6 +523,9 @@
     <ClInclude Include="cURL\lib\curl_threads.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cURL\lib\curlx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="cURL\lib\dict.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -596,9 +571,6 @@
     <ClInclude Include="cURL\lib\http.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cURL\lib\http2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cURL\lib\http_chunks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -612,6 +584,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\http_proxy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\http2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\if2ip.h">
@@ -662,9 +637,6 @@
     <ClInclude Include="cURL\lib\progress.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cURL\lib\rawstr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cURL\lib\rtsp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -710,10 +682,10 @@
     <ClInclude Include="cURL\lib\ssh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cURL\lib\strdup.h">
+    <ClInclude Include="cURL\lib\strcase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cURL\lib\strequal.h">
+    <ClInclude Include="cURL\lib\strdup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\strerror.h">
@@ -723,6 +695,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\strtoofft.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\system_win32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\telnet.h">
@@ -797,18 +772,5 @@
     <ClInclude Include="cURL\lib\vtls\vtls.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cURL\lib\system_win32.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="cURL\lib\libcurl.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cURL\lib\libcurl.def">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

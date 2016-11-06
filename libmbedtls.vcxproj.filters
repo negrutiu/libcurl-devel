@@ -35,7 +35,6 @@
     <ClCompile Include="mbedTLS\library\md5.c" />
     <ClCompile Include="mbedTLS\library\md_wrap.c" />
     <ClCompile Include="mbedTLS\library\memory_buffer_alloc.c" />
-    <ClCompile Include="mbedTLS\library\net.c" />
     <ClCompile Include="mbedTLS\library\oid.c" />
     <ClCompile Include="mbedTLS\library\padlock.c" />
     <ClCompile Include="mbedTLS\library\pem.c" />
@@ -71,6 +70,8 @@
     <ClCompile Include="mbedTLS\library\x509write_crt.c" />
     <ClCompile Include="mbedTLS\library\x509write_csr.c" />
     <ClCompile Include="mbedTLS\library\xtea.c" />
+    <ClCompile Include="mbedTLS\library\cmac.c" />
+    <ClCompile Include="mbedTLS\library\net_sockets.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mbedTLS\include\mbedtls\aes.h" />
@@ -139,5 +140,8 @@
     <ClInclude Include="mbedTLS\include\mbedtls\x509_crt.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\x509_csr.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\xtea.h" />
+    <ClInclude Include="mbedTLS\include\mbedtls\cmac.h" />
+    <ClInclude Include="mbedTLS\include\mbedtls\net_sockets.h" />
+    <ClInclude Include="mbedTLS\include\mbedtls\platform_time.h" />
   </ItemGroup>
 </Project>

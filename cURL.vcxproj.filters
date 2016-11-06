@@ -13,17 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{e91fc44e-8e00-46b3-bdd8-81af6158d8aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cURL\lib\nonblock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\rawstr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\warnless.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\src\slist_wc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -144,29 +138,14 @@
     <ClCompile Include="cURL\src\tool_xattr.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\system_win32.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="cURL\lib\warnless.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\nonblock.c">
+      <Filter>lib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cURL\lib\config-win32.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\curl_setup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\strtoofft.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\rawstr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\nonblock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\warnless.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cURL\src\slist_wc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -296,8 +275,11 @@
     <ClInclude Include="cURL\src\tool_xattr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cURL\lib\system_win32.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="cURL\lib\warnless.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\nonblock.h">
+      <Filter>lib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

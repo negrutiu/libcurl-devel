@@ -314,6 +314,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ResourceCompile Include="cURL\lib\libcurl.rc" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="cURL\lib\amigaos.c" />
     <ClCompile Include="cURL\lib\asyn-ares.c" />
     <ClCompile Include="cURL\lib\asyn-thread.c" />
@@ -387,7 +390,6 @@
     <ClCompile Include="cURL\lib\pipeline.c" />
     <ClCompile Include="cURL\lib\pop3.c" />
     <ClCompile Include="cURL\lib\progress.c" />
-    <ClCompile Include="cURL\lib\rawstr.c" />
     <ClCompile Include="cURL\lib\rtsp.c" />
     <ClCompile Include="cURL\lib\security.c" />
     <ClCompile Include="cURL\lib\select.c" />
@@ -402,8 +404,8 @@
     <ClCompile Include="cURL\lib\speedcheck.c" />
     <ClCompile Include="cURL\lib\splay.c" />
     <ClCompile Include="cURL\lib\ssh.c" />
+    <ClCompile Include="cURL\lib\strcase.c" />
     <ClCompile Include="cURL\lib\strdup.c" />
-    <ClCompile Include="cURL\lib\strequal.c" />
     <ClCompile Include="cURL\lib\strerror.c" />
     <ClCompile Include="cURL\lib\strtok.c" />
     <ClCompile Include="cURL\lib\strtoofft.c" />
@@ -413,10 +415,6 @@
     <ClCompile Include="cURL\lib\timeval.c" />
     <ClCompile Include="cURL\lib\transfer.c" />
     <ClCompile Include="cURL\lib\url.c" />
-    <ClCompile Include="cURL\lib\version.c" />
-    <ClCompile Include="cURL\lib\warnless.c" />
-    <ClCompile Include="cURL\lib\wildcard.c" />
-    <ClCompile Include="cURL\lib\x509asn1.c" />
     <ClCompile Include="cURL\lib\vauth\cleartext.c" />
     <ClCompile Include="cURL\lib\vauth\cram.c" />
     <ClCompile Include="cURL\lib\vauth\digest.c" />
@@ -429,6 +427,7 @@
     <ClCompile Include="cURL\lib\vauth\spnego_gssapi.c" />
     <ClCompile Include="cURL\lib\vauth\spnego_sspi.c" />
     <ClCompile Include="cURL\lib\vauth\vauth.c" />
+    <ClCompile Include="cURL\lib\version.c" />
     <ClCompile Include="cURL\lib\vtls\axtls.c" />
     <ClCompile Include="cURL\lib\vtls\cyassl.c" />
     <ClCompile Include="cURL\lib\vtls\darwinssl.c" />
@@ -441,17 +440,11 @@
     <ClCompile Include="cURL\lib\vtls\polarssl_threadlock.c" />
     <ClCompile Include="cURL\lib\vtls\schannel.c" />
     <ClCompile Include="cURL\lib\vtls\vtls.c" />
+    <ClCompile Include="cURL\lib\warnless.c" />
+    <ClCompile Include="cURL\lib\wildcard.c" />
+    <ClCompile Include="cURL\lib\x509asn1.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cURL\include\curl\curl.h" />
-    <ClInclude Include="cURL\include\curl\curlbuild.h" />
-    <ClInclude Include="cURL\include\curl\curlrules.h" />
-    <ClInclude Include="cURL\include\curl\curlver.h" />
-    <ClInclude Include="cURL\include\curl\easy.h" />
-    <ClInclude Include="cURL\include\curl\mprintf.h" />
-    <ClInclude Include="cURL\include\curl\multi.h" />
-    <ClInclude Include="cURL\include\curl\stdcheaders.h" />
-    <ClInclude Include="cURL\include\curl\typecheck-gcc.h" />
     <ClInclude Include="cURL\lib\amigaos.h" />
     <ClInclude Include="cURL\lib\arpa_telnet.h" />
     <ClInclude Include="cURL\lib\asyn.h" />
@@ -531,7 +524,6 @@
     <ClInclude Include="cURL\lib\pipeline.h" />
     <ClInclude Include="cURL\lib\pop3.h" />
     <ClInclude Include="cURL\lib\progress.h" />
-    <ClInclude Include="cURL\lib\rawstr.h" />
     <ClInclude Include="cURL\lib\rtsp.h" />
     <ClInclude Include="cURL\lib\select.h" />
     <ClInclude Include="cURL\lib\sendf.h" />
@@ -547,8 +539,8 @@
     <ClInclude Include="cURL\lib\speedcheck.h" />
     <ClInclude Include="cURL\lib\splay.h" />
     <ClInclude Include="cURL\lib\ssh.h" />
+    <ClInclude Include="cURL\lib\strcase.h" />
     <ClInclude Include="cURL\lib\strdup.h" />
-    <ClInclude Include="cURL\lib\strequal.h" />
     <ClInclude Include="cURL\lib\strerror.h" />
     <ClInclude Include="cURL\lib\strtok.h" />
     <ClInclude Include="cURL\lib\strtoofft.h" />
@@ -559,9 +551,6 @@
     <ClInclude Include="cURL\lib\transfer.h" />
     <ClInclude Include="cURL\lib\url.h" />
     <ClInclude Include="cURL\lib\urldata.h" />
-    <ClInclude Include="cURL\lib\warnless.h" />
-    <ClInclude Include="cURL\lib\wildcard.h" />
-    <ClInclude Include="cURL\lib\x509asn1.h" />
     <ClInclude Include="cURL\lib\vauth\digest.h" />
     <ClInclude Include="cURL\lib\vauth\ntlm.h" />
     <ClInclude Include="cURL\lib\vauth\vauth.h" />
@@ -577,12 +566,9 @@
     <ClInclude Include="cURL\lib\vtls\polarssl_threadlock.h" />
     <ClInclude Include="cURL\lib\vtls\schannel.h" />
     <ClInclude Include="cURL\lib\vtls\vtls.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="cURL\lib\libcurl.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cURL\lib\libcurl.def" />
+    <ClInclude Include="cURL\lib\warnless.h" />
+    <ClInclude Include="cURL\lib\wildcard.h" />
+    <ClInclude Include="cURL\lib\x509asn1.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

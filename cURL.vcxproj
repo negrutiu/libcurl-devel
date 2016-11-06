@@ -324,8 +324,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cURL\lib\nonblock.c" />
-    <ClCompile Include="cURL\lib\rawstr.c" />
-    <ClCompile Include="cURL\lib\system_win32.c" />
     <ClCompile Include="cURL\lib\warnless.c" />
     <ClCompile Include="cURL\src\slist_wc.c" />
     <ClCompile Include="cURL\src\tool_binmode.c" />
@@ -369,12 +367,7 @@
     <ClCompile Include="cURL\src\tool_xattr.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cURL\lib\config-win32.h" />
-    <ClInclude Include="cURL\lib\curl_setup.h" />
-    <ClInclude Include="cURL\lib\strtoofft.h" />
-    <ClInclude Include="cURL\lib\rawstr.h" />
     <ClInclude Include="cURL\lib\nonblock.h" />
-    <ClInclude Include="cURL\lib\system_win32.h" />
     <ClInclude Include="cURL\lib\warnless.h" />
     <ClInclude Include="cURL\src\slist_wc.h" />
     <ClInclude Include="cURL\src\tool_binmode.h" />
