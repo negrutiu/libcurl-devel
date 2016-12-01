@@ -398,6 +398,9 @@
     <ClCompile Include="cURL\lib\vtls\vtls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\lib\rand.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\lib\amigaos.h">
@@ -770,6 +773,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\vtls\vtls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\rand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

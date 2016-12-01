@@ -390,6 +390,7 @@
     <ClCompile Include="cURL\lib\pipeline.c" />
     <ClCompile Include="cURL\lib\pop3.c" />
     <ClCompile Include="cURL\lib\progress.c" />
+    <ClCompile Include="cURL\lib\rand.c" />
     <ClCompile Include="cURL\lib\rtsp.c" />
     <ClCompile Include="cURL\lib\security.c" />
     <ClCompile Include="cURL\lib\select.c" />
@@ -524,6 +525,7 @@
     <ClInclude Include="cURL\lib\pipeline.h" />
     <ClInclude Include="cURL\lib\pop3.h" />
     <ClInclude Include="cURL\lib\progress.h" />
+    <ClInclude Include="cURL\lib\rand.h" />
     <ClInclude Include="cURL\lib\rtsp.h" />
     <ClInclude Include="cURL\lib\select.h" />
     <ClInclude Include="cURL\lib\sendf.h" />
