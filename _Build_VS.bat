@@ -51,3 +51,12 @@ if %ERRORLEVEL% neq 0 ( echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :EOF )
 title %BUILD_CONFIG%-VC-dll-x64
 msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%BUILD_CONFIG%-VC-dll /p:Platform=x64 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
 if %ERRORLEVEL% neq 0 ( echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :EOF )
+
+:TEST
+for /D %%a in (%BUILD_CONFIG%-VC-*) do (
+	if exist "%~dp0\cacert.pem" xcopy "%~dp0\cacert.pem" "%%a" /FIYD
+
+	echo "%%~dp0\curl.exe" -V> "%%a\test.bat"
+	echo "%%~dp0\curl.exe" -L -v --capath "%%~dp0\" negrutiu.com>> "%%a\test.bat"
+	echo pause>> "%%a\test.bat"
+)
