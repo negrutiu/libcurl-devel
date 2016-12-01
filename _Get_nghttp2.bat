@@ -10,9 +10,9 @@ cd /d "%~dp0"
 
 set LIBNAME=nghttp2
 set URL=https://github.com/nghttp2/nghttp2.git
-set BRANCH=v1.16.0
-set VER=1.16.0
-set VER_NUM=0x011000
+set BRANCH=v1.17.0
+set VER=1.17.0
+set VER_NUM=0x011100
 
 echo Working with "%BRANCH%" tag
 echo Verify if newer (stable) %LIBNAME% versions are available!
