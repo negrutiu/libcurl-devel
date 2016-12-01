@@ -269,7 +269,7 @@ xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.a"   "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS.txt"
 
 :: Build libcurl with libmbedtls
-set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -Dhave_curlssl_ca_path -I../../mbedTLS/include
+set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -I../../mbedTLS/include
 set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../../mbedTLS/library
 if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
 if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
@@ -396,5 +396,5 @@ objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
 
 :: test.bat
 echo "%%~dp0\curl" -V> "%BUILD_OUTDIR%\test.bat"
-echo "%%~dp0\curl" -L -v --cacert "%%~dp0\cacert.pem" negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
+echo "%%~dp0\curl" -L -v --capath "%%~dp0\" negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
 echo pause>> "%BUILD_OUTDIR%\test.bat"

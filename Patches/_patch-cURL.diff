@@ -1,6 +1,7 @@
- lib/Makefile.m32 | 1 +
- src/Makefile.m32 | 1 +
- 2 files changed, 2 insertions(+)
+ lib/Makefile.m32   | 1 +
+ lib/vtls/mbedtls.h | 3 +++
+ src/Makefile.m32   | 1 +
+ 3 files changed, 5 insertions(+)
 
 diff --git a/lib/Makefile.m32 b/lib/Makefile.m32
 index 522dbd1..a3bc7f7 100644
@@ -14,6 +15,20 @@ index 522dbd1..a3bc7f7 100644
  
  # Makefile.inc provides the CSOURCES and HHEADERS defines
  include Makefile.inc
+diff --git a/lib/vtls/mbedtls.h b/lib/vtls/mbedtls.h
+index 1021d54..399927a 100644
+--- a/lib/vtls/mbedtls.h
++++ b/lib/vtls/mbedtls.h
+@@ -50,6 +50,9 @@ void Curl_mbedtls_session_free(void *ptr);
+ size_t Curl_mbedtls_version(char *buffer, size_t size);
+ int Curl_mbedtls_shutdown(struct connectdata *conn, int sockindex);
+ 
++/* this backend supports the CAPATH option */
++#define have_curlssl_ca_path 1
++
+ /* this backends supports CURLOPT_PINNEDPUBLICKEY */
+ #define have_curlssl_pinnedpubkey 1
+ 
 diff --git a/src/Makefile.m32 b/src/Makefile.m32
 index 40852e5..10b281d 100644
 --- a/src/Makefile.m32
