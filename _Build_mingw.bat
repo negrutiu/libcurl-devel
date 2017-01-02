@@ -158,11 +158,11 @@ if not exist "%BUILD_OUTDIR%" mkdir "%BUILD_OUTDIR%"
 if exist "%~dp0\cacert.pem" xcopy "%~dp0\cacert.pem" "%BUILD_OUTDIR%" /FIYD
 
 if /I "%BUILD_ARCH%" equ "x64" (
-	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -DWIN32 -D_WIN32_WINNT=0x0502
+	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -DWIN32 -D_WIN32_WINNT=0x0502 -DNDEBUG -O3
 	set GLOBAL_LFLAGS=-m64 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-x86-64
 ) else (
-	set GLOBAL_CFLAGS=-m32 -march=pentium2 -DWIN32 -D_WIN32_WINNT=0x0400
+	set GLOBAL_CFLAGS=-m32 -march=pentium2 -DWIN32 -D_WIN32_WINNT=0x0400 -DNDEBUG -O3
 	set GLOBAL_LFLAGS=-m32 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
 	set GLOBAL_RFLAGS=-F pe-i386
 )
