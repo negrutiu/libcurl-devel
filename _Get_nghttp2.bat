@@ -10,9 +10,9 @@ cd /d "%~dp0"
 
 set LIBNAME=nghttp2
 set URL=https://github.com/nghttp2/nghttp2.git
-set BRANCH=v1.17.0
-set VER=1.17.0
-set VER_NUM=0x011100
+set BRANCH=v1.18.0
+set VER=1.18.0
+set VER_NUM=0x011200
 
 echo Working with "%BRANCH%" tag
 echo Verify if newer (stable) %LIBNAME% versions are available!
@@ -22,7 +22,7 @@ if exist "%LIBNAME%\.git" (
 	cd %LIBNAME%
 	"%GIT%" pull --verbose --progress "origin"
 ) else (
-	"%GIT%" clone --verbose --progress -b "%BRANCH%" %URL% %LIBNAME%
+	"%GIT%" clone --recursive --verbose --progress -b "%BRANCH%" %URL% %LIBNAME%
 )
 
 
