@@ -4,7 +4,7 @@
  3 files changed, 5 insertions(+)
 
 diff --git a/lib/Makefile.m32 b/lib/Makefile.m32
-index 522dbd1..a3bc7f7 100644
+index 522dbd1df..a3bc7f765 100644
 --- a/lib/Makefile.m32
 +++ b/lib/Makefile.m32
 @@ -310,6 +310,7 @@ ifndef USE_LDAP_OPENLDAP
@@ -16,12 +16,12 @@ index 522dbd1..a3bc7f7 100644
  # Makefile.inc provides the CSOURCES and HHEADERS defines
  include Makefile.inc
 diff --git a/lib/vtls/mbedtls.h b/lib/vtls/mbedtls.h
-index 1021d54..399927a 100644
+index 71d17a491..adf3ce1e9 100644
 --- a/lib/vtls/mbedtls.h
 +++ b/lib/vtls/mbedtls.h
-@@ -50,6 +50,9 @@ void Curl_mbedtls_session_free(void *ptr);
- size_t Curl_mbedtls_version(char *buffer, size_t size);
- int Curl_mbedtls_shutdown(struct connectdata *conn, int sockindex);
+@@ -53,6 +53,9 @@ int Curl_mbedtls_shutdown(struct connectdata *conn, int sockindex);
+ CURLcode Curl_mbedtls_random(struct Curl_easy *data, unsigned char *entropy,
+                      size_t length);
  
 +/* this backend supports the CAPATH option */
 +#define have_curlssl_ca_path 1
@@ -30,7 +30,7 @@ index 1021d54..399927a 100644
  #define have_curlssl_pinnedpubkey 1
  
 diff --git a/src/Makefile.m32 b/src/Makefile.m32
-index 40852e5..10b281d 100644
+index 40852e573..10b281d15 100644
 --- a/src/Makefile.m32
 +++ b/src/Makefile.m32
 @@ -331,6 +331,7 @@ curl_LDADD += -lwldap32
