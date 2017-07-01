@@ -13,6 +13,8 @@ set BRANCH=master
 
 if exist "%LIBNAME%\.git" (
 	cd %LIBNAME%
+	"%GIT%" reset --hard
+	"%GIT%" clean -fd
 	"%GIT%" pull --verbose --progress "origin"
 ) else (
 	"%GIT%" clone --verbose --progress -b "%BRANCH%" %URL% %LIBNAME%

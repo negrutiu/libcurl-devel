@@ -5,6 +5,8 @@ cd /d "%~dp0"
 
 if exist "OpenSSL\.git" (
 	cd OpenSSL
+	"%GIT%" reset --hard
+	"%GIT%" clean -fd
 	"%GIT%" pull --verbose --progress "origin"
 ) else (
 	"%GIT%" clone --verbose --progress -b OpenSSL_1_0_2-stable https://github.com/openssl/openssl.git OpenSSL

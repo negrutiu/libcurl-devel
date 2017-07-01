@@ -19,6 +19,8 @@ echo.
 
 if exist "%LIBNAME%\.git" (
 	cd %LIBNAME%
+	"%GIT%" reset --hard
+	"%GIT%" clean -fd
 	"%GIT%" pull --verbose --progress "origin"
 	call buildconf.bat
 ) else (
