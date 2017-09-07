@@ -324,6 +324,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cURL\lib\nonblock.c" />
+    <ClCompile Include="cURL\lib\strtoofft.c" />
     <ClCompile Include="cURL\lib\warnless.c" />
     <ClCompile Include="cURL\src\slist_wc.c" />
     <ClCompile Include="cURL\src\tool_binmode.c" />
@@ -349,7 +350,6 @@
     <ClCompile Include="cURL\src\tool_libinfo.c" />
     <ClCompile Include="cURL\src\tool_main.c" />
     <ClCompile Include="cURL\src\tool_metalink.c" />
-    <ClCompile Include="cURL\src\tool_mfiles.c" />
     <ClCompile Include="cURL\src\tool_msgs.c" />
     <ClCompile Include="cURL\src\tool_operate.c" />
     <ClCompile Include="cURL\src\tool_operhlp.c" />
@@ -367,6 +367,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\lib\nonblock.h" />
+    <ClInclude Include="cURL\lib\strtoofft.h" />
     <ClInclude Include="cURL\lib\warnless.h" />
     <ClInclude Include="cURL\src\slist_wc.h" />
     <ClInclude Include="cURL\src\tool_binmode.h" />
@@ -392,7 +393,6 @@
     <ClInclude Include="cURL\src\tool_libinfo.h" />
     <ClInclude Include="cURL\src\tool_main.h" />
     <ClInclude Include="cURL\src\tool_metalink.h" />
-    <ClInclude Include="cURL\src\tool_mfiles.h" />
     <ClInclude Include="cURL\src\tool_msgs.h" />
     <ClInclude Include="cURL\src\tool_operate.h" />
     <ClInclude Include="cURL\src\tool_operhlp.h" />

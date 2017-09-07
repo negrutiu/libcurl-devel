@@ -377,6 +377,7 @@
     <ClCompile Include="cURL\lib\md4.c" />
     <ClCompile Include="cURL\lib\md5.c" />
     <ClCompile Include="cURL\lib\memdebug.c" />
+    <ClCompile Include="cURL\lib\mime.c" />
     <ClCompile Include="cURL\lib\mprintf.c" />
     <ClCompile Include="cURL\lib\multi.c" />
     <ClCompile Include="cURL\lib\netrc.c" />
@@ -515,6 +516,7 @@
     <ClInclude Include="cURL\lib\inet_pton.h" />
     <ClInclude Include="cURL\lib\llist.h" />
     <ClInclude Include="cURL\lib\memdebug.h" />
+    <ClInclude Include="cURL\lib\mime.h" />
     <ClInclude Include="cURL\lib\multihandle.h" />
     <ClInclude Include="cURL\lib\multiif.h" />
     <ClInclude Include="cURL\lib\netrc.h" />
