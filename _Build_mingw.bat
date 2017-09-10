@@ -139,14 +139,14 @@ if "%1" neq "" echo ERROR: Unknown argument "%~1" && pause && goto :EOF
 :: Re-launch this script to build multiple targets in parallel
 start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86
 start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64
-REM start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86-HTTP_ONLY
-REM start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64-HTTP_ONLY
 REM start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86-mbedtls_dll
 REM start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64-mbedtls_dll
 start "" "%COMSPEC%" /C "%~f0" /build-winssl-x86
 start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64
-REM start "" "%COMSPEC%" /C "%~f0" /build-winssl-x86-HTTP_ONLY
-REM start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-winssl-x86-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64-HTTP_ONLY
 goto :EOF
 
 
