@@ -155,7 +155,6 @@ goto :EOF
 :: ----------------------------------------------------------------
 
 if not exist "%BUILD_OUTDIR%" mkdir "%BUILD_OUTDIR%"
-if exist "%~dp0\cacert.pem" xcopy "%~dp0\cacert.pem" "%BUILD_OUTDIR%" /FIYD
 
 if /I "%BUILD_ARCH%" equ "x64" (
 	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -DWIN32 -D_WIN32_WINNT=0x0502 -DNDEBUG -O3
@@ -394,7 +393,14 @@ objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
 :CURL_EXE_END
 
 
-:: test.bat
-echo "%%~dp0\curl" -V> "%BUILD_OUTDIR%\test.bat"
-echo "%%~dp0\curl" -L -v --capath "%%~dp0\" negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
-echo pause>> "%BUILD_OUTDIR%\test.bat"
+:: test.bat + cacert.pem
+if /I "%BUILD_SSL_ENGINE%" equ "WinSSL" (
+	echo "%%~dp0\curl" -V> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl" -L -v negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
+	echo pause>> "%BUILD_OUTDIR%\test.bat"
+) else (
+	xcopy "%~dp0\cacert.pem" "%BUILD_OUTDIR%" /FIYD
+	echo "%%~dp0\curl" -V> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl" -L -v --capath "%%~dp0\" negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
+	echo pause>> "%BUILD_OUTDIR%\test.bat"
+)
