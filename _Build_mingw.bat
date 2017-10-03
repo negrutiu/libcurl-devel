@@ -134,7 +134,7 @@ if /I "%1" equ "/build-winssl-x64-HTTP_ONLY" (
 )
 
 :: Unknown argument?
-if "%1" neq "" echo ERROR: Unknown argument "%~1" && pause && goto :EOF
+if "%1" neq "" echo ERROR: Unknown argument "%1" && pause && goto :EOF
 
 :: Re-launch this script to build multiple targets in parallel
 start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86
