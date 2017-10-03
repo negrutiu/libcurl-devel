@@ -1,7 +1,6 @@
  lib/Makefile.m32   | 1 +
- lib/vtls/mbedtls.c | 2 +-
  src/Makefile.m32   | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+ 2 files changed, 2 insertions(+), 0 deletion(-)
 
 diff --git a/lib/Makefile.m32 b/lib/Makefile.m32
 index 22efbdee0..39fadcf63 100644
@@ -15,19 +14,6 @@ index 22efbdee0..39fadcf63 100644
  
  # Makefile.inc provides the CSOURCES and HHEADERS defines
  include Makefile.inc
-diff --git a/lib/vtls/mbedtls.c b/lib/vtls/mbedtls.c
-index 9fc7bd2e1..262f72531 100644
---- a/lib/vtls/mbedtls.c
-+++ b/lib/vtls/mbedtls.c
-@@ -1042,7 +1042,7 @@ static void *Curl_mbedtls_get_internals(struct ssl_connect_data *connssl,
- const struct Curl_ssl Curl_ssl_mbedtls = {
-   { CURLSSLBACKEND_MBEDTLS, "mbedtls" }, /* info */
- 
--  0, /* have_ca_path */
-+  1, /* have_ca_path */
-   0, /* have_certinfo */
-   1, /* have_pinnedpubkey */
-   1, /* have_ssl_ctx */
 diff --git a/src/Makefile.m32 b/src/Makefile.m32
 index e55427a5e..3d9a04f62 100644
 --- a/src/Makefile.m32
