@@ -208,8 +208,8 @@ echo Building...
 title %BUILD_CONFIG% Master
 set START_TIME=%date% %time%
 
-if exist "%~dp0\flag-*" del "%~dp0\flag-*"
-if exist "%~dp0\error-*" del "%~dp0\error-*"
+if exist "%~dp0\flag-%BUILD_CONFIG%-*" del "%~dp0\flag-%BUILD_CONFIG%-*"
+if exist "%~dp0\error-%BUILD_CONFIG%-*" del "%~dp0\error-%BUILD_CONFIG%-*"
 
 start "" "%COMSPEC%" /C "%~f0" /%BUILD_CONFIG%-VC-mbedTLS-lib
 start "" "%COMSPEC%" /C "%~f0" /%BUILD_CONFIG%-VC-mbedTLS-dll
@@ -223,11 +223,11 @@ start "" "%COMSPEC%" /C "%~f0" /%BUILD_CONFIG%-VC-WinSSL-dll-HTTP_ONLY
 :: Wait for children
 timeout /T 5 /NOBREAK > NUL
 :WAIT
-	if not exist "%~dp0\flag-*" goto :WAIT_END
+	if not exist "%~dp0\flag-%BUILD_CONFIG%-*" goto :WAIT_END
 	timeout /T 1 /NOBREAK > NUL
 	goto :WAIT
 :WAIT_END
-if exist "%~dp0\error-*" goto :EOF
+if exist "%~dp0\error-%BUILD_CONFIG%-*" goto :EOF
 
 
 :TEST
@@ -247,4 +247,4 @@ for /D %%a in (%BUILD_CONFIG%-VC-WinSSL-*) do (
 set END_TIME=%date% %time%
 echo Started %START_TIME%
 echo Ended   %END_TIME%
-pause
+REM pause
