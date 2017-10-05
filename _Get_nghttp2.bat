@@ -38,7 +38,7 @@ goto :EOF
 cd /d "%~dp0"
 
 echo Copy "%LIBNAME%\lib\Makefile"
-copy /Y Patches\_patch-%LIBNAME%-Makefile "%LIBNAME%\lib\Makefile"
+copy /Y _Patches\_patch-%LIBNAME%-Makefile "%LIBNAME%\lib\Makefile"
 
 set VER_H=%LIBNAME%\lib\includes\%LIBNAME%\nghttp2ver.h
 echo Copy "%VER_H%"

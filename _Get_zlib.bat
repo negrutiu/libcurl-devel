@@ -25,6 +25,6 @@ REM if /I "%answer%" equ "y" goto :_patch
 REM goto :EOF
 REM :_patch
 REM cd /d "%~dp0"
-REM "%GIT%" apply --verbose --whitespace=fix --directory=%LIBNAME% Patches\_patch-%LIBNAME%.diff
+REM "%GIT%" apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
 
 pause
