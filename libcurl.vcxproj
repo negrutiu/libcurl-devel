@@ -694,6 +694,7 @@
     <ClCompile Include="cURL\lib\security.c" />
     <ClCompile Include="cURL\lib\select.c" />
     <ClCompile Include="cURL\lib\sendf.c" />
+    <ClCompile Include="cURL\lib\sha256.c" />
     <ClCompile Include="cURL\lib\share.c" />
     <ClCompile Include="cURL\lib\slist.c" />
     <ClCompile Include="cURL\lib\smb.c" />
