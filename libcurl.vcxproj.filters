@@ -407,6 +407,9 @@
     <ClCompile Include="cURL\lib\sha256.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\lib\setopt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\lib\amigaos.h">
@@ -785,6 +788,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\mime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\setopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

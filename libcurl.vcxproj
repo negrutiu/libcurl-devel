@@ -694,6 +694,7 @@
     <ClCompile Include="cURL\lib\security.c" />
     <ClCompile Include="cURL\lib\select.c" />
     <ClCompile Include="cURL\lib\sendf.c" />
+    <ClCompile Include="cURL\lib\setopt.c" />
     <ClCompile Include="cURL\lib\sha256.c" />
     <ClCompile Include="cURL\lib\share.c" />
     <ClCompile Include="cURL\lib\slist.c" />
@@ -830,6 +831,7 @@
     <ClInclude Include="cURL\lib\rtsp.h" />
     <ClInclude Include="cURL\lib\select.h" />
     <ClInclude Include="cURL\lib\sendf.h" />
+    <ClInclude Include="cURL\lib\setopt.h" />
     <ClInclude Include="cURL\lib\setup-os400.h" />
     <ClInclude Include="cURL\lib\setup-vms.h" />
     <ClInclude Include="cURL\lib\share.h" />
