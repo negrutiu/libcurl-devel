@@ -4,15 +4,14 @@ OpenSSL
 nghttp2
 zlib
 
-Debug-*
-Release-*
+Debug-*/
+Release-*/
+.vs/
+ipch/
 
-objchk_*
-objfre_*
+objchk_*/
+objfre_*/
 
-ipch
-
-*.lnk
 *.sdf
 *.opensdf
 *.suo

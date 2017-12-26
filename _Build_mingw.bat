@@ -1,7 +1,10 @@
+REM :: Marius Negrutiu (marius.negrutiu@protonmail.com)
+
 @echo off
+echo.
 setlocal EnableDelayedExpansion
 
-set MINGW=C:\TDM-GCC-64
+set MINGW=%SYSTEMDRIVE%\TDM-GCC-64
 if not exist "%MINGW%\mingwvars.bat" echo ERROR: "%MINGW%\mingwvars.bat" not found && pause && goto :EOF
 if not exist "%MINGW%\bin\mingw32-make.exe" echo ERROR: "%MINGW%\bin\mingw32-make.exe" not found && pause && goto :EOF
 call "%MINGW%\mingwvars.bat"
