@@ -11,14 +11,20 @@ if not exist "%PF%" set PF=%PROGRAMFILES(X86)%
 if not exist "%PF%" set PF=%PROGRAMFILES%
 
 set BUILD_SOLUTION=%CD%\cURL.sln
-set BUILD_CONFIG=Release
+set BUILD_CONFIG=Debug
 set BUILD_VERBOSITY=normal
 :: Verbosity: quiet, minimal, normal, detailed, diagnostic
 
 :COMPILER
 set VSWHERE=%PF%\Microsoft Visual Studio\Installer\vswhere.exe
-if exist "%VSWHERE%" for /f "usebackq tokens=1* delims=: " %%i in (`"%VSWHERE%" -version 15 -requires Microsoft.Component.MSBuild`) do if /i "%%i"=="installationPath" set VCVARSALL=%%j\VC\Auxiliary\Build\VCVarsAll.bat
-set BUILD_PLATFORMTOOLSET=v141_xp
+if exist "%VSWHERE%" (
+	for /f "usebackq tokens=1* delims=: " %%i in (`"%VSWHERE%" -version 15 -requires Microsoft.Component.MSBuild`) do (
+		if /i "%%i"=="installationPath" (
+			set VCVARSALL=%%j\VC\Auxiliary\Build\VCVarsAll.bat
+			set BUILD_PLATFORMTOOLSET=v141_xp
+		)
+	)
+)
 if exist "%VCVARSALL%" goto :BUILD
 
 set VCVARSALL=%PF%\Microsoft Visual Studio 14.0\VC\VcVarsAll.bat

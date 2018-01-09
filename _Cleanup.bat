@@ -32,13 +32,5 @@ del /AH *.suo
 del *.sdf
 del *.VC.db
 
-:CLEANUP_WDK
-for /D %%a in (objchk*) do rd /S /Q "%%a"
-for /D %%a in (objfre*) do rd /S /Q "%%a"
-
-del *.err
-del *.wrn
-del *.log
-del buildfre*.*
-del buildchk*.*
-del prefast*.*
+del flag-*
+del error-*
