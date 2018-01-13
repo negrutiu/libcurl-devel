@@ -1,47 +1,107 @@
+REM :: Marius Negrutiu (marius.negrutiu@protonmail.com)
+
 @echo off
-set GIT=%PROGRAMFILES%\Git\bin\git.exe
+echo.
+setlocal EnableDelayedExpansion
 
 cd /d "%~dp0"
 
-:: NOTE
-:: "master" branch is the development branch
-:: The project doesn't have a "latest stable" branch
-:: We'll clone "master" branch
-:: <obsolete>We'll clone the latest tag, but it'll require manual modification each time a new stable version is released</obsolete>
+REM ------------------------------------
+REM  Name          | Role
+REM ---------------|--------------------
+REM  n/a           | release branch
+REM  master        | development branch
+REM  curl-x_y_z    | release tags
+REM ------------------------------------
 
 set LIBNAME=cURL
 set URL=https://github.com/curl/curl.git
-set BRANCH=master
+set TAGS=curl-*
+title %LIBNAME%
 
-echo Retrieving "%BRANCH%"...
-:: <obsolete>echo Verify if newer (stable) %LIBNAME% versions are available!</obsolete>
-echo.
+:: Validate git
+git --version 2> NUL
+if %ERRORLEVEL% neq 0 echo ERROR: git not in PATH && pause && goto :EOF
 
 if exist "%LIBNAME%\.git" (
-	cd %LIBNAME%
-	"%GIT%" reset --hard
-	"%GIT%" clean -fd
-	"%GIT%" pull --verbose --progress "origin"
-	call buildconf.bat
+	goto :EXISTING
 ) else (
-	"%GIT%" clone --verbose --progress -b "%BRANCH%" %URL% %LIBNAME%
-	cd %LIBNAME%
-	call buildconf.bat
+	goto :NEW
 )
 
+:NEW
+git clone --no-checkout --verbose --progress %URL% %LIBNAME%
+if %ERRORLEVEL% neq 0 pause && goto :EOF
 
-:: Some patching is required
+
+:EXISTING
+cd %LIBNAME%
+
+REM :: git fetch
+git fetch
+if %ERRORLEVEL% neq 0 pause && goto :EOF
+
+REM :: Available branches
 echo.
-set /p answer=Apply patch? (yes/[no]) 
-if /I "%answer%" equ "yes" goto :_patch
-if /I "%answer%" equ "y" goto :_patch
+echo Branches:
+set COUNT=0
+for /f usebackq %%i in (`git branch -ar`) do (
+	set /A COUNT = !COUNT! + 1
+	if !COUNT! leq 10 echo   %%i
+)
+if !COUNT! gtr 10 (
+	set /A COUNT = !COUNT! - 10
+	echo   !COUNT! more...
+)
+
+REM :: Available tags
+echo.
+echo Tags:
+set COUNT=0
+for /f usebackq %%i in (`git tag -l --sort=-version:refname "%TAGS%"`) do (
+	set /A COUNT = !COUNT! + 1
+	if !COUNT! leq 10 echo   %%i
+)
+if !COUNT! gtr 10 (
+	set /A COUNT = !COUNT! - 10
+	echo   !COUNT! more...
+)
+
+REM :: Switch to...
+for /f usebackq %%i in (`git rev-parse --abbrev-ref HEAD`) do set CUR_TAG=%%i
+if /i "%CUR_TAG%" equ "HEAD" (
+	for /f usebackq %%i in (`git describe --tags`) do set CUR_TAG=%%i
+)
+echo.
+echo NOTE: Switching branches/tags will discard all local changes
+set /p NEW_TAG=Switch to [%CUR_TAG%]: 
+if "%NEW_TAG%" equ "" set NEW_TAG=%CUR_TAG%
+
+echo.
+git checkout --force "%NEW_TAG%"
+if %ERRORLEVEL% neq 0 pause && goto :EOF
+
+
+REM :: Configure libcurl
+echo --------------------------------------
+call buildconf.bat
+if %ERRORLEVEL% neq 0 pause && goto :EOF
+echo --------------------------------------
+
+
+:: Patch
+echo.
+set /p answer=Apply patch? ([yes]/no) 
+if /I "%answer%" equ "" goto :PATCH
+if /I "%answer%" equ "yes" goto :PATCH
+if /I "%answer%" equ "y" goto :PATCH
 goto :EOF
-:_patch
+:PATCH
 cd /d "%~dp0"
-"%GIT%" apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
+git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
 
 echo Removing "-DEV" version suffix...
 powershell -Command "(gc curl\include\curl\curlver.h) -replace '-DEV', ''| Out-File -encoding ASCII curl\include\curl\curlver.h"
 
-
+echo.
 pause
