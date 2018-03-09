@@ -72,6 +72,7 @@
     <ClCompile Include="mbedTLS\library\xtea.c" />
     <ClCompile Include="mbedTLS\library\cmac.c" />
     <ClCompile Include="mbedTLS\library\net_sockets.c" />
+    <ClCompile Include="mbedTLS\library\rsa_internal.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mbedTLS\include\mbedtls\aes.h" />
@@ -143,5 +144,6 @@
     <ClInclude Include="mbedTLS\include\mbedtls\cmac.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\net_sockets.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\platform_time.h" />
+    <ClInclude Include="mbedTLS\include\mbedtls\rsa_internal.h" />
   </ItemGroup>
 </Project>

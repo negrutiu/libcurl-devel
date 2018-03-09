@@ -650,6 +650,7 @@
     <ClInclude Include="mbedTLS\include\mbedtls\platform_time.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\ripemd160.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\rsa.h" />
+    <ClInclude Include="mbedTLS\include\mbedtls\rsa_internal.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\sha1.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\sha256.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\sha512.h" />
@@ -718,6 +719,7 @@
     <ClCompile Include="mbedTLS\library\platform.c" />
     <ClCompile Include="mbedTLS\library\ripemd160.c" />
     <ClCompile Include="mbedTLS\library\rsa.c" />
+    <ClCompile Include="mbedTLS\library\rsa_internal.c" />
     <ClCompile Include="mbedTLS\library\sha1.c" />
     <ClCompile Include="mbedTLS\library\sha256.c" />
     <ClCompile Include="mbedTLS\library\sha512.c" />
