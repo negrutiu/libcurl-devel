@@ -21,7 +21,7 @@ title %LIBNAME%
 
 :: Validate git
 git --version 2> NUL
-if %ERRORLEVEL% neq 0 echo ERROR: git not in PATH && pause && goto :EOF
+if %ERRORLEVEL% neq 0 echo ERROR: git not in PATH && pause && exit /B 2
 
 if exist "%LIBNAME%\.git" (
 	goto :EXISTING
@@ -31,7 +31,7 @@ if exist "%LIBNAME%\.git" (
 
 :NEW
 git clone --no-checkout --verbose --progress %URL% %LIBNAME%
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
 
 :EXISTING
@@ -39,7 +39,7 @@ cd %LIBNAME%
 
 REM :: git fetch
 git fetch
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
 REM :: Available branches
 echo.
@@ -78,14 +78,21 @@ set /p NEW_TAG=Switch to [%CUR_TAG%]:
 if "%NEW_TAG%" equ "" set NEW_TAG=%CUR_TAG%
 
 echo.
+echo Checking out...
 git checkout --force "%NEW_TAG%"
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
+
+REM :: git pull
+echo.
+echo Pulling...
+git pull origin "%NEW_TAG%"
+if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
 
 REM :: Configure libcurl
 echo --------------------------------------
 call buildconf.bat
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 echo --------------------------------------
 
 
@@ -95,7 +102,7 @@ set /p answer=Apply patch? ([yes]/no)
 if /I "%answer%" equ "" goto :PATCH
 if /I "%answer%" equ "yes" goto :PATCH
 if /I "%answer%" equ "y" goto :PATCH
-goto :EOF
+exit /B 1
 :PATCH
 cd /d "%~dp0"
 git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
