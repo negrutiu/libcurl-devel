@@ -141,6 +141,12 @@
     <ClCompile Include="cURL\lib\strtoofft.c">
       <Filter>lib</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\lib\curl_ctype.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\src\tool_filetime.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\src\slist_wc.h">
@@ -274,6 +280,12 @@
     </ClInclude>
     <ClInclude Include="cURL\lib\strtoofft.h">
       <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\curl_ctype.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\src\tool_filetime.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
