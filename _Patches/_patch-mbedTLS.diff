@@ -1,21 +1,6 @@
- library/debug.c       |  2 +-
  library/net_sockets.c | 11 +++++++----
- library/platform.c    |  2 +-
- 3 files changed, 9 insertions(+), 6 deletions(-)
+ 1 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/library/debug.c b/library/debug.c
-index a9cd814..8faf685 100644
---- a/library/debug.c
-+++ b/library/debug.c
-@@ -91,7 +91,7 @@ void mbedtls_debug_print_msg( const mbedtls_ssl_context *ssl, int level,
- 
-     va_start( argp, format );
- #if defined(_WIN32)
--#if defined(_TRUNCATE)
-+#if defined(_TRUNCATE) && (_WIN32_WINNT >= 0x0600)
-     ret = _vsnprintf_s( str, DEBUG_BUF_SIZE, _TRUNCATE, format, argp );
- #else
-     ret = _vsnprintf( str, DEBUG_BUF_SIZE, format, argp );
 diff --git a/library/net_sockets.c b/library/net_sockets.c
 index cc06cbf..9bbd263 100644
 --- a/library/net_sockets.c
@@ -40,16 +25,3 @@ index cc06cbf..9bbd263 100644
  
  #include <winsock2.h>
  #include <windows.h>
-diff --git a/library/platform.c b/library/platform.c
-index 2591c45..803b0a1 100644
---- a/library/platform.c
-+++ b/library/platform.c
-@@ -74,7 +74,7 @@ int mbedtls_platform_win32_snprintf( char *s, size_t n, const char *fmt, ... )
-         return( -1 );
- 
-     va_start( argp, fmt );
--#if defined(_TRUNCATE)
-+#if defined(_TRUNCATE) && (_WIN32_WINNT >= 0x0600)
-     ret = _vsnprintf_s( s, n, _TRUNCATE, fmt, argp );
- #else
-     ret = _vsnprintf( s, n, fmt, argp );
