@@ -20,7 +20,7 @@ set TAGS=curl-*
 title %LIBNAME%
 
 :: Validate git
-git --version 2> NUL
+git --version > NUL 2> NUL
 if %ERRORLEVEL% neq 0 echo ERROR: git not in PATH && pause && exit /B 2
 
 if exist "%LIBNAME%\.git" (
@@ -104,11 +104,17 @@ if /I "%answer%" equ "yes" goto :PATCH
 if /I "%answer%" equ "y" goto :PATCH
 exit /B 1
 :PATCH
+REM :: Remember last tag's commit time before changing directory
+for /f "tokens=1 delims= " %%i in ('git log -1 --format^=%%ai') do set YMD=%%i
+
 cd /d "%~dp0"
 git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
 
 echo Removing "-DEV" version suffix...
 powershell -Command "(gc curl\include\curl\curlver.h) -replace '-DEV', ''| Out-File -encoding ASCII curl\include\curl\curlver.h"
+
+echo Replacing "[unreleased]" timestamp with "%YMD%"...
+powershell -Command "(gc curl\include\curl\curlver.h) -replace '\[unreleased\]', '%YMD%'| Out-File -encoding ASCII curl\include\curl\curlver.h"
 
 echo.
 pause
