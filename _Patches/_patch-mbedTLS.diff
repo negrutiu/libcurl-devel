@@ -1,13 +1,13 @@
  library/net_sockets.c | 11 +++++++----
- 1 files changed, 7 insertions(+), 4 deletions(-)
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/library/net_sockets.c b/library/net_sockets.c
-index cc06cbf..9bbd263 100644
+index 7b4a423c..35be459e 100644
 --- a/library/net_sockets.c
 +++ b/library/net_sockets.c
-@@ -45,12 +45,15 @@
- #if (defined(_WIN32) || defined(_WIN32_WCE)) && !defined(EFIX64) && \
-     !defined(EFI32)
+@@ -47,12 +47,15 @@
+ 
+ #define IS_EINTR( ret ) ( ( ret ) == WSAEINTR )
  
 -#ifdef _WIN32_WINNT
 -#undef _WIN32_WINNT
