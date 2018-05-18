@@ -743,6 +743,7 @@
     <ClCompile Include="cURL\lib\vtls\polarssl.c" />
     <ClCompile Include="cURL\lib\vtls\polarssl_threadlock.c" />
     <ClCompile Include="cURL\lib\vtls\schannel.c" />
+    <ClCompile Include="cURL\lib\vtls\schannel_verify.c" />
     <ClCompile Include="cURL\lib\vtls\vtls.c" />
     <ClCompile Include="cURL\lib\warnless.c" />
     <ClCompile Include="cURL\lib\wildcard.c" />

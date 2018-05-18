@@ -416,6 +416,9 @@
     <ClCompile Include="cURL\lib\curl_range.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\schannel_verify.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\lib\amigaos.h">
