@@ -247,7 +247,7 @@ echo -----------------------------------
 title mingw-%BUILD_ARCH%-libmbedtls
 
 cd /d "%~dp0"
-xcopy "mbedTLS\*.*" "%BUILD_OUTDIR%\mbedTLS" /QIYD
+xcopy "mbedTLS\*.*"     "%BUILD_OUTDIR%\mbedTLS" /QIYD
 xcopy "mbedTLS\include" "%BUILD_OUTDIR%\mbedTLS\include" /QEIYD
 xcopy "mbedTLS\library" "%BUILD_OUTDIR%\mbedTLS\library" /QEIYD
 cd /d "%BUILD_OUTDIR%\mbedTLS\library"
@@ -398,12 +398,12 @@ objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
 
 :: test.bat + cacert.pem
 if /I "%BUILD_SSL_ENGINE%" equ "WinSSL" (
-	echo "%%~dp0\curl" -V> "%BUILD_OUTDIR%\test.bat"
-	echo "%%~dp0\curl" -L -v negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl" -L -v negrutiu.com> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl" -V>> "%BUILD_OUTDIR%\test.bat"
 	echo pause>> "%BUILD_OUTDIR%\test.bat"
 ) else (
 	xcopy "%~dp0\cacert.pem" "%BUILD_OUTDIR%" /FIYD
-	echo "%%~dp0\curl" -V> "%BUILD_OUTDIR%\test.bat"
-	echo "%%~dp0\curl" -L -v --capath "%%~dp0\" negrutiu.com>> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl" -L -v --capath "%%~dp0\" negrutiu.com> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl" -V>> "%BUILD_OUTDIR%\test.bat"
 	echo pause>> "%BUILD_OUTDIR%\test.bat"
 )

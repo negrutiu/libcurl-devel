@@ -250,13 +250,13 @@ if exist "%~dp0\error-%BUILD_CONFIG%-*" goto :EOF
 for /D %%a in (%BUILD_CONFIG%-VC-mbedTLS-*) do (
 	if exist "%~dp0\cacert.pem" xcopy "%~dp0\cacert.pem" "%%a" /FIYD
 
-	echo "%%~dp0\curl.exe" -V> "%%a\test.bat"
-	echo "%%~dp0\curl.exe" -L -v --capath "%%~dp0\" negrutiu.com>> "%%a\test.bat"
+	echo "%%~dp0\curl.exe" -L -v --capath "%%~dp0\" negrutiu.com> "%%a\test.bat"
+	echo "%%~dp0\curl.exe" -V>> "%%a\test.bat"
 	echo pause>> "%%a\test.bat"
 )
 for /D %%a in (%BUILD_CONFIG%-VC-WinSSL-*) do (
-	echo "%%~dp0\curl.exe" -V> "%%a\test.bat"
-	echo "%%~dp0\curl.exe" -L -v negrutiu.com>> "%%a\test.bat"
+	echo "%%~dp0\curl.exe" -L -v negrutiu.com> "%%a\test.bat"
+	echo "%%~dp0\curl.exe" -V>> "%%a\test.bat"
 	echo pause>> "%%a\test.bat"
 )
 
