@@ -648,6 +648,7 @@
     <ClInclude Include="mbedTLS\include\mbedtls\pkcs5.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\platform.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\platform_time.h" />
+    <ClInclude Include="mbedTLS\include\mbedtls\platform_util.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\ripemd160.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\rsa.h" />
     <ClInclude Include="mbedTLS\include\mbedtls\rsa_internal.h" />
@@ -717,6 +718,7 @@
     <ClCompile Include="mbedTLS\library\pkparse.c" />
     <ClCompile Include="mbedTLS\library\pkwrite.c" />
     <ClCompile Include="mbedTLS\library\platform.c" />
+    <ClCompile Include="mbedTLS\library\platform_util.c" />
     <ClCompile Include="mbedTLS\library\ripemd160.c" />
     <ClCompile Include="mbedTLS\library\rsa.c" />
     <ClCompile Include="mbedTLS\library\rsa_internal.c" />
