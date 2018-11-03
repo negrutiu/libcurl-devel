@@ -4,10 +4,12 @@ REM :: Marius Negrutiu (marius.negrutiu@protonmail.com)
 echo.
 setlocal EnableDelayedExpansion
 
-set MINGW=%SYSTEMDRIVE%\TDM-GCC-64
-if not exist "%MINGW%\mingwvars.bat" echo ERROR: "%MINGW%\mingwvars.bat" not found && pause && goto :EOF
-if not exist "%MINGW%\bin\mingw32-make.exe" echo ERROR: "%MINGW%\bin\mingw32-make.exe" not found && pause && goto :EOF
-call "%MINGW%\mingwvars.bat"
+if not exist "%PF32%" set PF32=%PROGRAMFILES(X86)%
+if not exist "%PF32%" set PF32=%PROGRAMFILES%
+
+if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS2
+if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS64
+if not exist "%MSYS2%" echo ERROR: Missing msys2/mingw && pause && exit /B 2
 
 
 :: ----------------------------------------------------------------
@@ -160,17 +162,20 @@ goto :EOF
 if not exist "%BUILD_OUTDIR%" mkdir "%BUILD_OUTDIR%"
 
 if /I "%BUILD_ARCH%" equ "x64" (
-	set GLOBAL_CFLAGS=-m64 -mmmx -msse -msse2 -DWIN32 -D_WIN32_WINNT=0x0502 -DNDEBUG -O3
-	set GLOBAL_LFLAGS=-m64 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
+	set MINGW=%MSYS2%\mingw64
+	set GLOBAL_CFLAGS=-march=x86-64 -s -Os -DWIN32 -D_WIN32_WINNT=0x0502 -DNDEBUG -O3
+	set GLOBAL_LFLAGS=%GLOBAL_CFLAGS% -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup -Wl,--high-entropy-va
 	set GLOBAL_RFLAGS=-F pe-x86-64
 ) else (
-	set GLOBAL_CFLAGS=-m32 -march=pentium2 -DWIN32 -D_WIN32_WINNT=0x0400 -DNDEBUG -O3
-	set GLOBAL_LFLAGS=-m32 -s -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base
+	set MINGW=%MSYS2%\mingw32
+	set GLOBAL_CFLAGS=-march=pentium2 -s -Os -DWIN32 -D_WIN32_WINNT=0x0400 -DNDEBUG -O3
+	set GLOBAL_LFLAGS=%GLOBAL_CFLAGS% -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup
 	set GLOBAL_RFLAGS=-F pe-i386
 )
 set CURL_CFG=
 set CURL_LDFLAG_EXTRAS=
 set CURL_LDFLAG_EXTRAS2=
+set PATH=%MINGW%\bin;%MSYS2%\usr\bin;%PATH%
 
 
 :ZLIB
