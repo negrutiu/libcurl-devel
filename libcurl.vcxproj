@@ -640,6 +640,7 @@
     <ClCompile Include="cURL\lib\curl_sspi.c" />
     <ClCompile Include="cURL\lib\curl_threads.c" />
     <ClCompile Include="cURL\lib\dict.c" />
+    <ClCompile Include="cURL\lib\doh.c" />
     <ClCompile Include="cURL\lib\dotdot.c" />
     <ClCompile Include="cURL\lib\easy.c" />
     <ClCompile Include="cURL\lib\escape.c" />
@@ -719,6 +720,7 @@
     <ClCompile Include="cURL\lib\timeval.c" />
     <ClCompile Include="cURL\lib\transfer.c" />
     <ClCompile Include="cURL\lib\url.c" />
+    <ClCompile Include="cURL\lib\urlapi.c" />
     <ClCompile Include="cURL\lib\vauth\cleartext.c" />
     <ClCompile Include="cURL\lib\vauth\cram.c" />
     <ClCompile Include="cURL\lib\vauth\digest.c" />
@@ -795,6 +797,7 @@
     <ClInclude Include="cURL\lib\curl_sspi.h" />
     <ClInclude Include="cURL\lib\curl_threads.h" />
     <ClInclude Include="cURL\lib\dict.h" />
+    <ClInclude Include="cURL\lib\doh.h" />
     <ClInclude Include="cURL\lib\dotdot.h" />
     <ClInclude Include="cURL\lib\easyif.h" />
     <ClInclude Include="cURL\lib\escape.h" />

@@ -419,6 +419,12 @@
     <ClCompile Include="cURL\lib\vtls\schannel_verify.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\lib\doh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\urlapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\lib\amigaos.h">
@@ -806,6 +812,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\curl_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\doh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
