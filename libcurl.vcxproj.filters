@@ -362,9 +362,6 @@
     <ClCompile Include="cURL\lib\vauth\vauth.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\axtls.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\lib\vtls\cyassl.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -761,9 +758,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\vauth\vauth.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\axtls.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\vtls\cyassl.h">
