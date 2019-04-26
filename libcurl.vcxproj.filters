@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\vtls">
+      <UniqueIdentifier>{69816ad9-9efd-43bc-a713-51349f90d102}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="cURL\lib\libcurl.rc">
@@ -362,39 +365,6 @@
     <ClCompile Include="cURL\lib\vauth\vauth.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\cyassl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\darwinssl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\gskit.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\gtls.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\mbedtls.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\nss.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\openssl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\polarssl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\polarssl_threadlock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\schannel.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\vtls.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\lib\rand.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -413,14 +383,50 @@
     <ClCompile Include="cURL\lib\curl_range.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\schannel_verify.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\lib\doh.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cURL\lib\urlapi.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\gskit.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\gtls.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\mbedtls.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\mesalink.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\nss.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\openssl.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\polarssl.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\polarssl_threadlock.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\schannel.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\schannel_verify.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\sectransp.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\vtls.c">
+      <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\cyassl.c">
+      <Filter>Source Files\vtls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -760,39 +766,6 @@
     <ClInclude Include="cURL\lib\vauth\vauth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\cyassl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\darwinssl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\gskit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\gtls.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\mbedtls.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\nssg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\openssl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\polarssl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\polarssl_threadlock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\schannel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\vtls.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cURL\lib\rand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -810,6 +783,42 @@
     </ClInclude>
     <ClInclude Include="cURL\lib\doh.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\gskit.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\gtls.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\mbedtls.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\mesalink.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\nssg.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\openssl.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\polarssl.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\polarssl_threadlock.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\schannel.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\sectransp.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\vtls.h">
+      <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\cyassl.h">
+      <Filter>Source Files\vtls</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
