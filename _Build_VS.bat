@@ -21,22 +21,22 @@ if exist "%VSWHERE%" (
 	for /f "usebackq tokens=1* delims=: " %%i in (`"%VSWHERE%" -version 15 -requires Microsoft.Component.MSBuild`) do (
 		if /i "%%i"=="installationPath" (
 			set VCVARSALL=%%j\VC\Auxiliary\Build\VCVarsAll.bat
-			set BUILD_PLATFORMTOOLSET=v141_xp
+			set BUILD_PLATFORMTOOLSET=v141
 		)
 	)
 )
 if exist "%VCVARSALL%" goto :BUILD
 
 set VCVARSALL=%PF%\Microsoft Visual Studio 14.0\VC\VcVarsAll.bat
-set BUILD_PLATFORMTOOLSET=v140_xp
+set BUILD_PLATFORMTOOLSET=v140
 if exist "%VCVARSALL%" goto :BUILD
 
 set VCVARSALL=%PF%\Microsoft Visual Studio 12.0\VC\VcVarsAll.bat
-set BUILD_PLATFORMTOOLSET=v120_xp
+set BUILD_PLATFORMTOOLSET=v120
 if exist "%VCVARSALL%" goto :BUILD
 
 set VCVARSALL=%PF%\Microsoft Visual Studio 11.0\VC\VcVarsAll.bat
-set BUILD_PLATFORMTOOLSET=v110_xp
+set BUILD_PLATFORMTOOLSET=v110
 if exist "%VCVARSALL%" goto :BUILD
 
 set VCVARSALL=%PF%\Microsoft Visual Studio 10.0\VC\VcVarsAll.bat
