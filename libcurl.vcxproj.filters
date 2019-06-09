@@ -233,9 +233,6 @@
     <ClCompile Include="cURL\lib\pingpong.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\pipeline.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\lib\pop3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -427,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="cURL\lib\vtls\cyassl.c">
       <Filter>Source Files\vtls</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\curl_get_line.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -819,6 +819,9 @@
     </ClInclude>
     <ClInclude Include="cURL\lib\vtls\cyassl.h">
       <Filter>Source Files\vtls</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\curl_get_line.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

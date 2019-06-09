@@ -629,6 +629,7 @@
     <ClCompile Include="cURL\lib\curl_endian.c" />
     <ClCompile Include="cURL\lib\curl_fnmatch.c" />
     <ClCompile Include="cURL\lib\curl_gethostname.c" />
+    <ClCompile Include="cURL\lib\curl_get_line.c" />
     <ClCompile Include="cURL\lib\curl_gssapi.c" />
     <ClCompile Include="cURL\lib\curl_memrchr.c" />
     <ClCompile Include="cURL\lib\curl_multibyte.c" />
@@ -689,7 +690,6 @@
     <ClCompile Include="cURL\lib\openldap.c" />
     <ClCompile Include="cURL\lib\parsedate.c" />
     <ClCompile Include="cURL\lib\pingpong.c" />
-    <ClCompile Include="cURL\lib\pipeline.c" />
     <ClCompile Include="cURL\lib\pop3.c" />
     <ClCompile Include="cURL\lib\progress.c" />
     <ClCompile Include="cURL\lib\rand.c" />
@@ -777,6 +777,7 @@
     <ClInclude Include="cURL\lib\curl_endian.h" />
     <ClInclude Include="cURL\lib\curl_fnmatch.h" />
     <ClInclude Include="cURL\lib\curl_gethostname.h" />
+    <ClInclude Include="cURL\lib\curl_get_line.h" />
     <ClInclude Include="cURL\lib\curl_gssapi.h" />
     <ClInclude Include="cURL\lib\curl_hmac.h" />
     <ClInclude Include="cURL\lib\curl_ldap.h" />
