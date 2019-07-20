@@ -164,12 +164,12 @@ if not exist "%BUILD_OUTDIR%" mkdir "%BUILD_OUTDIR%"
 if /I "%BUILD_ARCH%" equ "x64" (
 	set MINGW=%MSYS2%\mingw64
 	set GLOBAL_CFLAGS=-march=x86-64 -s -Os -DWIN32 -D_WIN32_WINNT=0x0502 -DNDEBUG -O3
-	set GLOBAL_LFLAGS=%GLOBAL_CFLAGS% -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup -Wl,--high-entropy-va
+	set GLOBAL_LFLAGS=!GLOBAL_CFLAGS! -static-libgcc -static-libstdc++ -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup -Wl,--high-entropy-va
 	set GLOBAL_RFLAGS=-F pe-x86-64
 ) else (
 	set MINGW=%MSYS2%\mingw32
 	set GLOBAL_CFLAGS=-march=pentium2 -s -Os -DWIN32 -D_WIN32_WINNT=0x0400 -DNDEBUG -O3
-	set GLOBAL_LFLAGS=%GLOBAL_CFLAGS% -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup
+	set GLOBAL_LFLAGS=!GLOBAL_CFLAGS! -static-libgcc -static-libstdc++ -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup
 	set GLOBAL_RFLAGS=-F pe-i386
 )
 set CURL_CFG=
@@ -252,9 +252,11 @@ echo -----------------------------------
 title mingw-%BUILD_ARCH%-libmbedtls
 
 cd /d "%~dp0"
-xcopy "mbedTLS\*.*"     "%BUILD_OUTDIR%\mbedTLS" /QIYD
-xcopy "mbedTLS\include" "%BUILD_OUTDIR%\mbedTLS\include" /QEIYD
-xcopy "mbedTLS\library" "%BUILD_OUTDIR%\mbedTLS\library" /QEIYD
+xcopy "mbedTLS\*.*"            "%BUILD_OUTDIR%\mbedTLS" /QIYD
+xcopy "mbedTLS\include"        "%BUILD_OUTDIR%\mbedTLS\include" /QEIYD
+xcopy "mbedTLS\library"        "%BUILD_OUTDIR%\mbedTLS\library" /QEIYD
+xcopy "mbedTLS\crypto\include" "%BUILD_OUTDIR%\mbedTLS\crypto\include" /QEIYD
+xcopy "mbedTLS\crypto\library" "%BUILD_OUTDIR%\mbedTLS\crypto\library" /QEIYD
 cd /d "%BUILD_OUTDIR%\mbedTLS\library"
 
 :: MD4 is required by curl_ntlm_core.c (Marius)
@@ -271,13 +273,15 @@ if %ERRORLEVEL% neq 0 pause && goto :EOF
 
 :: Collect
 echo.
-xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.dll" "%BUILD_OUTDIR%" /YF
-xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.a"   "%BUILD_OUTDIR%" /YF
+xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.dll"         "%BUILD_OUTDIR%" /YF
+xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.a"           "%BUILD_OUTDIR%" /YF
+xcopy "%BUILD_OUTDIR%\mbedTLS\crypto\library\*.dll"  "%BUILD_OUTDIR%" /YF
+xcopy "%BUILD_OUTDIR%\mbedTLS\crypto\library\*.a"    "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS.txt"
 
 :: Build libcurl with libmbedtls
 set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -I../../mbedTLS/include
-set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../../mbedTLS/library
+set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../../mbedTLS/library -L../../mbedTLS/crypto/library
 if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
 if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
 :MBEDTLS_END

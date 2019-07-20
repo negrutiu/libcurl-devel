@@ -30,7 +30,7 @@ if exist "%LIBNAME%\.git" (
 )
 
 :NEW
-git clone --no-checkout --verbose --progress %URL% %LIBNAME%
+git clone --recurse-submodules --no-checkout --verbose --progress %URL% %LIBNAME%
 if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
 
@@ -88,6 +88,11 @@ echo Pulling...
 git pull origin "%NEW_TAG%"
 if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
+REM :: git submodule
+echo.
+echo Submodules...
+git submodule update
+if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
 :: Patch
 echo.
