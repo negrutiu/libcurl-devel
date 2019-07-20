@@ -422,9 +422,6 @@
     <ClCompile Include="cURL\lib\vtls\vtls.c">
       <Filter>Source Files\vtls</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\cyassl.c">
-      <Filter>Source Files\vtls</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\lib\curl_get_line.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -815,9 +812,6 @@
       <Filter>Source Files\vtls</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\vtls\vtls.h">
-      <Filter>Source Files\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\cyassl.h">
       <Filter>Source Files\vtls</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\curl_get_line.h">

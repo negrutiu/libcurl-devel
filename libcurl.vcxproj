@@ -734,7 +734,6 @@
     <ClCompile Include="cURL\lib\vauth\spnego_sspi.c" />
     <ClCompile Include="cURL\lib\vauth\vauth.c" />
     <ClCompile Include="cURL\lib\version.c" />
-    <ClCompile Include="cURL\lib\vtls\cyassl.c" />
     <ClCompile Include="cURL\lib\vtls\gskit.c" />
     <ClCompile Include="cURL\lib\vtls\gtls.c" />
     <ClCompile Include="cURL\lib\vtls\mbedtls.c" />
@@ -868,7 +867,6 @@
     <ClInclude Include="cURL\lib\vauth\digest.h" />
     <ClInclude Include="cURL\lib\vauth\ntlm.h" />
     <ClInclude Include="cURL\lib\vauth\vauth.h" />
-    <ClInclude Include="cURL\lib\vtls\cyassl.h" />
     <ClInclude Include="cURL\lib\vtls\gskit.h" />
     <ClInclude Include="cURL\lib\vtls\gtls.h" />
     <ClInclude Include="cURL\lib\vtls\mbedtls.h" />
