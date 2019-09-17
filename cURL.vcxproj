@@ -659,6 +659,7 @@
     <ClCompile Include="cURL\src\tool_msgs.c" />
     <ClCompile Include="cURL\src\tool_operate.c" />
     <ClCompile Include="cURL\src\tool_operhlp.c" />
+    <ClCompile Include="cURL\src\tool_progress.c" />
     <ClCompile Include="cURL\src\tool_panykey.c" />
     <ClCompile Include="cURL\src\tool_paramhlp.c" />
     <ClCompile Include="cURL\src\tool_parsecfg.c" />
@@ -704,6 +705,7 @@
     <ClInclude Include="cURL\src\tool_msgs.h" />
     <ClInclude Include="cURL\src\tool_operate.h" />
     <ClInclude Include="cURL\src\tool_operhlp.h" />
+    <ClInclude Include="cURL\src\tool_progress.h" />
     <ClInclude Include="cURL\src\tool_panykey.h" />
     <ClInclude Include="cURL\src\tool_paramhlp.h" />
     <ClInclude Include="cURL\src\tool_parsecfg.h" />

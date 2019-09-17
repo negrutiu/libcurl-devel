@@ -278,9 +278,6 @@
     <ClCompile Include="cURL\lib\splay.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\ssh.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\lib\strcase.c">
       <Filter>Source Files</Filter>
     </ClCompile>

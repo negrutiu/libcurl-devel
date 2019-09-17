@@ -99,6 +99,9 @@
     <ClCompile Include="cURL\src\tool_operhlp.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\src\tool_progress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="cURL\src\tool_panykey.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -228,6 +231,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\src\tool_operhlp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\src\tool_progress.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cURL\src\tool_panykey.h">
