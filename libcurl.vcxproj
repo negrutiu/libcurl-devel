@@ -274,7 +274,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-mbedTLS-lib|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;CURL_STATICLIB;DEBUGBUILD;BUILDING_LIBCURL;USE_MBEDTLS;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -291,7 +291,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-WinSSL-lib|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;CURL_STATICLIB;DEBUGBUILD;BUILDING_LIBCURL;USE_SCHANNEL;USE_WINDOWS_SSPI;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -308,7 +308,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-mbedTLS-dll|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;DEBUGBUILD;BUILDING_LIBCURL;USE_MBEDTLS;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -330,7 +330,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-WinSSL-dll|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;DEBUGBUILD;BUILDING_LIBCURL;USE_SCHANNEL;USE_WINDOWS_SSPI;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -355,7 +355,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;CURL_STATICLIB;DEBUGBUILD;BUILDING_LIBCURL;USE_MBEDTLS;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -375,7 +375,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;CURL_STATICLIB;DEBUGBUILD;BUILDING_LIBCURL;USE_SCHANNEL;USE_WINDOWS_SSPI;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -395,7 +395,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DEBUGBUILD;BUILDING_LIBCURL;USE_MBEDTLS;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -420,7 +420,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DEBUGBUILD;BUILDING_LIBCURL;USE_SCHANNEL;USE_WINDOWS_SSPI;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -441,7 +441,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-mbedTLS-lib|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;CURL_STATICLIB;BUILDING_LIBCURL;USE_MBEDTLS;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -459,7 +459,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-WinSSL-lib|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;CURL_STATICLIB;BUILDING_LIBCURL;USE_SCHANNEL;USE_WINDOWS_SSPI;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -477,7 +477,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-mbedTLS-dll|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;BUILDING_LIBCURL;USE_MBEDTLS;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -500,7 +500,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-WinSSL-dll|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;BUILDING_LIBCURL;USE_SCHANNEL;USE_WINDOWS_SSPI;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -526,7 +526,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;CURL_STATICLIB;BUILDING_LIBCURL;USE_MBEDTLS;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -546,7 +546,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;CURL_STATICLIB;BUILDING_LIBCURL;USE_SCHANNEL;USE_WINDOWS_SSPI;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -566,7 +566,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;BUILDING_LIBCURL;USE_MBEDTLS;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -591,7 +591,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cURL\include;cURL\lib;mbedTLS\include;mbedTLS\crypto\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;BUILDING_LIBCURL;USE_SCHANNEL;USE_WINDOWS_SSPI;$(MyCurlDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
