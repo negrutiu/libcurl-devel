@@ -252,12 +252,8 @@ echo -----------------------------------
 title mingw-%BUILD_ARCH%-libmbedtls
 
 cd /d "%~dp0"
-xcopy "mbedTLS\*.*"            "%BUILD_OUTDIR%\mbedTLS" /QIYD
-xcopy "mbedTLS\include"        "%BUILD_OUTDIR%\mbedTLS\include" /QEIYD
-xcopy "mbedTLS\library"        "%BUILD_OUTDIR%\mbedTLS\library" /QEIYD
-xcopy "mbedTLS\crypto\include" "%BUILD_OUTDIR%\mbedTLS\crypto\include" /QEIYD
-xcopy "mbedTLS\crypto\library" "%BUILD_OUTDIR%\mbedTLS\crypto\library" /QEIYD
-cd /d "%BUILD_OUTDIR%\mbedTLS\library"
+xcopy "mbedTLS\*.*" "%BUILD_OUTDIR%\mbedTLS" /QEIYD
+cd /d "%BUILD_OUTDIR%\mbedTLS"
 
 :: MD4 is required by curl_ntlm_core.c (Marius)
 set MBEDTLS_CFLAGS=!MBEDTLS_CFLAGS! -DMBEDTLS_MD4_C
@@ -266,7 +262,7 @@ if /I "%BUILD_ARCH%" equ "x64" set MBEDTLS_CFLAGS=!MBEDTLS_CFLAGS! -DMBEDTLS_HAV
 if %BUILD_MBEDTLS_DLL% equ 0 set SHARED=
 if %BUILD_MBEDTLS_DLL% neq 0 set SHARED=1
 
-mingw32-make WINDOWS=1 CC=gcc "CFLAGS=%GLOBAL_CFLAGS% %MBEDTLS_CFLAGS%" "LDFLAGS=%GLOBAL_LFLAGS%" all
+mingw32-make WINDOWS=1 CC=gcc "CFLAGS=%GLOBAL_CFLAGS% %MBEDTLS_CFLAGS%" "LDFLAGS=%GLOBAL_LFLAGS%" lib
 echo.
 echo ERRORLEVEL = %ERRORLEVEL%
 if %ERRORLEVEL% neq 0 pause && goto :EOF
@@ -280,7 +276,7 @@ xcopy "%BUILD_OUTDIR%\mbedTLS\crypto\library\*.a"    "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS.txt"
 
 :: Build libcurl with libmbedtls
-set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -I../../mbedTLS/include
+set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -I../../mbedTLS/include -I../../mbedTLS/crypto/include
 set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../../mbedTLS/library -L../../mbedTLS/crypto/library
 if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
 if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
