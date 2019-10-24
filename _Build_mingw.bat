@@ -139,7 +139,7 @@ if /I "%1" equ "/build-winssl-x64-HTTP_ONLY" (
 )
 
 :: Unknown argument?
-if "%1" neq "" echo ERROR: Unknown argument "%1" && pause && goto :EOF
+if "%1" neq "" echo ERROR: Unknown argument "%1" && pause && exit /B
 
 :: Re-launch this script to build multiple targets in parallel
 start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86
@@ -152,7 +152,7 @@ start "" "%COMSPEC%" /C "%~f0" /build-winssl-x86
 start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64
 start "" "%COMSPEC%" /C "%~f0" /build-winssl-x86-HTTP_ONLY
 start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64-HTTP_ONLY
-goto :EOF
+exit /B
 
 
 :: ----------------------------------------------------------------
@@ -194,8 +194,8 @@ cd /d "%BUILD_OUTDIR%\zlib"
 set LOC=%GLOBAL_CFLAGS% %GLOBAL_LFLAGS%
 mingw32-make -f win32/Makefile.gcc libz.a
 echo.
-echo ERRORLEVEL = %ERRORLEVEL%
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+echo ERRORLEVEL = %errorlevel%
+if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 :: Collect
 echo.
@@ -228,8 +228,8 @@ set MYCFLAGS=%GLOBAL_CFLAGS% %NGHTTP2_CFLAGS%
 set MYLFLAGS=%GLOBAL_LFLAGS%
 mingw32-make static
 echo.
-echo ERRORLEVEL = %ERRORLEVEL%
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+echo ERRORLEVEL = %errorlevel%
+if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 :: Collect
 echo.
@@ -264,8 +264,8 @@ if %BUILD_MBEDTLS_DLL% neq 0 set SHARED=1
 
 mingw32-make WINDOWS=1 CC=gcc "CFLAGS=%GLOBAL_CFLAGS% %MBEDTLS_CFLAGS%" "LDFLAGS=%GLOBAL_LFLAGS%" lib
 echo.
-echo ERRORLEVEL = %ERRORLEVEL%
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+echo ERRORLEVEL = %errorlevel%
+if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 :: Collect
 echo.
@@ -325,8 +325,8 @@ set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
 
 mingw32-make -f Makefile.m32 all
 echo.
-echo ERRORLEVEL = %ERRORLEVEL%
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+echo ERRORLEVEL = %errorlevel%
+if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 :: Collect
 echo.
@@ -358,8 +358,8 @@ set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
 :: curl.exe (dynamic) -> libcurl.exe
 mingw32-make -f Makefile.m32 CFG=-dyn all
 echo.
-echo ERRORLEVEL = %ERRORLEVEL%
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+echo ERRORLEVEL = %errorlevel%
+if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 :: Collect
 echo.
@@ -391,8 +391,8 @@ set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
 :: curl.exe (static)
 mingw32-make -f Makefile.m32 CFG= all
 echo.
-echo ERRORLEVEL = %ERRORLEVEL%
-if %ERRORLEVEL% neq 0 pause && goto :EOF
+echo ERRORLEVEL = %errorlevel%
+if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 ::Collect
 echo.

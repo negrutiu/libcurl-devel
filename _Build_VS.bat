@@ -45,7 +45,7 @@ if exist "%VCVARSALL%" goto :BUILD
 
 echo ERROR: Can't find Visual Studio 2010/2012/2013/2015/2017
 pause
-goto :EOF
+exit /B 2
 
 :BUILD
 pushd "%CD%"
@@ -62,16 +62,16 @@ if /I "%1" neq "/%CONFIG%" goto :mbedtls_lib_end
 
 	title %CONFIG%-Win32
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :mbedtls_lib_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_lib_done
 
 	title %CONFIG%-x64
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=x64 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :mbedtls_lib_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_lib_done
 
 :mbedtls_lib_done
-	if %ERRORLEVEL% neq 0 echo %ERRORLEVEL%> "%~dp0\error-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
 	del "%~dp0\flag-%CONFIG%"
-	goto :EOF
+	exit /B
 :mbedtls_lib_end
 
 
@@ -84,16 +84,16 @@ if /I "%1" neq "/%CONFIG%" goto :mbedtls_dll_end
 
 	title %CONFIG%-Win32
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :mbedtls_dll_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_dll_done
 
 	title %CONFIG%-x64
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=x64 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :mbedtls_dll_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_dll_done
 
 :mbedtls_dll_done
-	if %ERRORLEVEL% neq 0 echo %ERRORLEVEL%> "%~dp0\error-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
 	del "%~dp0\flag-%CONFIG%"
-	goto :EOF
+	exit /B
 :mbedtls_dll_end
 
 
@@ -106,16 +106,16 @@ if /I "%1" neq "/%CONFIG%" goto :winssl_lib_end
 
 	title %CONFIG%-Win32
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :winssl_lib_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_lib_done
 
 	title %CONFIG%-x64
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=x64 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :winssl_lib_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_lib_done
 
 :winssl_lib_done
-	if %ERRORLEVEL% neq 0 echo %ERRORLEVEL%> "%~dp0\error-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
 	del "%~dp0\flag-%CONFIG%"
-	goto :EOF
+	exit /B
 :winssl_lib_end
 
 
@@ -128,16 +128,16 @@ if /I "%1" neq "/%CONFIG%" goto :winssl_dll_end
 
 	title %CONFIG%-Win32
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :winssl_dll_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_dll_done
 
 	title %CONFIG%-x64
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=x64 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :winssl_dll_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_dll_done
 
 :winssl_dll_done
-	if %ERRORLEVEL% neq 0 echo %ERRORLEVEL%> "%~dp0\error-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
 	del "%~dp0\flag-%CONFIG%"
-	goto :EOF
+	exit /B
 :winssl_dll_end
 
 
@@ -150,16 +150,16 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :mbedtls_lib_httponly_end
 
 	title %CONFIG%-Win32-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :mbedtls_lib_httponly_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_lib_httponly_done
 
 	title %CONFIG%-x64-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=x64 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :mbedtls_lib_httponly_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_lib_httponly_done
 
 :mbedtls_lib_httponly_done
-	if %ERRORLEVEL% neq 0 echo %ERRORLEVEL%> "%~dp0\error-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
 	del "%~dp0\flag-%CONFIG%-HTTP_ONLY"
-	goto :EOF
+	exit /B
 :mbedtls_lib_httponly_end
 
 
@@ -172,16 +172,16 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :mbedtls_dll_httponly_end
 
 	title %CONFIG%-Win32-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :mbedtls_dll_httponly_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_dll_httponly_done
 
 	title %CONFIG%-x64-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=x64 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :mbedtls_dll_httponly_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_dll_httponly_done
 
 :mbedtls_dll_httponly_done
-	if %ERRORLEVEL% neq 0 echo %ERRORLEVEL%> "%~dp0\error-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
 	del "%~dp0\flag-%CONFIG%-HTTP_ONLY"
-	goto :EOF
+	exit /B
 :mbedtls_dll_httponly_end
 
 
@@ -194,16 +194,16 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :winssl_lib_httponly_end
 
 	title %CONFIG%-Win32-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :winssl_lib_httponly_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_lib_httponly_done
 
 	title %CONFIG%-x64-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=x64 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :winssl_lib_httponly_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_lib_httponly_done
 
 :winssl_lib_httponly_done
-	if %ERRORLEVEL% neq 0 echo %ERRORLEVEL%> "%~dp0\error-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
 	del "%~dp0\flag-%CONFIG%-HTTP_ONLY"
-	goto :EOF
+	exit /B
 :winssl_lib_httponly_end
 
 
@@ -216,16 +216,16 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :winssl_dll_httponly_end
 
 	title %CONFIG%-Win32-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :winssl_dll_httponly_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_dll_httponly_done
 
 	title %CONFIG%-x64-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=x64 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
-	if %ERRORLEVEL% neq 0 echo ERRORLEVEL = %ERRORLEVEL% && pause && goto :winssl_dll_httponly_done
+	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_dll_httponly_done
 
 :winssl_dll_httponly_done
-	if %ERRORLEVEL% neq 0 echo %ERRORLEVEL%> "%~dp0\error-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
 	del "%~dp0\flag-%CONFIG%-HTTP_ONLY"
-	goto :EOF
+	exit /B
 :winssl_dll_httponly_end
 
 
@@ -234,7 +234,7 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :winssl_dll_httponly_end
 :PARALLEL
 :: ----------------------------------------------------------------
 :: Reject other parameters
-if "%1" neq "" goto :EOF
+if "%1" neq "" exit /B 57
 
 echo Building...
 title %BUILD_CONFIG% Master
@@ -259,7 +259,7 @@ timeout /T 5 /NOBREAK > NUL
 	timeout /T 1 /NOBREAK > NUL
 	goto :WAIT
 :WAIT_END
-if exist "%~dp0\error-%BUILD_CONFIG%-*" goto :EOF
+if exist "%~dp0\error-%BUILD_CONFIG%-*" exit /B 1
 
 
 :TEST
