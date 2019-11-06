@@ -91,7 +91,11 @@ if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 REM :: git submodule
 echo.
 echo Submodules...
-git submodule update
+REM : Revert "crypto" otherwise patching will fail
+pushd crypto
+git checkout -f HEAD
+popd
+git submodule sync
 if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
 :: Patch
@@ -104,6 +108,9 @@ exit /B 1
 :PATCH
 cd /d "%~dp0"
 git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
+
+cd /d "%~dp0\mbedTLS\crypto"
+git apply --verbose --whitespace=fix ..\..\_Patches\_patch-%LIBNAME%-crypto.diff
 
 echo.
 pause
