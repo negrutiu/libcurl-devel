@@ -703,6 +703,7 @@
     <ClCompile Include="cURL\lib\slist.c" />
     <ClCompile Include="cURL\lib\smb.c" />
     <ClCompile Include="cURL\lib\smtp.c" />
+    <ClCompile Include="cURL\lib\socketpair.c" />
     <ClCompile Include="cURL\lib\socks.c" />
     <ClCompile Include="cURL\lib\socks_gssapi.c" />
     <ClCompile Include="cURL\lib\socks_sspi.c" />
@@ -847,6 +848,7 @@
     <ClInclude Include="cURL\lib\smb.h" />
     <ClInclude Include="cURL\lib\smtp.h" />
     <ClInclude Include="cURL\lib\sockaddr.h" />
+    <ClInclude Include="cURL\lib\socketpair.h" />
     <ClInclude Include="cURL\lib\socks.h" />
     <ClInclude Include="cURL\lib\speedcheck.h" />
     <ClInclude Include="cURL\lib\splay.h" />

@@ -422,6 +422,9 @@
     <ClCompile Include="cURL\lib\curl_get_line.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\lib\socketpair.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\lib\amigaos.h">
@@ -812,6 +815,9 @@
       <Filter>Source Files\vtls</Filter>
     </ClInclude>
     <ClInclude Include="cURL\lib\curl_get_line.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\socketpair.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
