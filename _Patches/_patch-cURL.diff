@@ -1,12 +1,8 @@
- lib/Makefile.m32   | 1 +
- src/Makefile.m32   | 1 +
- 2 files changed, 2 insertions(+), 0 deletion(-)
-
 diff --git a/lib/Makefile.m32 b/lib/Makefile.m32
-index 22efbdee0..39fadcf63 100644
+index ae88f4dce..cac679fe3 100644
 --- a/lib/Makefile.m32
 +++ b/lib/Makefile.m32
-@@ -309,6 +309,7 @@ ifndef USE_LDAP_OPENLDAP
+@@ -337,6 +337,7 @@ ifndef USE_LDAP_OPENLDAP
  endif
  endif
  DLL_LIBS += -lws2_32
@@ -15,10 +11,10 @@ index 22efbdee0..39fadcf63 100644
  # Makefile.inc provides the CSOURCES and HHEADERS defines
  include Makefile.inc
 diff --git a/src/Makefile.m32 b/src/Makefile.m32
-index e55427a5e..3d9a04f62 100644
+index e13db04b9..33cc6c3c5 100644
 --- a/src/Makefile.m32
 +++ b/src/Makefile.m32
-@@ -331,6 +331,7 @@ curl_LDADD += -lwldap32
+@@ -356,6 +356,7 @@ curl_LDADD += -lwldap32
  endif
  endif
  curl_LDADD += -lws2_32
@@ -26,3 +22,25 @@ index e55427a5e..3d9a04f62 100644
  
  # Makefile.inc provides the CSOURCES and HHEADERS defines
  include Makefile.inc
+diff --git a/src/tool_doswin.c b/src/tool_doswin.c
+index 779a3cb8f..354dee09e 100644
+--- a/src/tool_doswin.c
++++ b/src/tool_doswin.c
+@@ -682,6 +682,8 @@ struct curl_slist *GetLoadedModulePaths(void)
+ 
+   mod.dwSize = sizeof(MODULEENTRY32);
+ 
++#if _WIN32_WINNT >= 0x0500	/* Toolhelp functions not available before Win2000 */
++
+   do {
+     hnd = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
+   } while(hnd == INVALID_HANDLE_VALUE && GetLastError() == ERROR_BAD_LENGTH);
+@@ -721,6 +723,8 @@ error:
+ cleanup:
+   if(hnd != INVALID_HANDLE_VALUE)
+     CloseHandle(hnd);
++
++#endif /* _WIN32_WINNT >= 0x0500 */
+   return slist;
+ }
+ 
