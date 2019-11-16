@@ -95,7 +95,8 @@ REM : Revert "crypto" otherwise patching will fail
 pushd crypto
 git checkout -f HEAD
 popd
-git submodule sync
+if not exist "crypto\.git" git submodule update --init --recursive
+if     exist "crypto\.git" git submodule sync
 if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
 :: Patch
