@@ -276,7 +276,7 @@ xcopy "%BUILD_OUTDIR%\mbedTLS\crypto\library\*.a"    "%BUILD_OUTDIR%" /YF
 objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS.txt"
 
 :: Build libcurl with libmbedtls
-set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -I../../mbedTLS/include -I../../mbedTLS/crypto/include
+set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -DUSE_TLS_SRP -I../../mbedTLS/include -I../../mbedTLS/crypto/include
 set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../../mbedTLS/library -L../../mbedTLS/crypto/library
 if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
 if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
