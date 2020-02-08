@@ -14,6 +14,8 @@ set BUILD_SOLUTION=%CD%\cURL.sln
 set BUILD_CONFIG=Debug
 set BUILD_VERBOSITY=normal
 :: Verbosity: quiet, minimal, normal, detailed, diagnostic
+set BUILD_FLAGFILE=bin\flag
+set BUILD_ERRFILE=bin\error
 
 :prerequisites
 if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit /B 2
@@ -61,7 +63,7 @@ popd
 :: ----------------------------------------------------------------
 set CONFIG=%BUILD_CONFIG%-VC-mbedTLS-lib
 if /I "%1" neq "/%CONFIG%" goto :mbedtls_lib_end
-	echo Building> "%~dp0\flag-%CONFIG%"
+	echo Building> "%BUILD_FLAGFILE%-%CONFIG%"
 
 	title %CONFIG%-Win32
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
@@ -72,8 +74,8 @@ if /I "%1" neq "/%CONFIG%" goto :mbedtls_lib_end
 	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_lib_done
 
 :mbedtls_lib_done
-	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
-	del "%~dp0\flag-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%BUILD_ERRFILE%-%CONFIG%"
+	del "%BUILD_FLAGFILE%-%CONFIG%"
 	exit /B
 :mbedtls_lib_end
 
@@ -83,7 +85,7 @@ if /I "%1" neq "/%CONFIG%" goto :mbedtls_lib_end
 :: ----------------------------------------------------------------
 set CONFIG=%BUILD_CONFIG%-VC-mbedTLS-dll
 if /I "%1" neq "/%CONFIG%" goto :mbedtls_dll_end
-	echo Building> "%~dp0\flag-%CONFIG%"
+	echo Building> "%BUILD_FLAGFILE%-%CONFIG%"
 
 	title %CONFIG%-Win32
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
@@ -94,8 +96,8 @@ if /I "%1" neq "/%CONFIG%" goto :mbedtls_dll_end
 	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_dll_done
 
 :mbedtls_dll_done
-	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
-	del "%~dp0\flag-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%BUILD_ERRFILE%-%CONFIG%"
+	del "%BUILD_FLAGFILE%-%CONFIG%"
 	exit /B
 :mbedtls_dll_end
 
@@ -105,7 +107,7 @@ if /I "%1" neq "/%CONFIG%" goto :mbedtls_dll_end
 :: ----------------------------------------------------------------
 set CONFIG=%BUILD_CONFIG%-VC-WinSSL-lib
 if /I "%1" neq "/%CONFIG%" goto :winssl_lib_end
-	echo Building> "%~dp0\flag-%CONFIG%"
+	echo Building> "%BUILD_FLAGFILE%-%CONFIG%"
 
 	title %CONFIG%-Win32
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
@@ -116,8 +118,8 @@ if /I "%1" neq "/%CONFIG%" goto :winssl_lib_end
 	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_lib_done
 
 :winssl_lib_done
-	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
-	del "%~dp0\flag-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%BUILD_ERRFILE%-%CONFIG%"
+	del "%BUILD_FLAGFILE%-%CONFIG%"
 	exit /B
 :winssl_lib_end
 
@@ -127,7 +129,7 @@ if /I "%1" neq "/%CONFIG%" goto :winssl_lib_end
 :: ----------------------------------------------------------------
 set CONFIG=%BUILD_CONFIG%-VC-WinSSL-dll
 if /I "%1" neq "/%CONFIG%" goto :winssl_dll_end
-	echo Building> "%~dp0\flag-%CONFIG%"
+	echo Building> "%BUILD_FLAGFILE%-%CONFIG%"
 
 	title %CONFIG%-Win32
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
@@ -138,8 +140,8 @@ if /I "%1" neq "/%CONFIG%" goto :winssl_dll_end
 	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_dll_done
 
 :winssl_dll_done
-	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
-	del "%~dp0\flag-%CONFIG%"
+	if %errorlevel% neq 0 echo %errorlevel%> "%BUILD_ERRFILE%-%CONFIG%"
+	del "%BUILD_FLAGFILE%-%CONFIG%"
 	exit /B
 :winssl_dll_end
 
@@ -149,7 +151,7 @@ if /I "%1" neq "/%CONFIG%" goto :winssl_dll_end
 :: ----------------------------------------------------------------
 set CONFIG=%BUILD_CONFIG%-VC-mbedTLS-lib
 if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :mbedtls_lib_httponly_end
-	echo Building> "%~dp0\flag-%CONFIG%-HTTP_ONLY"
+	echo Building> "%BUILD_FLAGFILE%-%CONFIG%-HTTP_ONLY"
 
 	title %CONFIG%-Win32-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
@@ -160,8 +162,8 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :mbedtls_lib_httponly_end
 	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_lib_httponly_done
 
 :mbedtls_lib_httponly_done
-	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
-	del "%~dp0\flag-%CONFIG%-HTTP_ONLY"
+	if %errorlevel% neq 0 echo %errorlevel%> "%BUILD_ERRFILE%-%CONFIG%"
+	del "%BUILD_FLAGFILE%-%CONFIG%-HTTP_ONLY"
 	exit /B
 :mbedtls_lib_httponly_end
 
@@ -171,7 +173,7 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :mbedtls_lib_httponly_end
 :: ----------------------------------------------------------------
 set CONFIG=%BUILD_CONFIG%-VC-mbedTLS-dll
 if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :mbedtls_dll_httponly_end
-	echo Building> "%~dp0\flag-%CONFIG%-HTTP_ONLY"
+	echo Building> "%BUILD_FLAGFILE%-%CONFIG%-HTTP_ONLY"
 
 	title %CONFIG%-Win32-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
@@ -182,8 +184,8 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :mbedtls_dll_httponly_end
 	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :mbedtls_dll_httponly_done
 
 :mbedtls_dll_httponly_done
-	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
-	del "%~dp0\flag-%CONFIG%-HTTP_ONLY"
+	if %errorlevel% neq 0 echo %errorlevel%> "%BUILD_ERRFILE%-%CONFIG%"
+	del "%BUILD_FLAGFILE%-%CONFIG%-HTTP_ONLY"
 	exit /B
 :mbedtls_dll_httponly_end
 
@@ -193,7 +195,7 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :mbedtls_dll_httponly_end
 :: ----------------------------------------------------------------
 set CONFIG=%BUILD_CONFIG%-VC-WinSSL-lib
 if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :winssl_lib_httponly_end
-	echo Building> "%~dp0\flag-%CONFIG%-HTTP_ONLY"
+	echo Building> "%BUILD_FLAGFILE%-%CONFIG%-HTTP_ONLY"
 
 	title %CONFIG%-Win32-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
@@ -204,8 +206,8 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :winssl_lib_httponly_end
 	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_lib_httponly_done
 
 :winssl_lib_httponly_done
-	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
-	del "%~dp0\flag-%CONFIG%-HTTP_ONLY"
+	if %errorlevel% neq 0 echo %errorlevel%> "%BUILD_ERRFILE%-%CONFIG%"
+	del "%BUILD_FLAGFILE%-%CONFIG%-HTTP_ONLY"
 	exit /B
 :winssl_lib_httponly_end
 
@@ -215,7 +217,7 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :winssl_lib_httponly_end
 :: ----------------------------------------------------------------
 set CONFIG=%BUILD_CONFIG%-VC-WinSSL-dll
 if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :winssl_dll_httponly_end
-	echo Building> "%~dp0\flag-%CONFIG%-HTTP_ONLY"
+	echo Building> "%BUILD_FLAGFILE%-%CONFIG%-HTTP_ONLY"
 
 	title %CONFIG%-Win32-HTTP_ONLY
 	msbuild /m /t:build "%BUILD_SOLUTION%" /p:Configuration=%CONFIG% /p:Platform=Win32 /p:MyPathSuffix=-HTTP_ONLY /p:MyCurlDefinitions=HTTP_ONLY /p:PlatformToolset=%BUILD_PLATFORMTOOLSET% /nologo /verbosity:%BUILD_VERBOSITY%
@@ -226,8 +228,8 @@ if /I "%1" neq "/%CONFIG%-HTTP_ONLY" goto :winssl_dll_httponly_end
 	if %errorlevel% neq 0 echo ERRORLEVEL = %errorlevel% && pause && goto :winssl_dll_httponly_done
 
 :winssl_dll_httponly_done
-	if %errorlevel% neq 0 echo %errorlevel%> "%~dp0\error-%CONFIG%"
-	del "%~dp0\flag-%CONFIG%-HTTP_ONLY"
+	if %errorlevel% neq 0 echo %errorlevel%> "%BUILD_ERRFILE%-%CONFIG%"
+	del "%BUILD_FLAGFILE%-%CONFIG%-HTTP_ONLY"
 	exit /B
 :winssl_dll_httponly_end
 
@@ -243,8 +245,8 @@ echo Building...
 title %BUILD_CONFIG% Master
 set START_TIME=%date% %time%
 
-if exist "%~dp0\flag-%BUILD_CONFIG%-*" del "%~dp0\flag-%BUILD_CONFIG%-*"
-if exist "%~dp0\error-%BUILD_CONFIG%-*" del "%~dp0\error-%BUILD_CONFIG%-*"
+if exist "%BUILD_FLAGFILE%-%BUILD_CONFIG%-*" del "%BUILD_FLAGFILE%-%BUILD_CONFIG%-*"
+if exist "%BUILD_ERRFILE%-%BUILD_CONFIG%-*" del "%BUILD_ERRFILE%-%BUILD_CONFIG%-*"
 
 start "" "%COMSPEC%" /C "%~f0" /%BUILD_CONFIG%-VC-mbedTLS-lib
 start "" "%COMSPEC%" /C "%~f0" /%BUILD_CONFIG%-VC-mbedTLS-dll
@@ -258,22 +260,22 @@ start "" "%COMSPEC%" /C "%~f0" /%BUILD_CONFIG%-VC-WinSSL-dll-HTTP_ONLY
 :: Wait for children
 timeout /T 5 /NOBREAK > NUL
 :WAIT
-	if not exist "%~dp0\flag-%BUILD_CONFIG%-*" goto :WAIT_END
+	if not exist "%BUILD_FLAGFILE%-%BUILD_CONFIG%-*" goto :WAIT_END
 	timeout /T 1 /NOBREAK > NUL
 	goto :WAIT
 :WAIT_END
-if exist "%~dp0\error-%BUILD_CONFIG%-*" exit /B 1
+if exist "%BUILD_ERRFILE%-%BUILD_CONFIG%-*" exit /B 1
 
 
 :TEST
-for /D %%a in (%BUILD_CONFIG%-VC-mbedTLS-*) do (
+for /D %%a in (bin\%BUILD_CONFIG%-VC-mbedTLS-*) do (
 	if exist "%~dp0\cacert.pem" xcopy "%~dp0\cacert.pem" "%%a" /FIYD
 
 	echo "%%~dp0\curl.exe" -L -v --capath "%%~dp0\" -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%%a\test.bat"
 	echo "%%~dp0\curl.exe" -V>> "%%a\test.bat"
 	echo pause>> "%%a\test.bat"
 )
-for /D %%a in (%BUILD_CONFIG%-VC-WinSSL-*) do (
+for /D %%a in (bin\%BUILD_CONFIG%-VC-WinSSL-*) do (
 	echo "%%~dp0\curl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%%a\test.bat"
 	echo "%%~dp0\curl.exe" -V>> "%%a\test.bat"
 	echo pause>> "%%a\test.bat"

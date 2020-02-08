@@ -27,6 +27,3 @@ del *.ncb
 del /AH *.suo
 del *.sdf
 del *.VC.db
-
-del flag-*
-del error-*
