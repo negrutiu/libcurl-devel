@@ -19,6 +19,7 @@ set BUILD_ERRFILE=bin\error
 
 :prerequisites
 if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit /B 2
+mkdir bin > NUL 2> NUL
 
 :COMPILER
 set VSWHERE=%PF%\Microsoft Visual Studio\Installer\vswhere.exe
