@@ -15,6 +15,9 @@ set BUILD_CONFIG=Release
 set BUILD_VERBOSITY=normal
 :: Verbosity: quiet, minimal, normal, detailed, diagnostic
 
+:prerequisites
+if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit /B 2
+
 :COMPILER
 set VSWHERE=%PF%\Microsoft Visual Studio\Installer\vswhere.exe
 if exist "%VSWHERE%" (

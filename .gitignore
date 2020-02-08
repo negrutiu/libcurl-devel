@@ -6,6 +6,8 @@ zlib
 
 Debug-*/
 Release-*/
+cacert.pem
+
 .vs/
 ipch/
 

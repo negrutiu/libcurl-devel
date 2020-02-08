@@ -17,6 +17,7 @@ goto :EOF
 echo.
 echo.
 echo.
+del cacert.pem
 
 rd /S /Q .vs
 rd /S /Q ipch
