@@ -232,80 +232,80 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-mbedTLS-lib|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-WinSSL-lib|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-mbedTLS-dll|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-WinSSL-dll|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-mbedTLS-lib|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-WinSSL-lib|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-mbedTLS-dll|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-WinSSL-dll|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-mbedTLS-lib|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-WinSSL-lib|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-mbedTLS-dll|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-WinSSL-dll|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-mbedTLS-lib|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-WinSSL-lib|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-mbedTLS-dll|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-VC-WinSSL-dll|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)-$(Platform)$(MyPathSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VC-mbedTLS-lib|Win32'">
     <ClCompile>

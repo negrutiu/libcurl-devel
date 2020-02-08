@@ -19,7 +19,7 @@ if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit
 :: ----------------------------------------------------------------
 :ARG_MBEDTLS
 if /I "%1" equ "/build-mbedtls-x86" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-Win32
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS-Win32
 	set BUILD_ARCH=X86
 	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=1
@@ -32,7 +32,7 @@ if /I "%1" equ "/build-mbedtls-x86" (
 )
 
 if /I "%1" equ "/build-mbedtls-x64" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-x64
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS-x64
 	set BUILD_ARCH=X64
 	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=1
@@ -44,7 +44,7 @@ if /I "%1" equ "/build-mbedtls-x64" (
 )
 
 if /I "%1" equ "/build-mbedtls-x86-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-Win32-HTTP_ONLY
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS-Win32-HTTP_ONLY
 	set BUILD_ARCH=X86
 	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=0
@@ -56,7 +56,7 @@ if /I "%1" equ "/build-mbedtls-x86-HTTP_ONLY" (
 )
 
 if /I "%1" equ "/build-mbedtls-x64-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS-x64-HTTP_ONLY
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS-x64-HTTP_ONLY
 	set BUILD_ARCH=X64
 	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=0
@@ -68,7 +68,7 @@ if /I "%1" equ "/build-mbedtls-x64-HTTP_ONLY" (
 )
 
 if /I "%1" equ "/build-mbedtls-x86-mbedtls_dll" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS_dll-Win32
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS_dll-Win32
 	set BUILD_ARCH=X86
 	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=1
@@ -80,7 +80,7 @@ if /I "%1" equ "/build-mbedtls-x86-mbedtls_dll" (
 )
 
 if /I "%1" equ "/build-mbedtls-x64-mbedtls_dll" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-mbedTLS_dll-x64
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS_dll-x64
 	set BUILD_ARCH=X64
 	set BUILD_SSL_ENGINE=MBEDTLS
 	set BUILD_USE_ZLIB=1
@@ -93,7 +93,7 @@ if /I "%1" equ "/build-mbedtls-x64-mbedtls_dll" (
 
 :ARG_WINSSL
 if /I "%1" equ "/build-winssl-x86" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-WinSSL-Win32
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-WinSSL-Win32
 	set BUILD_ARCH=X86
 	set BUILD_SSL_ENGINE=WINSSL
 	set BUILD_USE_ZLIB=1
@@ -105,7 +105,7 @@ if /I "%1" equ "/build-winssl-x86" (
 )
 
 if /I "%1" equ "/build-winssl-x64" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-WinSSL-x64
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-WinSSL-x64
 	set BUILD_ARCH=X64
 	set BUILD_SSL_ENGINE=WINSSL
 	set BUILD_USE_ZLIB=1
@@ -117,7 +117,7 @@ if /I "%1" equ "/build-winssl-x64" (
 )
 
 if /I "%1" equ "/build-winssl-x86-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-WinSSL-Win32-HTTP_ONLY
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-WinSSL-Win32-HTTP_ONLY
 	set BUILD_ARCH=X86
 	set BUILD_SSL_ENGINE=WINSSL
 	set BUILD_USE_ZLIB=0
@@ -129,7 +129,7 @@ if /I "%1" equ "/build-winssl-x86-HTTP_ONLY" (
 )
 
 if /I "%1" equ "/build-winssl-x64-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\Release-mingw-WinSSL-x64-HTTP_ONLY
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-WinSSL-x64-HTTP_ONLY
 	set BUILD_ARCH=X64
 	set BUILD_SSL_ENGINE=WINSSL
 	set BUILD_USE_ZLIB=0

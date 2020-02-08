@@ -4,8 +4,7 @@ OpenSSL
 nghttp2
 zlib
 
-Debug-*/
-Release-*/
+/bin/
 cacert.pem
 
 .vs/
