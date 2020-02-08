@@ -15,6 +15,7 @@ goto :EOF
 
 :CLEANUP
 rd /S /Q bin
+rd /S /Q Release
 del cacert.pem
 
 rd /S /Q .vs

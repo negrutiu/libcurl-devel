@@ -5,6 +5,8 @@ nghttp2
 zlib
 
 /bin/
+/Release/
+libcurl-devel-*.7z
 cacert.pem
 
 .vs/
