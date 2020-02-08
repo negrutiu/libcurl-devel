@@ -405,12 +405,12 @@ objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
 
 :: test.bat + cacert.pem
 if /I "%BUILD_SSL_ENGINE%" equ "WinSSL" (
-	echo "%%~dp0\curl" -L -v negrutiu.com> "%BUILD_OUTDIR%\test.bat"
-	echo "%%~dp0\curl" -V>> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl.exe" -V>> "%BUILD_OUTDIR%\test.bat"
 	echo pause>> "%BUILD_OUTDIR%\test.bat"
 ) else (
 	xcopy "%~dp0\cacert.pem" "%BUILD_OUTDIR%" /FIYD
-	echo "%%~dp0\curl" -L -v --capath "%%~dp0\" negrutiu.com> "%BUILD_OUTDIR%\test.bat"
-	echo "%%~dp0\curl" -V>> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl.exe" -L -v --capath "%%~dp0\" -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl.exe" -V>> "%BUILD_OUTDIR%\test.bat"
 	echo pause>> "%BUILD_OUTDIR%\test.bat"
 )

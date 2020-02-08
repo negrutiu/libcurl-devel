@@ -269,12 +269,12 @@ if exist "%~dp0\error-%BUILD_CONFIG%-*" exit /B 1
 for /D %%a in (%BUILD_CONFIG%-VC-mbedTLS-*) do (
 	if exist "%~dp0\cacert.pem" xcopy "%~dp0\cacert.pem" "%%a" /FIYD
 
-	echo "%%~dp0\curl.exe" -L -v --capath "%%~dp0\" negrutiu.com> "%%a\test.bat"
+	echo "%%~dp0\curl.exe" -L -v --capath "%%~dp0\" -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%%a\test.bat"
 	echo "%%~dp0\curl.exe" -V>> "%%a\test.bat"
 	echo pause>> "%%a\test.bat"
 )
 for /D %%a in (%BUILD_CONFIG%-VC-WinSSL-*) do (
-	echo "%%~dp0\curl.exe" -L -v negrutiu.com> "%%a\test.bat"
+	echo "%%~dp0\curl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%%a\test.bat"
 	echo "%%~dp0\curl.exe" -V>> "%%a\test.bat"
 	echo pause>> "%%a\test.bat"
 )
