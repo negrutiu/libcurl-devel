@@ -7,6 +7,8 @@ if not exist "%Z7%" echo ERROR: Missing %Z7% && pause && exit /B 2
 cd /d "%~dp0"
 set package=Release
 
+if not exist "bin" echo ERROR: Missing "bin" && pause && exit /B 2
+
 rmdir /S /Q "%package%" > NUL 2> NUL
 mkdir "%package%"
 
@@ -101,10 +103,10 @@ echo ---------------------------------------------------------------------------
 echo package
 echo -------------------------------------------------------------------------------
 
-for /f tokens^=2^ delims^=^" %%v in ('find "LIBCURL_VERSION " "curl\include\curl\curlver.h"') do set CURL_VERSION=%%v
+REM for /f tokens^=2^ delims^=^" %%v in ('find "LIBCURL_VERSION " "curl\include\curl\curlver.h"') do set CURL_VERSION=%%v
 
 pushd "%package%"
-"%Z7%" a "..\libcurl-devel-%CURL_VERSION%-negrutiu.7z" * -r -mx=9 -myx=9 -ms=e -mqs=on
+"%Z7%" a "..\libcurl-devel-negrutiu.7z" * -r -mx=9 -myx=9 -ms=e -mqs=on
 popd
 
 echo -------------------------------------------------------------------------------
