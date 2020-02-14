@@ -30,18 +30,23 @@ echo ---------------------------------------------------------------------------
 xcopy "curl\*.md"							"%package%\src\curl\" /IY
 xcopy "curl\README*.*"						"%package%\src\curl\" /IY
 xcopy "curl\COPYING"						"%package%\src\curl\" /IY
+xcopy "curl\docs\THANKS"					"%package%\src\curl\" /IY
 xcopy "curl\include\*.*"					"%package%\src\curl\include\" /EI
 xcopy "curl\lib\*.*"						"%package%\src\curl\lib\" /EI
 xcopy "curl\src\*.*"						"%package%\src\curl\src\" /EI
 
 xcopy "mbedtls\*.md"						"%package%\src\mbedtls\" /IY
+xcopy "mbedtls\README*.*"					"%package%\src\mbedtls\" /IY
 xcopy "mbedtls\LICENSE"						"%package%\src\mbedtls\" /IY
+xcopy "mbedtls\apache-2.0.txt"				"%package%\src\mbedtls\" /IY
 xcopy "mbedtls\include\*.*"					"%package%\src\mbedtls\include\" /EI
 xcopy "mbedtls\library\*.*"					"%package%\src\mbedtls\library\" /EI
 xcopy "mbedtls\programs\*.*"				"%package%\src\mbedtls\programs\" /EI
 
 xcopy "mbedtls\crypto\*.md"					"%package%\src\mbedtls\crypto\" /IY
+xcopy "mbedtls\crypto\README*.*"			"%package%\src\mbedtls\crypto\" /IY
 xcopy "mbedtls\crypto\LICENSE"				"%package%\src\mbedtls\crypto\" /IY
+xcopy "mbedtls\crypto\apache-2.0.txt"		"%package%\src\mbedtls\crypto\" /IY
 xcopy "mbedtls\crypto\3rdparty\*.*"			"%package%\src\mbedtls\crypto\3rdparty\" /EI
 xcopy "mbedtls\crypto\include\*.*"			"%package%\src\mbedtls\crypto\include\" /EI
 xcopy "mbedtls\crypto\library\*.*"			"%package%\src\mbedtls\crypto\library\" /EI
@@ -102,6 +107,9 @@ exit /B
 echo -------------------------------------------------------------------------------
 echo package
 echo -------------------------------------------------------------------------------
+
+xcopy "LICENSE"								"%package%\" /Y
+xcopy "README.md"							"%package%\" /Y
 
 REM for /f tokens^=2^ delims^=^" %%v in ('find "LIBCURL_VERSION " "curl\include\curl\curlver.h"') do set CURL_VERSION=%%v
 
