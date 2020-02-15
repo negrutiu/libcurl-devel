@@ -53,31 +53,31 @@ xcopy "mbedtls\crypto\library\*.*"			"%package%\src\mbedtls\crypto\library\" /EI
 xcopy "mbedtls\crypto\programs\*.*"			"%package%\src\mbedtls\crypto\programs\" /EI
 
 echo -------------------------------------------------------------------------------
-echo versions
+echo readme
 echo -------------------------------------------------------------------------------
 
 set README=%package%\src\Readme.txt
 echo Git tags:> "%readme%"
 
-set TAG=
-pushd curl
-for /f usebackq %%i in (`git rev-parse --abbrev-ref HEAD`) do set TAG=%%i
-if /i "%TAG%" equ "HEAD" (
-	for /f usebackq %%i in (`git describe --tags`) do set TAG=%%i
-)
-popd
-echo %TAG%
-echo %TAG%>> "%readme%"
+call :log_git_tag curl
+call :log_git_tag mbedtls
+call :log_git_tag nghttp2
+call :log_git_tag zlib
 
-set TAG=
-pushd mbedtls
-for /f usebackq %%i in (`git rev-parse --abbrev-ref HEAD`) do set TAG=%%i
-if /i "%TAG%" equ "HEAD" (
-	for /f usebackq %%i in (`git describe --tags`) do set TAG=%%i
-)
-popd
-echo %TAG%
-echo %TAG%>> "%readme%"
+goto :log_git_tag_end
+:log_git_tag
+	set TAG=
+	pushd %~1
+	for /f usebackq %%i in (`git rev-parse --abbrev-ref HEAD`) do set TAG=%%i
+	if /i "%TAG%" equ "HEAD" (
+		for /f usebackq %%i in (`git describe --tags`) do set TAG=%%i
+	)
+	popd
+	echo %~1: %TAG%
+	echo %~1: %TAG%>> "%readme%"
+	exit /B 0
+:log_git_tag_end
+
 
 echo.>> "%readme%"
 echo NOTE:>> "%readme%"
