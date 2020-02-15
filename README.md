@@ -3,6 +3,9 @@
 [![License: 0BSD](https://img.shields.io/badge/License-0BSD-blue.svg)](/LICENSE)
 [![Latest Release](https://img.shields.io/badge/dynamic/json.svg?label=Latest%20Release&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fnegrutiu%2Flibcurl-devel%2Freleases%2Flatest&query=%24.name&colorB=orange)](../../releases/latest)
 
+### Webpage:
+https://github.com/negrutiu/libcurl-devel
+
 ### Features:
 * [curl / libcurl](https://curl.haxx.se/) **Windows** binaries for **x86** and **amd64** architectures
 * [mbedTLS](https://tls.mbed.org/) and [schannel](https://docs.microsoft.com/en-us/windows/win32/secauthn/secure-channel) as SSL backends
@@ -67,6 +70,6 @@ Project|License
 :---|:---
 This project itself|[0BSD](LICENSE)
 libcurl|[MIT/X inspired](https://curl.haxx.se/docs/copyright.html)
-mbed TLS|[Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+mbed TLS|[Apache 2.0](https://tls.mbed.org/how-to-get)
 nghttp2|[MIT](https://github.com/nghttp2/nghttp2/blob/master/COPYING)
 zlib|[zlib](https://www.zlib.net/zlib_license.html)
