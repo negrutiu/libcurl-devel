@@ -1,1 +1,1 @@
-PowerShell.exe -ExecutionPolicy Unrestricted -Command "Invoke-WebRequest -Uri https://curl.haxx.se/ca/cacert.pem -OutFile '%~dp0\cacert.pem'"
+PowerShell.exe -ExecutionPolicy Unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 ; Invoke-WebRequest -Uri https://curl.haxx.se/ca/cacert.pem -OutFile '%~dp0\cacert.pem'"
