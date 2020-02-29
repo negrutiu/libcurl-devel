@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1022
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cURL", "cURL.vcxproj", "{F7D3A62C-AC02-415C-A0B7-5CCD826212AA}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -12,6 +12,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmbedtls", "libmbedtls.vcxproj", "{46CF2D25-6A36-4189-B59C-E4815388E554}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcurl", "libcurl.vcxproj", "{F86DD584-0786-46C5-A4FD-79948C3E6A4D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{46CF2D25-6A36-4189-B59C-E4815388E554} = {46CF2D25-6A36-4189-B59C-E4815388E554}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,5 +127,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {28A629D9-E72B-4648-AEEE-A1DE474C7609}
 	EndGlobalSection
 EndGlobal
