@@ -757,6 +757,7 @@
     <ClCompile Include="mbedTLS\library\ssl_ciphersuites.c" />
     <ClCompile Include="mbedTLS\library\ssl_cli.c" />
     <ClCompile Include="mbedTLS\library\ssl_cookie.c" />
+    <ClCompile Include="mbedTLS\library\ssl_msg.c" />
     <ClCompile Include="mbedTLS\library\ssl_srv.c" />
     <ClCompile Include="mbedTLS\library\ssl_ticket.c" />
     <ClCompile Include="mbedTLS\library\ssl_tls.c" />

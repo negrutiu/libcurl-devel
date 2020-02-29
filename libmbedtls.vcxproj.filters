@@ -82,6 +82,9 @@
     <ClCompile Include="mbedTLS\library\ssl_cookie.c">
       <Filter>library</Filter>
     </ClCompile>
+    <ClCompile Include="mbedTLS\library\ssl_msg.c">
+      <Filter>library</Filter>
+    </ClCompile>
     <ClCompile Include="mbedTLS\library\ssl_srv.c">
       <Filter>library</Filter>
     </ClCompile>
