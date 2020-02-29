@@ -113,9 +113,14 @@ xcopy "README.md"							"%package%\" /Y
 
 REM for /f tokens^=2^ delims^=^" %%v in ('find "LIBCURL_VERSION " "curl\include\curl\curlver.h"') do set CURL_VERSION=%%v
 
-pushd "%package%"
-"%Z7%" a "..\libcurl-devel-negrutiu.7z" * -r -mx=9 -myx=9 -ms=e -mqs=on
-popd
+echo.
+set /P prompt7z=Build .7z archive? [Y/n] 
+if /I "%prompt7z%" equ "n" goto :7z_end
+	move /Y libcurl-devel-negrutiu.7z libcurl-devel-negrutiu.7z.bak 2> NUL
+	pushd "%package%"
+	"%Z7%" a "..\libcurl-devel-negrutiu.7z" * -r -mx=9 -myx=9 -ms=e -mqs=on
+	popd
+:7z_end
 
 echo -------------------------------------------------------------------------------
 pause
