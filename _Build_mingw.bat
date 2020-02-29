@@ -222,7 +222,8 @@ title mingw-%BUILD_ARCH%-nghttp2
 cd /d "%~dp0"
 xcopy "nghttp2\lib" "%BUILD_OUTDIR%\nghttp2\lib" /QEIYD
 cd /d "%BUILD_OUTDIR%\nghttp2"
-if not exist "include" mklink /J "include" "lib\includes"
+rd "include" > NUL 2> NUL
+mklink /J "include" "lib\includes"
 cd lib
 
 set NGHTTP2_CFLAGS=-DNGHTTP2_STATICLIB
