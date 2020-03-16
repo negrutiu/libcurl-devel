@@ -401,12 +401,6 @@
     <ClCompile Include="cURL\lib\vtls\openssl.c">
       <Filter>Source Files\vtls</Filter>
     </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\polarssl.c">
-      <Filter>Source Files\vtls</Filter>
-    </ClCompile>
-    <ClCompile Include="cURL\lib\vtls\polarssl_threadlock.c">
-      <Filter>Source Files\vtls</Filter>
-    </ClCompile>
     <ClCompile Include="cURL\lib\vtls\schannel.c">
       <Filter>Source Files\vtls</Filter>
     </ClCompile>
@@ -424,6 +418,12 @@
     </ClCompile>
     <ClCompile Include="cURL\lib\socketpair.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\rename.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cURL\lib\vtls\mbedtls_threadlock.c">
+      <Filter>Source Files\vtls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -799,12 +799,6 @@
     <ClInclude Include="cURL\lib\vtls\openssl.h">
       <Filter>Source Files\vtls</Filter>
     </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\polarssl.h">
-      <Filter>Source Files\vtls</Filter>
-    </ClInclude>
-    <ClInclude Include="cURL\lib\vtls\polarssl_threadlock.h">
-      <Filter>Source Files\vtls</Filter>
-    </ClInclude>
     <ClInclude Include="cURL\lib\vtls\schannel.h">
       <Filter>Source Files\vtls</Filter>
     </ClInclude>
@@ -819,6 +813,12 @@
     </ClInclude>
     <ClInclude Include="cURL\lib\socketpair.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\rename.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\lib\vtls\mbedtls_threadlock.h">
+      <Filter>Source Files\vtls</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

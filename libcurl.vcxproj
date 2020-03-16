@@ -701,6 +701,7 @@
     <ClCompile Include="cURL\lib\pop3.c" />
     <ClCompile Include="cURL\lib\progress.c" />
     <ClCompile Include="cURL\lib\rand.c" />
+    <ClCompile Include="cURL\lib\rename.c" />
     <ClCompile Include="cURL\lib\rtsp.c" />
     <ClCompile Include="cURL\lib\security.c" />
     <ClCompile Include="cURL\lib\select.c" />
@@ -745,11 +746,10 @@
     <ClCompile Include="cURL\lib\vtls\gskit.c" />
     <ClCompile Include="cURL\lib\vtls\gtls.c" />
     <ClCompile Include="cURL\lib\vtls\mbedtls.c" />
+    <ClCompile Include="cURL\lib\vtls\mbedtls_threadlock.c" />
     <ClCompile Include="cURL\lib\vtls\mesalink.c" />
     <ClCompile Include="cURL\lib\vtls\nss.c" />
     <ClCompile Include="cURL\lib\vtls\openssl.c" />
-    <ClCompile Include="cURL\lib\vtls\polarssl.c" />
-    <ClCompile Include="cURL\lib\vtls\polarssl_threadlock.c" />
     <ClCompile Include="cURL\lib\vtls\schannel.c" />
     <ClCompile Include="cURL\lib\vtls\schannel_verify.c" />
     <ClCompile Include="cURL\lib\vtls\sectransp.c" />
@@ -844,6 +844,7 @@
     <ClInclude Include="cURL\lib\pop3.h" />
     <ClInclude Include="cURL\lib\progress.h" />
     <ClInclude Include="cURL\lib\rand.h" />
+    <ClInclude Include="cURL\lib\rename.h" />
     <ClInclude Include="cURL\lib\rtsp.h" />
     <ClInclude Include="cURL\lib\select.h" />
     <ClInclude Include="cURL\lib\sendf.h" />
@@ -879,11 +880,10 @@
     <ClInclude Include="cURL\lib\vtls\gskit.h" />
     <ClInclude Include="cURL\lib\vtls\gtls.h" />
     <ClInclude Include="cURL\lib\vtls\mbedtls.h" />
+    <ClInclude Include="cURL\lib\vtls\mbedtls_threadlock.h" />
     <ClInclude Include="cURL\lib\vtls\mesalink.h" />
     <ClInclude Include="cURL\lib\vtls\nssg.h" />
     <ClInclude Include="cURL\lib\vtls\openssl.h" />
-    <ClInclude Include="cURL\lib\vtls\polarssl.h" />
-    <ClInclude Include="cURL\lib\vtls\polarssl_threadlock.h" />
     <ClInclude Include="cURL\lib\vtls\schannel.h" />
     <ClInclude Include="cURL\lib\vtls\sectransp.h" />
     <ClInclude Include="cURL\lib\vtls\vtls.h" />
