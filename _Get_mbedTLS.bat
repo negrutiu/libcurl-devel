@@ -88,16 +88,16 @@ echo Pulling...
 git pull origin "%NEW_TAG%"
 if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
-REM :: git submodule
-echo.
-echo Submodules...
-REM : Revert "crypto" otherwise patching will fail
-pushd crypto
-git checkout -f HEAD
-popd
-if not exist "crypto\.git" git submodule update --init --recursive
-if     exist "crypto\.git" git submodule sync
-if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
+REM | REM :: git submodule
+REM | echo.
+REM | echo Submodules...
+REM | REM : Revert "crypto" otherwise patching will fail
+REM | pushd crypto
+REM | git checkout -f HEAD
+REM | popd
+REM | if not exist "crypto\.git" git submodule update --init --recursive
+REM | if     exist "crypto\.git" git submodule sync
+REM | if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
 :: Patch
 echo.
@@ -109,9 +109,7 @@ exit /B 1
 :PATCH
 cd /d "%~dp0"
 git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
-
-cd /d "%~dp0\mbedTLS\crypto"
-git apply --verbose --whitespace=fix ..\..\_Patches\_patch-%LIBNAME%-crypto.diff
+git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%-crypto.diff
 
 echo.
 pause

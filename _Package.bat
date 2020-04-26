@@ -18,7 +18,7 @@ echo ---------------------------------------------------------------------------
 
 xcopy "curl\include\curl\*.h"				"%package%\include\curl\" /EI
 xcopy "mbedtls\include\mbedtls\*.h"			"%package%\include\mbedtls\" /EI
-xcopy "mbedtls\crypto\include\mbedtls\*.h"	"%package%\include\mbedtls\crypto\mbedtls\" /EI
+xcopy "mbedtls\include\psa\*.h"				"%package%\include\mbedtls\psa\" /EI
 xcopy "nghttp2\src\includes\nghttp2\*.h"	"%package%\include\nghttp2\" /EI
 xcopy "zlib\zlib.h"							"%package%\include\zlib\" /I
 xcopy "zlib\zconf.h"						"%package%\include\zlib\" /I
@@ -39,18 +39,10 @@ xcopy "mbedtls\*.md"						"%package%\src\mbedtls\" /IY
 xcopy "mbedtls\README*.*"					"%package%\src\mbedtls\" /IY
 xcopy "mbedtls\LICENSE"						"%package%\src\mbedtls\" /IY
 xcopy "mbedtls\apache-2.0.txt"				"%package%\src\mbedtls\" /IY
+REM xcopy "mbedtls\3rdparty\*.*"				"%package%\src\mbedtls\3rdparty\" /EI
 xcopy "mbedtls\include\*.*"					"%package%\src\mbedtls\include\" /EI
 xcopy "mbedtls\library\*.*"					"%package%\src\mbedtls\library\" /EI
 xcopy "mbedtls\programs\*.*"				"%package%\src\mbedtls\programs\" /EI
-
-xcopy "mbedtls\crypto\*.md"					"%package%\src\mbedtls\crypto\" /IY
-xcopy "mbedtls\crypto\README*.*"			"%package%\src\mbedtls\crypto\" /IY
-xcopy "mbedtls\crypto\LICENSE"				"%package%\src\mbedtls\crypto\" /IY
-xcopy "mbedtls\crypto\apache-2.0.txt"		"%package%\src\mbedtls\crypto\" /IY
-xcopy "mbedtls\crypto\3rdparty\*.*"			"%package%\src\mbedtls\crypto\3rdparty\" /EI
-xcopy "mbedtls\crypto\include\*.*"			"%package%\src\mbedtls\crypto\include\" /EI
-xcopy "mbedtls\crypto\library\*.*"			"%package%\src\mbedtls\crypto\library\" /EI
-xcopy "mbedtls\crypto\programs\*.*"			"%package%\src\mbedtls\crypto\programs\" /EI
 
 echo -------------------------------------------------------------------------------
 echo readme
