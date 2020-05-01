@@ -16,7 +16,6 @@ REM ------------------------------------
 
 set LIBNAME=zlib
 set URL=https://github.com/madler/zlib.git
-set TAGS=v*
 title %LIBNAME%
 
 :: Validate git
@@ -45,7 +44,7 @@ REM :: Available branches
 echo.
 echo Branches:
 set COUNT=0
-for /f usebackq %%i in (`git branch -ar`) do (
+for /f usebackq %%i in (`git branch -ar --sort=-committerdate`) do (
 	set /A COUNT = !COUNT! + 1
 	if !COUNT! leq 10 echo   %%i
 )
@@ -58,7 +57,7 @@ REM :: Available tags
 echo.
 echo Tags:
 set COUNT=0
-for /f usebackq %%i in (`git tag -l --sort=-version:refname "%TAGS%"`) do (
+for /f usebackq %%i in (`git tag -l --sort=-creatordate`) do (
 	set /A COUNT = !COUNT! + 1
 	if !COUNT! leq 10 echo   %%i
 )
