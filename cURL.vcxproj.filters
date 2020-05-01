@@ -150,6 +150,9 @@
     <ClCompile Include="cURL\src\tool_filetime.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cURL\src\tool_writeout_json.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cURL\src\slist_wc.h">
@@ -291,6 +294,9 @@
       <Filter>lib</Filter>
     </ClInclude>
     <ClInclude Include="cURL\src\tool_filetime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cURL\src\tool_writeout_json.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

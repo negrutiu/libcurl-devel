@@ -670,6 +670,7 @@
     <ClCompile Include="cURL\src\tool_util.c" />
     <ClCompile Include="cURL\src\tool_vms.c" />
     <ClCompile Include="cURL\src\tool_writeout.c" />
+    <ClCompile Include="cURL\src\tool_writeout_json.c" />
     <ClCompile Include="cURL\src\tool_xattr.c" />
   </ItemGroup>
   <ItemGroup>
@@ -719,6 +720,7 @@
     <ClInclude Include="cURL\src\tool_version.h" />
     <ClInclude Include="cURL\src\tool_vms.h" />
     <ClInclude Include="cURL\src\tool_writeout.h" />
+    <ClInclude Include="cURL\src\tool_writeout_json.h" />
     <ClInclude Include="cURL\src\tool_xattr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
