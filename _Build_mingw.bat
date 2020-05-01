@@ -4,8 +4,7 @@ REM :: Marius Negrutiu (marius.negrutiu@protonmail.com)
 echo.
 setlocal EnableDelayedExpansion
 
-if not exist "%PF32%" set PF32=%PROGRAMFILES(X86)%
-if not exist "%PF32%" set PF32=%PROGRAMFILES%
+cd /d "%~dp0"
 
 if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS2
 if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS64
@@ -17,124 +16,152 @@ if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit
 :: ----------------------------------------------------------------
 :PARALLEL
 :: ----------------------------------------------------------------
-:ARG_MBEDTLS
-if /I "%1" equ "/build-mbedtls-x86" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS-Win32
-	set BUILD_ARCH=X86
-	set BUILD_SSL_ENGINE=MBEDTLS
+:ARG_OPENSSL
+
+if /I "%1" equ "/build-openssl-Win32" (
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-openssl-Win32
+	set BUILD_ARCH=Win32
+	set BUILD_SSL_ENGINE=OPENSSL
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_MBEDTLS_DLL=0
+	set BUILD_OPENSSL_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	REM By default LDAP links to wldap32!ber_free, inexistent in NT4 (available starting with W2K)
 	set CURL_CFLAGS=-DCURL_DISABLE_LDAP
+	REM | [openssl] (compatible with NT4+)
+	REM | no-capieng   prevents linking to advapi32!CryptEnumProvidersW
+	REM | no-async     prevents linking to kernel32!ConvertFiberToThread
+	REM | no-pinshared prevents linking to kernel32!GetModuleHandleExW
+	set BUILD_OPENSSL_FEATURES=mingw --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 -D_WIN32_WINNT=0x0400 386
+	set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
+	set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-mbedtls-x64" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS-x64
-	set BUILD_ARCH=X64
-	set BUILD_SSL_ENGINE=MBEDTLS
+if /I "%1" equ "/build-openssl-x64" (
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-openssl-x64
+	set BUILD_ARCH=x64
+	set BUILD_SSL_ENGINE=OPENSSL
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_MBEDTLS_DLL=0
+	set BUILD_OPENSSL_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
+	REM | [openssl]
+	set BUILD_OPENSSL_FEATURES=mingw64 --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3 -D_WIN32_WINNT=0x0502
+	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS!
+	REM set OPENSSL_LFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-mbedtls-x86-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS-Win32-HTTP_ONLY
-	set BUILD_ARCH=X86
-	set BUILD_SSL_ENGINE=MBEDTLS
+if /I "%1" equ "/build-openssl-Win32-HTTP_ONLY" (
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-openssl-Win32-HTTP_ONLY
+	set BUILD_ARCH=Win32
+	set BUILD_SSL_ENGINE=OPENSSL
 	set BUILD_USE_ZLIB=0
 	set BUILD_USE_NGHTTP2=0
-	set BUILD_MBEDTLS_DLL=0
+	set BUILD_OPENSSL_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY
+	REM | [openssl] (compatible with NT4+)
+	set BUILD_OPENSSL_FEATURES=mingw --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 -D_WIN32_WINNT=0x0400 386
+	set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
+	set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-mbedtls-x64-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS-x64-HTTP_ONLY
-	set BUILD_ARCH=X64
-	set BUILD_SSL_ENGINE=MBEDTLS
+if /I "%1" equ "/build-openssl-x64-HTTP_ONLY" (
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-openssl-x64-HTTP_ONLY
+	set BUILD_ARCH=x64
+	set BUILD_SSL_ENGINE=OPENSSL
 	set BUILD_USE_ZLIB=0
 	set BUILD_USE_NGHTTP2=0
-	set BUILD_MBEDTLS_DLL=0
+	set BUILD_OPENSSL_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY
+	REM | [openssl]
+	set BUILD_OPENSSL_FEATURES=mingw64 --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3 -D_WIN32_WINNT=0x0502
+	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS!
+	REM set OPENSSL_LFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-mbedtls-x86-mbedtls_dll" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS_dll-Win32
-	set BUILD_ARCH=X86
-	set BUILD_SSL_ENGINE=MBEDTLS
+if /I "%1" equ "/build-openssl-Win32-openssl_dll" (
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-openssl_dll-Win32
+	set BUILD_ARCH=Win32
+	set BUILD_SSL_ENGINE=OPENSSL
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_MBEDTLS_DLL=1
+	set BUILD_OPENSSL_DLL=1
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
+	REM | [openssl] (compatible with NT4+)
+	set BUILD_OPENSSL_FEATURES=mingw --release enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 -D_WIN32_WINNT=0x0400 386
+	set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
+	set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-mbedtls-x64-mbedtls_dll" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-mbedTLS_dll-x64
-	set BUILD_ARCH=X64
-	set BUILD_SSL_ENGINE=MBEDTLS
+if /I "%1" equ "/build-openssl-x64-openssl_dll" (
+	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-openssl_dll-x64
+	set BUILD_ARCH=x64
+	set BUILD_SSL_ENGINE=OPENSSL
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_MBEDTLS_DLL=1
+	set BUILD_OPENSSL_DLL=1
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
+	REM | [openssl]
+	set BUILD_OPENSSL_FEATURES=mingw64 --release enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3 -D_WIN32_WINNT=0x0502
+	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS!
+	REM set OPENSSL_LFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
 )
 
 :ARG_WINSSL
-if /I "%1" equ "/build-winssl-x86" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-WinSSL-Win32
-	set BUILD_ARCH=X86
+if /I "%1" equ "/build-winssl-Win32" (
+	set BUILD_SUBDIR=Release-mingw-WinSSL-Win32
+	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
+	set BUILD_ARCH=Win32
 	set BUILD_SSL_ENGINE=WINSSL
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DCURL_DISABLE_LDAP -DPROV_RSA_AES=24
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-winssl-x64" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-WinSSL-x64
-	set BUILD_ARCH=X64
+	set BUILD_SUBDIR=Release-mingw-WinSSL-x64
+	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
+	set BUILD_ARCH=x64
 	set BUILD_SSL_ENGINE=WINSSL
 	set BUILD_USE_ZLIB=1
 	set BUILD_USE_NGHTTP2=1
-	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
 	goto :BUILD
 )
 
-if /I "%1" equ "/build-winssl-x86-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-WinSSL-Win32-HTTP_ONLY
-	set BUILD_ARCH=X86
+if /I "%1" equ "/build-winssl-Win32-HTTP_ONLY" (
+	set BUILD_SUBDIR=Release-mingw-WinSSL-Win32-HTTP_ONLY
+	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
+	set BUILD_ARCH=Win32
 	set BUILD_SSL_ENGINE=WINSSL
 	set BUILD_USE_ZLIB=0
 	set BUILD_USE_NGHTTP2=0
-	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY -DPROV_RSA_AES=24
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-winssl-x64-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\bin\Release-mingw-WinSSL-x64-HTTP_ONLY
-	set BUILD_ARCH=X64
+	set BUILD_SUBDIR=Release-mingw-WinSSL-x64-HTTP_ONLY
+	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
+	set BUILD_ARCH=x64
 	set BUILD_SSL_ENGINE=WINSSL
 	set BUILD_USE_ZLIB=0
 	set BUILD_USE_NGHTTP2=0
-	set BUILD_MBEDTLS_DLL=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY
 	goto :BUILD
@@ -143,16 +170,18 @@ if /I "%1" equ "/build-winssl-x64-HTTP_ONLY" (
 :: Unknown argument?
 if "%1" neq "" echo ERROR: Unknown argument "%1" && pause && exit /B
 
-:: Re-launch this script to build multiple targets in parallel
-start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86
-start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64
-start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86-HTTP_ONLY
-start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64-HTTP_ONLY
-REM start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x86-mbedtls_dll
-REM start "" "%COMSPEC%" /C "%~f0" /build-mbedtls-x64-mbedtls_dll
-start "" "%COMSPEC%" /C "%~f0" /build-winssl-x86
+
+:: Launch parallel builds
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32-openssl_dll
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64-openssl_dll
+
+start "" "%COMSPEC%" /C "%~f0" /build-winssl-Win32
 start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64
-start "" "%COMSPEC%" /C "%~f0" /build-winssl-x86-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-winssl-Win32-HTTP_ONLY
 start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64-HTTP_ONLY
 exit /B
 
@@ -245,43 +274,95 @@ set NGHTTP2_PATH=../../nghttp2
 :NGHTTP2_END
 
 
-:MBEDTLS
-if /i "%BUILD_SSL_ENGINE%" neq "MBEDTLS" goto :MBEDTLS_END
+:OPENSSL
+if /i "%BUILD_SSL_ENGINE%" neq "OPENSSL" goto :OPENSSL_END
 echo.
 echo -----------------------------------
-echo  libmbedTLS
+echo  openssl
 echo -----------------------------------
-:: NOTE: Must build in ANSI code page
-title mingw-%BUILD_ARCH%-libmbedtls
+title mingw-%BUILD_ARCH%-openssl
 
-cd /d "%~dp0"
-xcopy "mbedTLS\*.*" "%BUILD_OUTDIR%\mbedTLS" /QEIYD
-cd /d "%BUILD_OUTDIR%\mbedTLS"
+mkdir "%BUILD_OUTDIR%" 2> NUL
+cd /d "%BUILD_OUTDIR%"
 
-:: MD4 is required by curl_ntlm_core.c (Marius)
-set MBEDTLS_CFLAGS=!MBEDTLS_CFLAGS! -DMBEDTLS_MD4_C
-if /I "%BUILD_ARCH%" equ "x64" set MBEDTLS_CFLAGS=!MBEDTLS_CFLAGS! -DMBEDTLS_HAVE_SSE2
+REM :: Make a copy of the source code
+echo Cloning the source code...
+echo fuzz> exclude.txt
+xcopy "..\..\openssl\*.*" openssl\ /EXCLUDE:exclude.txt /QEIYD
+del exclude.txt
 
-if %BUILD_MBEDTLS_DLL% equ 0 set SHARED=
-if %BUILD_MBEDTLS_DLL% neq 0 set SHARED=1
+pushd openssl
+mkdir fuzz 2> NUL
 
-mingw32-make WINDOWS=1 CC=gcc "CFLAGS=%GLOBAL_CFLAGS% %MBEDTLS_CFLAGS%" "LDFLAGS=%GLOBAL_LFLAGS%" lib
+REM :: Generate mybuild.sh
+set FLAG_RUNNING=mybuild.running
+set FLAG_ERROR=mybuild.error
+echo Building> %FLAG_RUNNING%
+
+echo #! /bin/bash> mybuild.sh
+echo. >> mybuild.sh
+echo touch %FLAG_RUNNING%>> mybuild.sh
+echo trap 'rm %FLAG_RUNNING%' exit>> mybuild.sh
+echo. >> mybuild.sh
+echo [ -f makefile ] ^|^| ./Configure %BUILD_OPENSSL_FEATURES% --prefix=`pwd`/_PACKAGE>> mybuild.sh
+echo. >> mybuild.sh
+echo # Remove long file prefixes to prevent exceeding the maximum command line size in Windows>> mybuild.sh
+echo sed -i 's/libfips-lib-//g' Makefile>> mybuild.sh
+echo sed -i 's/libimplementations-lib-//g' Makefile>> mybuild.sh
+echo sed -i 's/libcrypto-lib-/lib-/g' Makefile>> mybuild.sh
+echo sed -i 's/libcrypto-shlib-/dll-/g' Makefile>> mybuild.sh
+echo sed -i 's/liblegacy-lib-//g' Makefile>> mybuild.sh
+echo. >> mybuild.sh
+echo touch %FLAG_ERROR%>>mybuild.sh
+echo mingw32-make.exe>> mybuild.sh
+echo if [ $? -eq 0 ]; then>> mybuild.sh
+echo   rm %FLAG_ERROR%>> mybuild.sh
+echo else>>mybuild.sh
+echo   read>> mybuild.sh
+echo fi>> mybuild.sh
+echo. >> mybuild.sh
+echo # mingw32-make.exe install>> mybuild.sh
+echo. >> mybuild.sh
+echo rm %FLAG_RUNNING%>> mybuild.sh
+
+REM :: Execute mybuild.sh
+if /I "%BUILD_ARCH%" equ "x64"   set MSYS2_TYPE=-mingw64
+if /I "%BUILD_ARCH%" equ "Win32" set MSYS2_TYPE=-mingw32
+
+set CFLAGS=!OPENSSL_CFLAGS!
+set LDFLAGS=!OPENSSL_LDFLAGS!
+call "%MSYS2%\msys2_shell.cmd" %MSYS2_TYPE% -no-start -here "mybuild.sh"
+
 echo.
-echo ERRORLEVEL = %errorlevel%
-if %errorlevel% neq 0 pause && exit /B %errorlevel%
+echo Build in progress...
+:WAIT_OPENSSL
+if exist "%FLAG_RUNNING%" ping -n 2 127.0.0.1 > NUL && goto :WAIT_OPENSSL
+if exist "%FLAG_ERROR%" exit /B 3
 
-:: Collect
-echo.
-xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.dll"         "%BUILD_OUTDIR%" /YF
-xcopy "%BUILD_OUTDIR%\mbedTLS\library\*.a"           "%BUILD_OUTDIR%" /YF
-objdump -d -S "%BUILD_OUTDIR%\mbedTLS\library\*.o" > "%BUILD_OUTDIR%\asm-mbedTLS.txt"
+popd
 
-:: Build libcurl with libmbedtls
-set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_MBEDTLS -DUSE_TLS_SRP -I../../mbedTLS/include
-set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../../mbedTLS/library
-if %BUILD_MBEDTLS_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls -lmbedx509 -lmbedcrypto -lws2_32
-if %BUILD_MBEDTLS_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lmbedtls.dll -lmbedx509.dll -lmbedcrypto.dll
-:MBEDTLS_END
+REM :: Gather binaries
+if %BUILD_OPENSSL_DLL% equ 0 (
+	mklink /H libcrypto.a			openssl\libcrypto.a
+	mklink /H libssl.a				openssl\libssl.a
+) else (
+	mklink /H libcrypto.dll.a		openssl\libcrypto.a
+	mklink /H libssl.dll.a			openssl\libssl.a
+	mklink /H libcrypto-1_1.dll		openssl\libcrypto-1_1.dll		2> NUL
+	mklink /H libssl-1_1.dll		openssl\libssl-1_1.dll			2> NUL
+	mklink /H libcrypto-1_1-x64.dll	openssl\libcrypto-1_1-x64.dll	2> NUL
+	mklink /H libssl-1_1-x64.dll	openssl\libssl-1_1-x64.dll		2> NUL
+)
+mklink /H openssl.exe				openssl\apps\openssl.exe		2> NUL
+
+REM :: Configure libcurl for openssl
+if %BUILD_OPENSSL_DLL% equ 0 set CURL_CFLAGS=!CURL_CFLAGS! -static -DCURL_STATICLIB
+if %BUILD_OPENSSL_DLL% equ 0 set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -static
+set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_OPENSSL -DUSE_TLS_SRP -I../openssl/include
+set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../
+if %BUILD_OPENSSL_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lssl -lcrypto -lws2_32
+if %BUILD_OPENSSL_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lssl.dll -lcrypto.dll
+:OPENSSL_END
 
 
 :WINSSL
@@ -320,7 +401,7 @@ if %BUILD_LIBCURL_DLL% neq 0 set CFG=!CURL_CFG! -dyn
 if /I %BUILD_ARCH% equ x64 set ARCH=w64
 if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
-set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS% %NGHTTP2_CFLAGS%
+set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %OPENSSL_CFLAGS% %NGHTTP2_CFLAGS%
 set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
 ::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS!
 
@@ -352,7 +433,7 @@ cd /d "%BUILD_OUTDIR%\cURL\src-dyn"
 if /I %BUILD_ARCH% equ x64 set ARCH=w64
 if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
-set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS% %NGHTTP2_CFLAGS%
+set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %OPENSSL_CFLAGS% %NGHTTP2_CFLAGS%
 set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
 ::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS!
 
@@ -385,7 +466,7 @@ cd /d "%BUILD_OUTDIR%\cURL\src"
 if /I %BUILD_ARCH% equ x64 set ARCH=w64
 if /I %BUILD_ARCH% neq x64 set ARCH=w32
 
-set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %MBEDTLS_CFLAGS% %NGHTTP2_CFLAGS%
+set CURL_CFLAG_EXTRAS=%GLOBAL_CFLAGS% %CURL_CFLAGS% %OPENSSL_CFLAGS% %NGHTTP2_CFLAGS%
 set CURL_LDFLAG_EXTRAS=%GLOBAL_LFLAGS% !CURL_LDFLAG_EXTRAS!
 ::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS! -Wl,--exclude-libs=ALL
 
@@ -409,7 +490,7 @@ if /I "%BUILD_SSL_ENGINE%" equ "WinSSL" (
 	echo pause>> "%BUILD_OUTDIR%\test.bat"
 ) else (
 	xcopy "%~dp0\cacert.pem" "%BUILD_OUTDIR%" /FIYD
-	echo "%%~dp0\curl.exe" -L -v --capath "%%~dp0\" -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%BUILD_OUTDIR%\test.bat"
+	echo "%%~dp0\curl.exe" -L -v --cacert cacert.pem -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%BUILD_OUTDIR%\test.bat"
 	echo "%%~dp0\curl.exe" -V>> "%BUILD_OUTDIR%\test.bat"
 	echo pause>> "%BUILD_OUTDIR%\test.bat"
 )

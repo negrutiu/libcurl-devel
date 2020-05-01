@@ -9,13 +9,12 @@ cd /d "%~dp0"
 REM ------------------------------------
 REM  Name          | Role
 REM ---------------|--------------------
-REM  master        | release branch
-REM  development   | development branch
-REM  mbedtls-x.y.z | release tags
+REM  master        | development branch
+REM  OpenSSL_x.y.z | release tags
 REM ------------------------------------
 
-set LIBNAME=mbedTLS
-set URL=https://github.com/ARMmbed/mbedtls.git
+set LIBNAME=openssl
+set URL=git://git.openssl.org/openssl.git
 title %LIBNAME%
 
 :: Validate git
@@ -87,17 +86,6 @@ echo Pulling...
 git pull origin "%NEW_TAG%"
 if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
-REM | REM :: git submodule
-REM | echo.
-REM | echo Submodules...
-REM | REM : Revert "crypto" otherwise patching will fail
-REM | pushd crypto
-REM | git checkout -f HEAD
-REM | popd
-REM | if not exist "crypto\.git" git submodule update --init --recursive
-REM | if     exist "crypto\.git" git submodule sync
-REM | if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
-
 :: Patch
 echo.
 set /p answer=Apply patch? ([yes]/no) 
@@ -107,8 +95,8 @@ if /I "%answer%" equ "y" goto :PATCH
 exit /B 1
 :PATCH
 cd /d "%~dp0"
-git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
-git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%-crypto.diff
+git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%-e_os.diff
+git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%-rand_win.diff
 
 echo.
 pause

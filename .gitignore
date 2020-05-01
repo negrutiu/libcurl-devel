@@ -1,27 +1,19 @@
 cURL
-mbedTLS
-OpenSSL
 nghttp2
+openssl
 zlib
 
 /bin/
 /Release/
 libcurl-devel-*.7z
 libcurl-devel-*.7z.bak
+
 cacert.pem
 
 .vs/
 ipch/
 
-objchk_*/
-objfre_*/
-
 *.sdf
 *.opensdf
 *.suo
 *.user
-
-*.log
-*.wrn
-*.err
-*.aps

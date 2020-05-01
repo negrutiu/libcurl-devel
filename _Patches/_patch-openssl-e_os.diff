@@ -1,0 +1,16 @@
+diff --git a/e_os.h b/e_os.h
+index 34223a0bcd..28b40d304f 100644
+--- a/e_os.h
++++ b/e_os.h
+@@ -153,7 +153,11 @@
+         * at run-time [DSO_global_lookup is recommended]...
+         */
+ #    include <winsock2.h>
++#   if _WIN32_WINNT >= 0x0501
+ #    include <ws2tcpip.h>
++#   else
++#    include <wspiapi.h>
++#   endif
+        /* yes, they have to be #included prior to <windows.h> */
+ #   endif
+ #   include <windows.h>
