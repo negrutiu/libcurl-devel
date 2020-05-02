@@ -32,9 +32,9 @@ if /I "%1" equ "/build-openssl-Win32" (
 	REM | no-capieng   prevents linking to advapi32!CryptEnumProvidersW
 	REM | no-async     prevents linking to kernel32!ConvertFiberToThread
 	REM | no-pinshared prevents linking to kernel32!GetModuleHandleExW
-	set BUILD_OPENSSL_FEATURES=mingw --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 -D_WIN32_WINNT=0x0400 386
-	set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
-	set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
+	set BUILD_OPENSSL_FEATURES=mingw --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 386
+	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
+	REM set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
 )
 
@@ -48,7 +48,7 @@ if /I "%1" equ "/build-openssl-x64" (
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
 	REM | [openssl]
-	set BUILD_OPENSSL_FEATURES=mingw64 --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3 -D_WIN32_WINNT=0x0502
+	set BUILD_OPENSSL_FEATURES=mingw64 --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3
 	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS!
 	REM set OPENSSL_LFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
@@ -64,9 +64,9 @@ if /I "%1" equ "/build-openssl-Win32-HTTP_ONLY" (
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY
 	REM | [openssl] (compatible with NT4+)
-	set BUILD_OPENSSL_FEATURES=mingw --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 -D_WIN32_WINNT=0x0400 386
-	set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
-	set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
+	set BUILD_OPENSSL_FEATURES=mingw --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 386
+	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
+	REM set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
 )
 
@@ -80,7 +80,7 @@ if /I "%1" equ "/build-openssl-x64-HTTP_ONLY" (
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY
 	REM | [openssl]
-	set BUILD_OPENSSL_FEATURES=mingw64 --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3 -D_WIN32_WINNT=0x0502
+	set BUILD_OPENSSL_FEATURES=mingw64 --release no-shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3
 	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS!
 	REM set OPENSSL_LFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
@@ -96,9 +96,9 @@ if /I "%1" equ "/build-openssl-Win32-openssl_dll" (
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
 	REM | [openssl] (compatible with NT4+)
-	set BUILD_OPENSSL_FEATURES=mingw --release enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 -D_WIN32_WINNT=0x0400 386
-	set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
-	set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
+	set BUILD_OPENSSL_FEATURES=mingw --release enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 386
+	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
+	REM set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
 )
 
@@ -112,7 +112,7 @@ if /I "%1" equ "/build-openssl-x64-openssl_dll" (
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
 	REM | [openssl]
-	set BUILD_OPENSSL_FEATURES=mingw64 --release enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3 -D_WIN32_WINNT=0x0502
+	set BUILD_OPENSSL_FEATURES=mingw64 --release enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3
 	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS!
 	REM set OPENSSL_LFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
@@ -329,8 +329,8 @@ REM :: Execute mybuild.sh
 if /I "%BUILD_ARCH%" equ "x64"   set MSYS2_TYPE=-mingw64
 if /I "%BUILD_ARCH%" equ "Win32" set MSYS2_TYPE=-mingw32
 
-set CFLAGS=!OPENSSL_CFLAGS!
-set LDFLAGS=!OPENSSL_LDFLAGS!
+set CFLAGS=!GLOBAL_CFLAGS! !OPENSSL_CFLAGS!
+set LDFLAGS=!GLOBAL_LFLAGS! !OPENSSL_LDFLAGS!
 call "%MSYS2%\msys2_shell.cmd" %MSYS2_TYPE% -no-start -here "mybuild.sh"
 
 echo.
