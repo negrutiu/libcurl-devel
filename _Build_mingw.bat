@@ -199,12 +199,12 @@ if not exist "%BUILD_OUTDIR%" mkdir "%BUILD_OUTDIR%"
 
 if /I "%BUILD_ARCH%" equ "x64" (
 	set MINGW=%MSYS2%\mingw64
-	set GLOBAL_CFLAGS=-march=x86-64 -s -Os -DWIN32 -D_WIN32_WINNT=0x0502 -DNDEBUG -O3
+	set GLOBAL_CFLAGS=-march=x86-64 -s -Os -DWIN32 -D_WIN32_WINNT=0x0502 -DNDEBUG -O3 -ffunction-sections -fdata-sections
 	set GLOBAL_LFLAGS=!GLOBAL_CFLAGS! -static-libgcc -static-libstdc++ -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup -Wl,--high-entropy-va
 	set GLOBAL_RFLAGS=-F pe-x86-64
 ) else (
 	set MINGW=%MSYS2%\mingw32
-	set GLOBAL_CFLAGS=-march=pentium2 -s -Os -DWIN32 -D_WIN32_WINNT=0x0400 -DNDEBUG -O3
+	set GLOBAL_CFLAGS=-march=pentium2 -s -Os -DWIN32 -D_WIN32_WINNT=0x0400 -DNDEBUG -O3 -ffunction-sections -fdata-sections
 	set GLOBAL_LFLAGS=!GLOBAL_CFLAGS! -static-libgcc -static-libstdc++ -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup
 	set GLOBAL_RFLAGS=-F pe-i386
 )
