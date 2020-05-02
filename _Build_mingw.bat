@@ -351,8 +351,8 @@ if %BUILD_OPENSSL_DLL% equ 0 (
 	mklink /H libcrypto.a			openssl\libcrypto.a
 	mklink /H libssl.a				openssl\libssl.a
 ) else (
-	mklink /H libcrypto.dll.a		openssl\libcrypto.a
-	mklink /H libssl.dll.a			openssl\libssl.a
+	mklink /H libcrypto.dll.a		openssl\libcrypto.dll.a
+	mklink /H libssl.dll.a			openssl\libssl.dll.a
 	mklink /H libcrypto-1_1.dll		openssl\libcrypto-1_1.dll		2> NUL
 	mklink /H libssl-1_1.dll		openssl\libssl-1_1.dll			2> NUL
 	mklink /H libcrypto-1_1-x64.dll	openssl\libcrypto-1_1-x64.dll	2> NUL
