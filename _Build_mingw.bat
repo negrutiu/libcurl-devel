@@ -185,6 +185,11 @@ start "" "%COMSPEC%" /C "%~f0" /build-winssl-Win32-HTTP_ONLY
 start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64-HTTP_ONLY
 exit /B
 
+:: ----------------------------------------------------------------
+:GET_DIR_NAME
+:: ----------------------------------------------------------------
+set DIRNAME=%~nx1
+exit /B
 
 :: ----------------------------------------------------------------
 :BUILD
@@ -207,7 +212,7 @@ set CURL_CFG=
 set CURL_LDFLAG_EXTRAS=
 set CURL_LDFLAG_EXTRAS2=
 set PATH=%MINGW%\bin;%MSYS2%\usr\bin;%PATH%
-
+call :GET_DIR_NAME "%BUILD_OUTDIR%"
 
 :ZLIB
 if "%BUILD_USE_ZLIB%" lss "1" goto :ZLIB_END
@@ -216,7 +221,7 @@ echo -----------------------------------
 echo  zlib
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
-title mingw-%BUILD_ARCH%-zlib
+title %DIRNAME%-zlib
 
 cd /d "%~dp0"
 xcopy "zlib" "%BUILD_OUTDIR%\zlib" /QEIYD
@@ -246,7 +251,7 @@ echo -----------------------------------
 echo  nghttp2
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
-title mingw-%BUILD_ARCH%-nghttp2
+title %DIRNAME%-nghttp2
 
 cd /d "%~dp0"
 xcopy "nghttp2\lib" "%BUILD_OUTDIR%\nghttp2\lib" /QEIYD
@@ -280,7 +285,7 @@ echo.
 echo -----------------------------------
 echo  openssl
 echo -----------------------------------
-title mingw-%BUILD_ARCH%-openssl
+title %DIRNAME%-openssl
 
 mkdir "%BUILD_OUTDIR%" 2> NUL
 cd /d "%BUILD_OUTDIR%"
@@ -371,7 +376,7 @@ echo.
 echo -----------------------------------
 echo  WinSSL
 echo -----------------------------------
-title mingw-%BUILD_ARCH%-WinSSL
+title %DIRNAME%-WinSSL
 
 :: Build libcurl with WinSSL
 set CURL_CFG=!CURL_CFG! -winssl
@@ -387,7 +392,7 @@ echo -----------------------------------
 echo  libcurl
 echo -----------------------------------
 :: NOTE: Must build in ANSI code page
-title mingw-%BUILD_ARCH%-%BUILD_SSL_ENGINE%-libcurl
+title %DIRNAME%-libcurl
 
 cd /d "%~dp0"
 xcopy "cURL\*.*" "%BUILD_OUTDIR%\cURL" /QIYD
@@ -423,7 +428,7 @@ echo.
 echo -----------------------------------
 echo  libcurl.exe
 echo -----------------------------------
-title mingw-%BUILD_ARCH%-%BUILD_SSL_ENGINE%-libcurl.exe
+title %DIRNAME%-libcurl.exe
 :: NOTE: Must build in ANSI code page
 
 cd /d "%~dp0"
@@ -455,7 +460,7 @@ echo.
 echo -----------------------------------
 echo  curl.exe
 echo -----------------------------------
-title mingw-%BUILD_ARCH%-%BUILD_SSL_ENGINE%-curl.exe
+title %DIRNAME%-curl.exe
 :: NOTE: Must build in ANSI code page
 
 cd /d "%~dp0"
