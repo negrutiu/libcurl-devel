@@ -96,7 +96,7 @@ if /I "%1" equ "/build-openssl-Win32-openssl_dll" (
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DCURL_DISABLE_LDAP
 	REM | [openssl] (compatible with NT4+)
-	set BUILD_OPENSSL_FEATURES=mingw --release enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 386
+	set BUILD_OPENSSL_FEATURES=mingw --release shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared no-sse2 enable-ssl3 386
 	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS! -march=pentium2
 	REM set OPENSSL_LDFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
@@ -112,7 +112,7 @@ if /I "%1" equ "/build-openssl-x64-openssl_dll" (
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
 	REM | [openssl]
-	set BUILD_OPENSSL_FEATURES=mingw64 --release enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3
+	set BUILD_OPENSSL_FEATURES=mingw64 --release shared enable-static-engine no-dynamic-engine no-tests no-capieng no-async no-pinshared enable-ssl3
 	REM set OPENSSL_CFLAGS=!OPENSSL_CFLAGS!
 	REM set OPENSSL_LFLAGS=!OPENSSL_LDFLAGS!
 	goto :BUILD
