@@ -361,8 +361,6 @@ if %BUILD_OPENSSL_DLL% equ 0 (
 mklink /H openssl.exe				openssl\apps\openssl.exe		2> NUL
 
 REM :: Configure libcurl for openssl
-if %BUILD_OPENSSL_DLL% equ 0 set CURL_CFLAGS=!CURL_CFLAGS! -static -DCURL_STATICLIB
-if %BUILD_OPENSSL_DLL% equ 0 set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -static
 set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_OPENSSL -DUSE_TLS_SRP -I../openssl/include
 set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../..
 if %BUILD_OPENSSL_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lssl -lcrypto -lws2_32
