@@ -10,6 +10,8 @@ if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS2
 if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS64
 if not exist "%MSYS2%" echo ERROR: Missing msys2/mingw && pause && exit /B 2
 
+if not exist "%MSYS2%\usr\bin\perl.exe" echo ERROR: Missing msys2/perl. Go ahead and `pacman -S perl` && pause && exit /B 2
+
 if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit /B 2
 
 
