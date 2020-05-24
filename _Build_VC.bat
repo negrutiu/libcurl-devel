@@ -3,7 +3,7 @@ REM :: Marius Negrutiu (marius.negrutiu@protonmail.com)
 @echo off
 echo.
 setlocal EnableDelayedExpansion
-set CONFIG=Release
+if not defined CONFIG set CONFIG=Release
 
 cd /d "%~dp0"
 
@@ -280,7 +280,7 @@ cmake --build nghttp2\build --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 
-REM mklink /H nghttp2_static.lib nghttp2\build\lib\Release\nghttp2_static.lib 2> NUL
+REM mklink /H nghttp2_static.lib nghttp2\build\lib\%CONFIG%\nghttp2_static.lib 2> NUL
 :NGHTTP2_END
 
 
