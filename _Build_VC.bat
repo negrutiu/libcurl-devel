@@ -332,7 +332,9 @@ REM :: Configure
 if not exist makefile (
 	perl Configure !BUILD_OPENSSL_PARAMS! !BUILD_OPENSSL_CONFIGURE_EXTRA! --prefix="%CD%\_PACKAGE"
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
+)
 
+if /i "%BUILD_CRT%" equ "static" (
 	REM | By default openssl links to shared CRT library
 	REM | Because openssl doesn't have a variable to control CRT linkage, we'll do this by replacing compiler flag in makefile
 	REM | NOTE: There is the -static parameter, but it's useless in MSVC. It works in mingw though...
