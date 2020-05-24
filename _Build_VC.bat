@@ -20,6 +20,7 @@ set VCVARSALL=%VSDIR%\VC\Auxiliary\Build\vcvarsall.bat
 if not exist "%VCVARSALL%" echo ERROR: Missing "%VCVARSALL%" && pause && exit /B 1
 
 :: TODO: Determine dynamic
+:: TODO: Use -A to specify architecture
 set CMAKE_GENERATOR_BASE=Visual Studio 15 2017
 
 REM :: NASM (required starting with OpenSSL 1.0.2)
@@ -47,127 +48,125 @@ if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit
 :ARG_OPENSSL
 
 if /I "%1" equ "/build-openssl-Win32" (
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32
 	set BUILD_ARCH=Win32
-	set BUILD_SSL_ENGINE=OPENSSL
-	set BUILD_USE_ZLIB=1
-	set BUILD_USE_NGHTTP2=1
-	set BUILD_OPENSSL_DLL=0
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=
-	set BUILD_OPENSSL_FEATURES=VC-WIN32 --release no-shared enable-static-engine no-dynamic-engine no-tests enable-ssl3
+	set BUILD_SSL_BACKEND=OPENSSL
+	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32
+	set BUILD_CRT=static
+	set BUILD_ZLIB=static
+	set BUILD_NGHTTP2=
+	set BUILD_OPENSSL=static
+	set BUILD_CURL=static
+	set BUILD_OPENSSL_CONFIGURE_EXTRA=
+	set BUILD_CURL_CONFIGURE_EXTRA=
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-openssl-x64" (
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64
 	set BUILD_ARCH=x64
-	set BUILD_SSL_ENGINE=OPENSSL
-	set BUILD_USE_ZLIB=1
-	set BUILD_USE_NGHTTP2=1
-	set BUILD_OPENSSL_DLL=0
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=
-	set BUILD_OPENSSL_FEATURES=VC-WIN64A --release no-shared enable-static-engine no-dynamic-engine no-tests enable-ssl3
+	set BUILD_SSL_BACKEND=OPENSSL
+	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64
+	set BUILD_CRT=static
+	set BUILD_ZLIB=static
+	set BUILD_NGHTTP2=
+	set BUILD_OPENSSL=static
+	set BUILD_CURL=static
+	set BUILD_OPENSSL_CONFIGURE_EXTRA=
+	set BUILD_CURL_CONFIGURE_EXTRA=
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-openssl-Win32-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32-HTTP_ONLY
 	set BUILD_ARCH=Win32
-	set BUILD_SSL_ENGINE=OPENSSL
-	set BUILD_USE_ZLIB=0
-	set BUILD_USE_NGHTTP2=0
-	set BUILD_OPENSSL_DLL=0
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=-DHTTP_ONLY
-	set BUILD_OPENSSL_FEATURES=VC-WIN32 --release no-shared enable-static-engine no-dynamic-engine no-tests enable-ssl3
+	set BUILD_SSL_BACKEND=OPENSSL
+	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32-HTTP_ONLY
+	set BUILD_CRT=static
+	set BUILD_ZLIB=
+	set BUILD_NGHTTP2=
+	set BUILD_OPENSSL=static
+	set BUILD_CURL=static
+	set BUILD_OPENSSL_CONFIGURE_EXTRA=
+	set BUILD_CURL_CONFIGURE_EXTRA=-DHTTP_ONLY=ON
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-openssl-x64-HTTP_ONLY" (
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64-HTTP_ONLY
 	set BUILD_ARCH=x64
-	set BUILD_SSL_ENGINE=OPENSSL
-	set BUILD_USE_ZLIB=0
-	set BUILD_USE_NGHTTP2=0
-	set BUILD_OPENSSL_DLL=0
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=-DHTTP_ONLY
-	set BUILD_OPENSSL_FEATURES=VC-WIN64A --release no-shared enable-static-engine no-dynamic-engine no-tests enable-ssl3
+	set BUILD_SSL_BACKEND=OPENSSL
+	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64-HTTP_ONLY
+	set BUILD_CRT=static
+	set BUILD_ZLIB=
+	set BUILD_NGHTTP2=
+	set BUILD_OPENSSL=static
+	set BUILD_CURL=static
+	set BUILD_OPENSSL_CONFIGURE_EXTRA=
+	set BUILD_CURL_CONFIGURE_EXTRA=-DHTTP_ONLY=ON
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-openssl-Win32-openssl_dll" (
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-Win32
 	set BUILD_ARCH=Win32
-	set BUILD_SSL_ENGINE=OPENSSL
-	set BUILD_USE_ZLIB=1
-	set BUILD_USE_NGHTTP2=1
-	set BUILD_OPENSSL_DLL=1
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=-DCURL_DISABLE_LDAP
-	set BUILD_OPENSSL_FEATURES=VC-WIN32 --release shared enable-static-engine no-dynamic-engine no-tests enable-ssl3
+	set BUILD_SSL_BACKEND=OPENSSL
+	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-Win32
+	set BUILD_CRT=static
+	set BUILD_ZLIB=shared
+	set BUILD_NGHTTP2=shared
+	set BUILD_OPENSSL=shared
+	set BUILD_CURL=shared
+	set BUILD_OPENSSL_CONFIGURE_EXTRA=
+	set BUILD_CURL_CONFIGURE_EXTRA=-DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/%CONFIG%/nghttp2.lib
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-openssl-x64-openssl_dll" (
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-x64
 	set BUILD_ARCH=x64
-	set BUILD_SSL_ENGINE=OPENSSL
-	set BUILD_USE_ZLIB=1
-	set BUILD_USE_NGHTTP2=1
-	set BUILD_OPENSSL_DLL=1
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=
-	set BUILD_OPENSSL_FEATURES=VC-WIN64A --release shared enable-static-engine no-dynamic-engine no-tests enable-ssl3
+	set BUILD_SSL_BACKEND=OPENSSL
+	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-x64
+	set BUILD_CRT=static
+	set BUILD_ZLIB=shared
+	set BUILD_NGHTTP2=shared
+	set BUILD_OPENSSL=shared
+	set BUILD_CURL=shared
+	set BUILD_OPENSSL_CONFIGURE_EXTRA=
+	set BUILD_CURL_CONFIGURE_EXTRA=-DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/%CONFIG%/nghttp2.lib
 	goto :BUILD
 )
 
 :ARG_WINSSL
 if /I "%1" equ "/build-winssl-Win32" (
+	set BUILD_ARCH=Win32
+	set BUILD_SSL_BACKEND=WINSSL
 	set BUILD_SUBDIR=%CONFIG%-VC-WinSSL-Win32
 	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
-	set BUILD_ARCH=Win32
-	set BUILD_SSL_ENGINE=WINSSL
-	set BUILD_USE_ZLIB=1
-	set BUILD_USE_NGHTTP2=1
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DCURL_DISABLE_LDAP -DPROV_RSA_AES=24
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-winssl-x64" (
+	set BUILD_ARCH=x64
+	set BUILD_SSL_BACKEND=WINSSL
 	set BUILD_SUBDIR=%CONFIG%-VC-WinSSL-x64
 	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
-	set BUILD_ARCH=x64
-	set BUILD_SSL_ENGINE=WINSSL
-	set BUILD_USE_ZLIB=1
-	set BUILD_USE_NGHTTP2=1
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-winssl-Win32-HTTP_ONLY" (
+	set BUILD_ARCH=Win32
+	set BUILD_SSL_BACKEND=WINSSL
 	set BUILD_SUBDIR=%CONFIG%-VC-WinSSL-Win32-HTTP_ONLY
 	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
-	set BUILD_ARCH=Win32
-	set BUILD_SSL_ENGINE=WINSSL
-	set BUILD_USE_ZLIB=0
-	set BUILD_USE_NGHTTP2=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY -DPROV_RSA_AES=24
 	goto :BUILD
 )
 
 if /I "%1" equ "/build-winssl-x64-HTTP_ONLY" (
+	set BUILD_ARCH=x64
+	set BUILD_SSL_BACKEND=WINSSL
 	set BUILD_SUBDIR=%CONFIG%-VC-WinSSL-x64-HTTP_ONLY
 	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
-	set BUILD_ARCH=x64
-	set BUILD_SSL_ENGINE=WINSSL
-	set BUILD_USE_ZLIB=0
-	set BUILD_USE_NGHTTP2=0
 	set BUILD_LIBCURL_DLL=1
 	set CURL_CFLAGS=-DHTTP_ONLY
 	goto :BUILD
@@ -179,11 +178,11 @@ if "%1" neq "" echo ERROR: Unknown argument "%1" && pause && exit /B
 
 :: Launch parallel builds
 start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32
-REM start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64
-REM start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32-HTTP_ONLY
-REM start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32-HTTP_ONLY
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64-HTTP_ONLY
 start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32-openssl_dll
-REM start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64-openssl_dll
+start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64-openssl_dll
 
 REM start "" "%COMSPEC%" /C "%~f0" /build-winssl-Win32
 REM start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64
@@ -216,60 +215,72 @@ if /I "%BUILD_ARCH%" equ "x64"   set VCVARS_ARCH=x64
 mkdir "%BUILD_OUTDIR%" 2> NUL
 cd /d "%BUILD_OUTDIR%"
 
+pushd "%CD%"
+call "%VCVARSALL%" %VCVARS_ARCH%
+popd
+
 
 :ZLIB
-if "%BUILD_USE_ZLIB%" lss "1" goto :ZLIB_END
+if "%BUILD_ZLIB%" equ "" goto :ZLIB_END
 echo.
 echo -----------------------------------
 echo  zlib
 echo -----------------------------------
-:: NOTE: Must build in ANSI code page
 title %DIRNAME%-zlib
 
 xcopy "%~dp0\zlib" zlib /QEIYD
 
-if not exist zlib\build\CMakeCache.txt (
-	cmake -G "%CMAKE_GENERATOR%" -S zlib -B zlib\build
+if not exist zlib\BUILD\CMakeCache.txt (
+	cmake -G "%CMAKE_GENERATOR%" -S zlib -B zlib\BUILD -DCMAKE_VERBOSE_MAKEFILE=ON
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
+	REM :: zconf.h
+	echo.
+	echo Copying zconf.h...
+	copy /Y zlib\BUILD\zconf.h zlib\zconf.h
+)
+if /i "%BUILD_CRT%" equ "static" (
+	REM | By default zlib links to shared CRT library
+	REM | Because zlib doesn't have a cmake variable to control CRT linkage, we'll do this by replacing in .vcxproj files...
+	echo Configure static CRT...
+	powershell -Command "(gc zlib\BUILD\zlib.vcxproj)       -replace 'MultiThreadedDLL',      'MultiThreaded'     | Out-File -encoding ASCII zlib\BUILD\zlib.vcxproj"
+	powershell -Command "(gc zlib\BUILD\zlib.vcxproj)       -replace 'MultiThreadedDebugDLL', 'MultiThreadedDebug'| Out-File -encoding ASCII zlib\BUILD\zlib.vcxproj"
+	powershell -Command "(gc zlib\BUILD\zlibstatic.vcxproj) -replace 'MultiThreadedDLL',      'MultiThreaded'     | Out-File -encoding ASCII zlib\BUILD\zlibstatic.vcxproj"
+	powershell -Command "(gc zlib\BUILD\zlibstatic.vcxproj) -replace 'MultiThreadedDebugDLL', 'MultiThreadedDebug'| Out-File -encoding ASCII zlib\BUILD\zlibstatic.vcxproj"
 )
 
-cmake --build zlib\build --config %CONFIG%
+cmake --build zlib\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
-mklink /H zlibstatic.lib zlib\build\%CONFIG%\zlibstatic.lib 2> NUL
-
-:: Build libcurl with zlib support
-set ZLIB=1
-set ZLIB_PATH=../../zlib
+REM mklink /H zlibstatic.lib zlib\BUILD\%CONFIG%\zlibstatic.lib 2> NUL
 :ZLIB_END
 
 
 :NGHTTP2
-if "%BUILD_USE_NGHTTP2%" lss "1" goto :NGHTTP2_END
+if "%BUILD_NGHTTP2%" equ "" goto :NGHTTP2_END
 echo.
 echo -----------------------------------
 echo  nghttp2
 echo -----------------------------------
-:: NOTE: Must build in ANSI code page
 title %DIRNAME%-nghttp2
 
 xcopy "%~dp0\nghttp2" nghttp2 /QEIYD
 
 if not exist nghttp2\build\CMakeCache.txt (
-	cmake -G "%CMAKE_GENERATOR%" -S nghttp2 -B nghttp2\build -DENABLE_LIB_ONLY=ON -DENABLE_SHARED_LIB=OFF -DENABLE_STATIC_LIB=ON
+	cmake -G "%CMAKE_GENERATOR%" -S nghttp2 -B nghttp2\build ^
+		-DENABLE_STATIC_CRT=OFF ^
+		-DENABLE_LIB_ONLY=OFF ^
+		-DENABLE_SHARED_LIB=ON ^
+		-DENABLE_STATIC_LIB=ON
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
-	if /I "%CONFIG%" equ "Debug" cmake nghttp2/build -DENABLE_DEBUG=ON
+	if /I "%CONFIG%" equ "Debug" cmake nghttp2/BUILD ^
+		-DENABLE_DEBUG=ON
 )
 
 cmake --build nghttp2\build --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 
-mklink /H nghttp2_static.lib nghttp2\build\lib\Release\nghttp2_static.lib 2> NUL
-
-:: Build libcurl with nghttp2 support
-set NGHTTP2=1
-set NGHTTP2_PATH=../../nghttp2
+REM mklink /H nghttp2_static.lib nghttp2\build\lib\Release\nghttp2_static.lib 2> NUL
 :NGHTTP2_END
 
 
@@ -291,7 +302,7 @@ REM | set PATH=%MINGW%\bin;%MSYS2%\usr\bin;%PATH%
 REM | call :GET_DIR_NAME "%BUILD_OUTDIR%"
 
 :OPENSSL
-if /i "%BUILD_SSL_ENGINE%" neq "OPENSSL" goto :OPENSSL_END
+if /i "%BUILD_SSL_BACKEND%" neq "OPENSSL" goto :OPENSSL_END
 echo.
 echo -----------------------------------
 echo  openssl
@@ -306,16 +317,28 @@ pushd "%BUILD_OUTDIR%"
 	del exclude.txt
 popd
 
-pushd "%CD%"
-call "%VCVARSALL%" %VCVARS_ARCH%
-popd
+REM :: Features
+set BUILD_OPENSSL_PARAMS=shared enable-static-engine no-dynamic-engine no-tests enable-ssl3
+if /i "%BUILD_ARCH%" equ "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN64A
+if /i "%BUILD_ARCH%" neq "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN32
+
+if /i "%CONFIG%" equ "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --debug
+if /i "%CONFIG%" neq "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --release
+
 
 pushd "%BUILD_OUTDIR%\openssl"
 
 REM :: Configure
 if not exist makefile (
-	perl Configure %BUILD_OPENSSL_FEATURES% --prefix="%CD%\_PACKAGE"
+	perl Configure !BUILD_OPENSSL_PARAMS! !BUILD_OPENSSL_CONFIGURE_EXTRA! --prefix="%CD%\_PACKAGE"
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
+
+	REM | By default openssl links to shared CRT library
+	REM | Because openssl doesn't have a variable to control CRT linkage, we'll do this by replacing compiler flag in makefile
+	REM | NOTE: There is the -static parameter, but it's useless in MSVC. It works in mingw though...
+	echo Configure static CRT...
+	powershell -Command "(gc makefile) -replace '/MDd', '/MTd' | Out-File -encoding ASCII makefile"
+	powershell -Command "(gc makefile) -replace '/MD', '/MT' | Out-File -encoding ASCII makefile"
 )
 
 REM :: Make
@@ -325,32 +348,24 @@ if %errorlevel% neq 0 pause && exit /B %errorlevel%
 popd
 
 REM :: Gather binaries
-mklink /H openssl.exe				openssl\apps\openssl.exe 2> NUL
-mklink /H libcrypto.lib				openssl\libcrypto.lib 2> NUL
-mklink /H libssl.lib				openssl\libssl.lib 2> NUL
-if %BUILD_OPENSSL_DLL% neq 0 (
-	mklink /H libcrypto-1_1.dll		openssl\libcrypto-1_1.dll		2> NUL
-	mklink /H libcrypto-1_1.pdb		openssl\libcrypto-1_1.pdb		2> NUL
-	mklink /H libssl-1_1.dll		openssl\libssl-1_1.dll			2> NUL
-	mklink /H libssl-1_1.pdb		openssl\libssl-1_1.pdb			2> NUL
-	mklink /H libcrypto-1_1-x64.dll	openssl\libcrypto-1_1-x64.dll	2> NUL
-	mklink /H libcrypto-1_1-x64.pdb	openssl\libcrypto-1_1-x64.pdb	2> NUL
-	mklink /H libssl-1_1-x64.dll	openssl\libssl-1_1-x64.dll		2> NUL
-	mklink /H libssl-1_1-x64.pdb	openssl\libssl-1_1-x64.pdb		2> NUL
-)
-
-REM :: Configure libcurl for openssl
-REM | if %BUILD_OPENSSL_DLL% equ 0 set CURL_CFLAGS=!CURL_CFLAGS! -static -DCURL_STATICLIB
-REM | if %BUILD_OPENSSL_DLL% equ 0 set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -static -DCURL_STATICLIB
-REM | set CURL_CFLAGS=!CURL_CFLAGS! -DUSE_OPENSSL -DUSE_TLS_SRP -I../openssl/include
-REM | set CURL_LDFLAG_EXTRAS=!CURL_LDFLAG_EXTRAS! -L../..
-REM | if %BUILD_OPENSSL_DLL% equ 0 set CURL_LDFLAG_EXTRAS2=-lssl -lcrypto -lws2_32
-REM | if %BUILD_OPENSSL_DLL% neq 0 set CURL_LDFLAG_EXTRAS2=-lssl.dll -lcrypto.dll -lws2_32
+REM mklink /H openssl.exe				openssl\apps\openssl.exe 2> NUL
+REM mklink /H libcrypto.lib				openssl\libcrypto.lib 2> NUL
+REM mklink /H libssl.lib				openssl\libssl.lib 2> NUL
+REM if %BUILD_OPENSSL_DLL% neq 0 (
+	REM mklink /H libcrypto-1_1.dll		openssl\libcrypto-1_1.dll		2> NUL
+	REM mklink /H libcrypto-1_1.pdb		openssl\libcrypto-1_1.pdb		2> NUL
+	REM mklink /H libssl-1_1.dll		openssl\libssl-1_1.dll			2> NUL
+	REM mklink /H libssl-1_1.pdb		openssl\libssl-1_1.pdb			2> NUL
+	REM mklink /H libcrypto-1_1-x64.dll	openssl\libcrypto-1_1-x64.dll	2> NUL
+	REM mklink /H libcrypto-1_1-x64.pdb	openssl\libcrypto-1_1-x64.pdb	2> NUL
+	REM mklink /H libssl-1_1-x64.dll	openssl\libssl-1_1-x64.dll		2> NUL
+	REM mklink /H libssl-1_1-x64.pdb	openssl\libssl-1_1-x64.pdb		2> NUL
+REM )
 :OPENSSL_END
 
 
 :WINSSL
-if /i "%BUILD_SSL_ENGINE%" neq "WINSSL" goto :WINSSL_END
+if /i "%BUILD_SSL_BACKEND%" neq "WINSSL" goto :WINSSL_END
 echo.
 echo -----------------------------------
 echo  WinSSL
@@ -370,21 +385,92 @@ echo.
 echo -----------------------------------
 echo  libcurl
 echo -----------------------------------
-:: NOTE: Must build in ANSI code page
 title %DIRNAME%-libcurl
 
-xcopy "%~dp0\curl\*.*"			curl /QIYD
-xcopy "%~dp0\curl\include" 		curl\include" /QEIYD
-xcopy "%~dp0\curl\lib"			curl\lib" /QEIYD
+xcopy "%~dp0\curl\*.*" curl /QEIYD
 
-REM :: Configure
-if not exist curl\build\CMakeCache.txt (
-	cmake -G "%CMAKE_GENERATOR%" -S curl -B curl\build
+REM :: curl(*)
+set CMAKE_CURL_VARIABLES=
+set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_VERBOSE_MAKEFILE=ON
+set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_TESTING=OFF
+if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON
+REM :: TODO: --enable-tls-srp
+
+REM :: curl(static .exe)
+if /i "%BUILD_CURL%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=OFF
+if /i "%BUILD_CURL%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=ON
+
+REM :: curl(static CRT)
+if /i "%BUILD_CRT%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=ON
+if /i "%BUILD_CRT%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=OFF
+
+REM :: curl(zlib)
+if /i "%BUILD_ZLIB%" equ "static" (
+	set BUILD_ZLIB_VALID=1
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/%CONFIG%/zlibstatic.lib
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/%CONFIG%/zlibstatic.lib
+)
+if /i "%BUILD_ZLIB%" equ "shared" (
+	set BUILD_ZLIB_VALID=1
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/%CONFIG%/zlib.lib
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/%CONFIG%/zlib.lib
+)
+if "%BUILD_ZLIB_VALID%" neq "1" (
+	if "%BUILD_ZLIB%" neq "" echo ERROR: Invalid BUILD_ZLIB=%BUILD_ZLIB%. Use BUILD_ZLIB=static^|shared && pause && exit /B 57
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=OFF
+)
+
+REM :: curl(openssl)
+if /i "%BUILD_OPENSSL%" equ "static" (
+	set BUILD_OPENSSL_VALID=1
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
+		-DCMAKE_USE_OPENSSL=ON ^
+		-DOPENSSL_ROOT_DIR="!BUILD_OUTDIR!/openssl" ^
+		-DOPENSSL_CRYPTO_LIBRARY="!BUILD_OUTDIR!/openssl"
+	REM :: openssl builds both static (libcrypto_static.lib) and shared (libcrypto.lib) libraries
+	REM :: curl always links to libcrypto.lib/libssl.lib and I've found no way to redirect it to the static libraries
+	REM :: Until better workaround is found, we'll temporarily rename libxxx_static.lib -> libxxx.lib
+	REM :: TODO: Research OPENSSL_USE_STATIC_LIBS (see "%PROGRAMFILES%\CMake\share\cmake-3.17\Modules\FindOpenSSL.cmake")
+	echo.
+	echo Configure openssl static libraries...
+	move /Y openssl\libcrypto.lib			openssl\libcrypto.dll.lib
+	move /Y openssl\libssl.lib				openssl\libssl.dll.lib
+	move /Y openssl\libcrypto_static.lib	openssl\libcrypto.lib
+	move /Y openssl\libssl_static.lib		openssl\libssl.lib
+)
+if /i "%BUILD_OPENSSL%" equ "shared" (
+	set BUILD_OPENSSL_VALID=1
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
+		-DCMAKE_USE_OPENSSL=ON ^
+		-DOPENSSL_ROOT_DIR="!BUILD_OUTDIR!/openssl" ^
+		-DOPENSSL_CRYPTO_LIBRARY="!BUILD_OUTDIR!/openssl"
+)
+if "%BUILD_OPENSSL_VALID%" neq "1" (
+	if "%BUILD_OPENSSL%" neq "" echo ERROR: Invalid BUILD_OPENSSL=%BUILD_OPENSSL%. Use BUILD_OPENSSL=static^|shared && pause && exit /B 57
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_USE_OPENSSL=OFF
+)
+
+if not exist curl\BUILD\CMakeCache.txt (
+	cmake -G "%CMAKE_GENERATOR%" -S curl -B curl\BUILD !CMAKE_CURL_VARIABLES! !BUILD_CURL_CONFIGURE_EXTRA!
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
 )
 
+cmake --build curl\BUILD --config %CONFIG%
+if %errorlevel% neq 0 pause && exit /B %errorlevel%
+
+REM :: Revert static libs
+if exist openssl\libcrypto.dll.lib (
+	echo.
+	echo Revert openssl static libraries...
+	move /Y openssl\libcrypto.lib		openssl\libcrypto_static.lib
+	move /Y openssl\libssl.lib			openssl\libssl_static.lib
+	move /Y openssl\libcrypto.dll.lib	openssl\libcrypto.lib
+	move /Y openssl\libssl.dll.lib		openssl\libssl.lib
+)
+
 echo **********************************************************
-echo %CD%
+echo  The End
+echo **********************************************************
 pause
 exit /B
 
@@ -475,7 +561,7 @@ objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
 
 
 :: test.bat + cacert.pem
-if /I "%BUILD_SSL_ENGINE%" equ "WinSSL" (
+if /I "%BUILD_SSL_BACKEND%" equ "WinSSL" (
 	echo "%%~dp0\curl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%BUILD_OUTDIR%\test.bat"
 	echo "%%~dp0\curl.exe" -V>> "%BUILD_OUTDIR%\test.bat"
 	echo pause>> "%BUILD_OUTDIR%\test.bat"
