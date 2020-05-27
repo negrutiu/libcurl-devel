@@ -227,7 +227,11 @@ echo.
 echo Copying zconf.h...
 copy /Y zlib\BUILD\zconf.h zlib\zconf.h
 
-REM mklink /H zlibstatic.lib zlib\BUILD\%CONFIG%\zlibstatic.lib 2> NUL
+REM | Collect
+echo.
+pushd zlib\BUILD
+	for %%f in (zlib*.dll zlib*.lib zlib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+popd
 :ZLIB_END
 
 
@@ -258,8 +262,11 @@ if not exist nghttp2\BUILD\CMakeCache.txt (
 cmake --build nghttp2\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
-
-REM mklink /H nghttp2_static.lib nghttp2\build\lib\%CONFIG%\nghttp2_static.lib 2> NUL
+REM | Collect
+echo.
+pushd nghttp2\BUILD\lib
+	for %%f in (*.dll *.lib *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+popd
 :NGHTTP2_END
 
 
@@ -328,37 +335,15 @@ if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 popd
 
-REM :: Gather binaries
-REM mklink /H openssl.exe				openssl\apps\openssl.exe 2> NUL
-REM mklink /H libcrypto.lib				openssl\libcrypto.lib 2> NUL
-REM mklink /H libssl.lib				openssl\libssl.lib 2> NUL
-REM if %BUILD_OPENSSL_DLL% neq 0 (
-	REM mklink /H libcrypto-1_1.dll		openssl\libcrypto-1_1.dll		2> NUL
-	REM mklink /H libcrypto-1_1.pdb		openssl\libcrypto-1_1.pdb		2> NUL
-	REM mklink /H libssl-1_1.dll		openssl\libssl-1_1.dll			2> NUL
-	REM mklink /H libssl-1_1.pdb		openssl\libssl-1_1.pdb			2> NUL
-	REM mklink /H libcrypto-1_1-x64.dll	openssl\libcrypto-1_1-x64.dll	2> NUL
-	REM mklink /H libcrypto-1_1-x64.pdb	openssl\libcrypto-1_1-x64.pdb	2> NUL
-	REM mklink /H libssl-1_1-x64.dll	openssl\libssl-1_1-x64.dll		2> NUL
-	REM mklink /H libssl-1_1-x64.pdb	openssl\libssl-1_1-x64.pdb		2> NUL
-REM )
-:OPENSSL_END
-
-
-:WINSSL
-if /i "%BUILD_SSL_BACKEND%" neq "WINSSL" goto :WINSSL_END
+REM | Collect
 echo.
-echo -----------------------------------
-echo  WinSSL
-echo -----------------------------------
-title %DIRNAME%-WinSSL
-
-:: Build libcurl with WinSSL
-set CURL_CFG=!CURL_CFG! -winssl
-set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS2! -lcrypt32
-
-echo Done
-:WINSSL_END
+pushd openssl
+	for %%f in (lib*.dll lib*.lib lib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+popd
+pushd openssl\apps
+	for %%f in (openssl.exe openssl.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+popd
+:OPENSSL_END
 
 
 :LIBCURL
@@ -452,97 +437,14 @@ if exist openssl\libcrypto.dll.lib (
 	move /Y openssl\libssl.dll.lib		openssl\libssl.lib
 )
 
-echo **********************************************************
-echo  The End
-echo **********************************************************
-pause
-exit /B
-
-if %BUILD_LIBCURL_DLL% equ 0 set CFG=!CURL_CFG!
-if %BUILD_LIBCURL_DLL% neq 0 set CFG=!CURL_CFG! -dyn
-
-if /I %BUILD_ARCH% equ x64 set ARCH=w64
-if /I %BUILD_ARCH% neq x64 set ARCH=w32
-
-set CURL_CFLAG_EXTRAS=!GLOBAL_CFLAGS! !CURL_CFLAGS! !OPENSSL_CFLAGS! !NGHTTP2_CFLAGS!
-set CURL_LDFLAG_EXTRAS=!GLOBAL_LFLAGS! !CURL_LDFLAG_EXTRAS!
-::set CURL_LDFLAG_EXTRAS2=!CURL_LDFLAG_EXTRAS!
-
-mingw32-make -f Makefile.m32 all
+REM | Collect
 echo.
-echo ERRORLEVEL = %errorlevel%
-if %errorlevel% neq 0 pause && exit /B %errorlevel%
-
-:: Collect
-echo.
-xcopy "%BUILD_OUTDIR%\cURL\lib\*.dll" "%BUILD_OUTDIR%" /YF
-xcopy "%BUILD_OUTDIR%\cURL\lib\*.a"   "%BUILD_OUTDIR%" /YF
-objdump -d -S "%BUILD_OUTDIR%\cURL\lib\*.o" > "%BUILD_OUTDIR%\asm-cURL-lib.txt"
-
-
-:LIBCURL_EXE
-if "%BUILD_LIBCURL_DLL%" equ "0" goto :LIBCURL_EXE_END
-echo.
-echo -----------------------------------
-echo  libcurl.exe
-echo -----------------------------------
-title %DIRNAME%-libcurl.exe
-:: NOTE: Must build in ANSI code page
-
-cd /d "%~dp0"
-xcopy "cURL\src" "%BUILD_OUTDIR%\cURL\src-dyn" /QEIYD
-cd /d "%BUILD_OUTDIR%\cURL\src-dyn"
-
-if /I %BUILD_ARCH% equ x64 set ARCH=w64
-if /I %BUILD_ARCH% neq x64 set ARCH=w32
-
-REM set CURL_CFLAG_EXTRAS=<use_existing>
-REM set CURL_LDFLAG_EXTRAS=<use_existing>
-
-:: curl.exe (dynamic) -> libcurl.exe
-mingw32-make -f Makefile.m32 CFG=-dyn all
-echo.
-echo ERRORLEVEL = %errorlevel%
-if %errorlevel% neq 0 pause && exit /B %errorlevel%
-
-:: Collect
-echo.
-move /Y "%BUILD_OUTDIR%\cURL\src-dyn\curl.exe" "%BUILD_OUTDIR%\cURL\src-dyn\libcurl.exe"
-xcopy "%BUILD_OUTDIR%\cURL\src-dyn\*.exe" "%BUILD_OUTDIR%" /YF
-objdump -d -S "%BUILD_OUTDIR%\cURL\src-dyn\*.o" > "%BUILD_OUTDIR%\asm-libcurl-src.txt"
-:LIBCURL_EXE_END
-
-
-:CURL_EXE
-echo.
-echo -----------------------------------
-echo  curl.exe
-echo -----------------------------------
-title %DIRNAME%-curl.exe
-:: NOTE: Must build in ANSI code page
-
-cd /d "%~dp0"
-xcopy "cURL\src" "%BUILD_OUTDIR%\cURL\src" /QEIYD
-cd /d "%BUILD_OUTDIR%\cURL\src"
-
-if /I %BUILD_ARCH% equ x64 set ARCH=w64
-if /I %BUILD_ARCH% neq x64 set ARCH=w32
-
-REM set CURL_CFLAG_EXTRAS=<use_existing>
-REM set CURL_LDFLAG_EXTRAS=<use_existing>
-
-:: curl.exe (static)
-mingw32-make -f Makefile.m32 CFG= all
-echo.
-echo ERRORLEVEL = %errorlevel%
-if %errorlevel% neq 0 pause && exit /B %errorlevel%
-
-::Collect
-echo.
-xcopy "%BUILD_OUTDIR%\cURL\src\*.exe" "%BUILD_OUTDIR%" /YF
-objdump -d -S "%BUILD_OUTDIR%\cURL\src\*.o" > "%BUILD_OUTDIR%\asm-cURL-src.txt"
-:CURL_EXE_END
-
+pushd curl\BUILD\lib
+	for %%f in (*.dll *.lib *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+popd
+pushd curl\BUILD\src
+	for %%f in (*.exe *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+popd
 
 :: test.bat + cacert.pem
 if /I "%BUILD_SSL_BACKEND%" equ "WinSSL" (
@@ -555,3 +457,8 @@ if /I "%BUILD_SSL_BACKEND%" equ "WinSSL" (
 	echo "%%~dp0\curl.exe" -V>> "%BUILD_OUTDIR%\test.bat"
 	echo pause>> "%BUILD_OUTDIR%\test.bat"
 )
+
+echo **********************************************************
+echo  The End
+echo **********************************************************
+
