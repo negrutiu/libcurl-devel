@@ -210,10 +210,6 @@ if not exist zlib\BUILD\CMakeCache.txt (
 	cmake -G "NMake Makefiles" -S zlib -B zlib\BUILD ^
 		-DCMAKE_BUILD_TYPE=%CONFIG%
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
-	REM :: zconf.h
-	echo.
-	echo Copying zconf.h...
-	copy /Y zlib\BUILD\zconf.h zlib\zconf.h
 )
 if /i "%BUILD_CRT%" equ "static" (
 	REM | By default zlib links to shared CRT library
@@ -225,6 +221,11 @@ if /i "%BUILD_CRT%" equ "static" (
 
 cmake --build zlib\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
+
+REM :: zconf.h
+echo.
+echo Copying zconf.h...
+copy /Y zlib\BUILD\zconf.h zlib\zconf.h
 
 REM mklink /H zlibstatic.lib zlib\BUILD\%CONFIG%\zlibstatic.lib 2> NUL
 :ZLIB_END
