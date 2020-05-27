@@ -270,23 +270,6 @@ popd
 :NGHTTP2_END
 
 
-REM | if /I "%BUILD_ARCH%" equ "x64" (
-REM | 	set MINGW=%MSYS2%\mingw64
-REM | 	set GLOBAL_CFLAGS=-march=x86-64 -s -Os -DWIN32 -D_WIN32_WINNT=0x0502 -DNDEBUG -O3 -ffunction-sections -fdata-sections
-REM | 	set GLOBAL_LFLAGS=!GLOBAL_CFLAGS! -static-libgcc -static-libstdc++ -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup -Wl,--high-entropy-va
-REM | 	set GLOBAL_RFLAGS=-F pe-x86-64
-REM | ) else (
-REM | 	set MINGW=%MSYS2%\mingw32
-REM | 	set GLOBAL_CFLAGS=-march=pentium2 -s -Os -DWIN32 -D_WIN32_WINNT=0x0400 -DNDEBUG -O3 -ffunction-sections -fdata-sections
-REM | 	set GLOBAL_LFLAGS=!GLOBAL_CFLAGS! -static-libgcc -static-libstdc++ -Wl,--gc-sections -Wl,--nxcompat -Wl,--dynamicbase -Wl,--enable-auto-image-base -Wl,--enable-stdcall-fixup
-REM | 	set GLOBAL_RFLAGS=-F pe-i386
-REM | )
-REM | set CURL_CFG=
-REM | set CURL_LDFLAG_EXTRAS=
-REM | set CURL_LDFLAG_EXTRAS2=
-REM | set PATH=%MINGW%\bin;%MSYS2%\usr\bin;%PATH%
-REM | call :GET_DIR_NAME "%BUILD_OUTDIR%"
-
 :OPENSSL
 if /i "%BUILD_SSL_BACKEND%" neq "OPENSSL" goto :OPENSSL_END
 echo.
