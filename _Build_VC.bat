@@ -3,6 +3,8 @@ REM :: Marius Negrutiu (marius.negrutiu@protonmail.com)
 @echo off
 echo.
 setlocal EnableDelayedExpansion
+
+REM :: CONFIG=Debug|Release
 if not defined CONFIG set CONFIG=Release
 
 cd /d "%~dp0"
@@ -19,10 +21,6 @@ for /f "usebackq tokens=1* delims=: " %%i in (`"%VSWHERE%" -version 15 -requires
 
 set VCVARSALL=%VSDIR%\VC\Auxiliary\Build\vcvarsall.bat
 if not exist "%VCVARSALL%" echo ERROR: Missing "%VCVARSALL%" && pause && exit /B 1
-
-:: TODO: Determine dynamic
-:: TODO: Use -A to specify architecture
-set CMAKE_GENERATOR_BASE=Visual Studio 15 2017
 
 REM :: NASM (required starting with OpenSSL 1.0.2)
 REM :: Use powershell to read NASM path from registry to properly handle paths with spaces (e.g. "C:\Program Files\NASM")
@@ -181,12 +179,8 @@ shift
 	shift & shift
 	goto :loop_params
 :loop_params_end
-call :GET_DIR_NAME "%BUILD_OUTDIR%"
 
-if /I "%BUILD_ARCH%" equ "Win32" set CMAKE_GENERATOR=%CMAKE_GENERATOR_BASE%
-if /I "%BUILD_ARCH%" equ "x86"   set CMAKE_GENERATOR=%CMAKE_GENERATOR_BASE%
-if /I "%BUILD_ARCH%" equ "Win64" set CMAKE_GENERATOR=%CMAKE_GENERATOR_BASE% Win64
-if /I "%BUILD_ARCH%" equ "x64"   set CMAKE_GENERATOR=%CMAKE_GENERATOR_BASE% Win64
+call :GET_DIR_NAME "%BUILD_OUTDIR%"
 
 if /I "%BUILD_ARCH%" equ "Win32" set VCVARS_ARCH=x86
 if /I "%BUILD_ARCH%" equ "x86"   set VCVARS_ARCH=x86
@@ -196,6 +190,7 @@ if /I "%BUILD_ARCH%" equ "x64"   set VCVARS_ARCH=x64
 mkdir "%BUILD_OUTDIR%" 2> NUL
 cd /d "%BUILD_OUTDIR%"
 
+REM | Initialize MSVC environment
 pushd "%CD%"
 call "%VCVARSALL%" %VCVARS_ARCH%
 popd
@@ -212,7 +207,8 @@ title %DIRNAME%-zlib
 xcopy "%ROOTDIR%\zlib" zlib /QEIYD
 
 if not exist zlib\BUILD\CMakeCache.txt (
-	cmake -G "%CMAKE_GENERATOR%" -S zlib -B zlib\BUILD -DCMAKE_VERBOSE_MAKEFILE=ON
+	cmake -G "NMake Makefiles" -S zlib -B zlib\BUILD ^
+		-DCMAKE_BUILD_TYPE=%CONFIG%
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
 	REM :: zconf.h
 	echo.
@@ -223,10 +219,8 @@ if /i "%BUILD_CRT%" equ "static" (
 	REM | By default zlib links to shared CRT library
 	REM | Because zlib doesn't have a cmake variable to control CRT linkage, we'll do this by replacing in .vcxproj files...
 	echo Configure static CRT...
-	powershell -Command "(gc zlib\BUILD\zlib.vcxproj)       -replace 'MultiThreadedDLL',      'MultiThreaded'     | Out-File -encoding ASCII zlib\BUILD\zlib.vcxproj"
-	powershell -Command "(gc zlib\BUILD\zlib.vcxproj)       -replace 'MultiThreadedDebugDLL', 'MultiThreadedDebug'| Out-File -encoding ASCII zlib\BUILD\zlib.vcxproj"
-	powershell -Command "(gc zlib\BUILD\zlibstatic.vcxproj) -replace 'MultiThreadedDLL',      'MultiThreaded'     | Out-File -encoding ASCII zlib\BUILD\zlibstatic.vcxproj"
-	powershell -Command "(gc zlib\BUILD\zlibstatic.vcxproj) -replace 'MultiThreadedDebugDLL', 'MultiThreadedDebug'| Out-File -encoding ASCII zlib\BUILD\zlibstatic.vcxproj"
+	powershell -Command "(gc zlib\BUILD\CMakeCache.txt) -replace '/MDd', '/MTd' | Out-File -encoding ASCII zlib\BUILD\CMakeCache.txt"
+	powershell -Command "(gc zlib\BUILD\CMakeCache.txt) -replace '/MD',  '/MT'  | Out-File -encoding ASCII zlib\BUILD\CMakeCache.txt"
 )
 
 cmake --build zlib\BUILD --config %CONFIG%
@@ -246,18 +240,21 @@ title %DIRNAME%-nghttp2
 
 xcopy "%ROOTDIR%\nghttp2" nghttp2 /QEIYD
 
-if not exist nghttp2\build\CMakeCache.txt (
-	cmake -G "%CMAKE_GENERATOR%" -S nghttp2 -B nghttp2\build ^
-		-DENABLE_STATIC_CRT=OFF ^
-		-DENABLE_LIB_ONLY=OFF ^
-		-DENABLE_SHARED_LIB=ON ^
-		-DENABLE_STATIC_LIB=ON
+if not exist nghttp2\BUILD\CMakeCache.txt (
+	set CMAKE_NGHTTP2_VARIABLES=-DENABLE_SHARED_LIB=ON -DENABLE_STATIC_LIB=ON -DENABLE_LIB_ONLY=OFF
+
+	if /i "%BUILD_CRT%" equ "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=ON
+	if /i "%BUILD_CRT%" neq "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=OFF
+
+	if /i "%CONFIG%" equ "Debug" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_DEBUG=ON
+
+	cmake -G "NMake Makefiles" -S nghttp2 -B nghttp2\BUILD ^
+		-DCMAKE_BUILD_TYPE=%CONFIG% ^
+		!CMAKE_NGHTTP2_VARIABLES!
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
-	if /I "%CONFIG%" equ "Debug" cmake nghttp2/BUILD ^
-		-DENABLE_DEBUG=ON
 )
 
-cmake --build nghttp2\build --config %CONFIG%
+cmake --build nghttp2\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 
@@ -321,7 +318,7 @@ if /i "%BUILD_CRT%" equ "static" (
 	REM | NOTE: There is the -static parameter, but it's useless in MSVC. It works in mingw though...
 	echo Configure static CRT...
 	powershell -Command "(gc makefile) -replace '/MDd', '/MTd' | Out-File -encoding ASCII makefile"
-	powershell -Command "(gc makefile) -replace '/MD', '/MT' | Out-File -encoding ASCII makefile"
+	powershell -Command "(gc makefile) -replace '/MD',  '/MT'  | Out-File -encoding ASCII makefile"
 )
 
 REM :: Make
@@ -390,13 +387,13 @@ if /i "%BUILD_CRT%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES!
 REM :: curl(zlib)
 if /i "%BUILD_ZLIB%" equ "static" (
 	set BUILD_ZLIB_VALID=1
-	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/%CONFIG%/zlibstaticd.lib
-	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/%CONFIG%/zlibstatic.lib
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlibstaticd.lib
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlibstatic.lib
 )
 if /i "%BUILD_ZLIB%" equ "shared" (
 	set BUILD_ZLIB_VALID=1
-	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/%CONFIG%/zlibd.lib
-	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/%CONFIG%/zlib.lib
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlibd.lib
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlib.lib
 )
 if "%BUILD_ZLIB_VALID%" neq "1" (
 	if "%BUILD_ZLIB%" neq "" echo ERROR: Invalid BUILD_ZLIB=%BUILD_ZLIB%. Use BUILD_ZLIB=static^|shared && pause && exit /B 57
@@ -434,7 +431,10 @@ if "%BUILD_OPENSSL_VALID%" neq "1" (
 )
 
 if not exist curl\BUILD\CMakeCache.txt (
-	cmake -G "%CMAKE_GENERATOR%" -S curl -B curl\BUILD !CMAKE_CURL_VARIABLES! !BUILD_CURL_CONFIGURE_EXTRA!
+	cmake -G "NMake Makefiles" -S curl -B curl\BUILD ^
+		-DCMAKE_BUILD_TYPE=%CONFIG% ^
+		!CMAKE_CURL_VARIABLES! ^
+		!BUILD_CURL_CONFIGURE_EXTRA!
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
 )
 
