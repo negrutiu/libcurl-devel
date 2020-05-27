@@ -386,6 +386,22 @@ if "%BUILD_ZLIB_VALID%" neq "1" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=OFF
 )
 
+REM :: curl(nghttp2)
+if /i "%BUILD_NGHTTP2%" equ "static" (
+	set BUILD_NGHTTP2_VALID=1
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2_static.lib
+	REM | Hack: NGHTTP2_STATICLIB must be defined for curl to link statically to nghttp2
+	set CL=/DNGHTTP2_STATICLIB=1 %CL%
+)
+if /i "%BUILD_NGHTTP2%" equ "shared" (
+	set BUILD_NGHTTP2_VALID=1
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2.lib
+)
+if "%BUILD_NGHTTP2_VALID%" neq "1" (
+	if "%BUILD_NGHTTP2%" neq "" echo ERROR: Invalid BUILD_NGHTTP2=%BUILD_NGHTTP2%. Use BUILD_NGHTTP2=static^|shared && pause && exit /B 57
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=OFF
+)
+
 REM :: curl(openssl)
 if /i "%BUILD_OPENSSL%" equ "static" (
 	set BUILD_OPENSSL_VALID=1
