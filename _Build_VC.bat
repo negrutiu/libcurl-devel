@@ -6,6 +6,7 @@ setlocal EnableDelayedExpansion
 if not defined CONFIG set CONFIG=Release
 
 cd /d "%~dp0"
+set ROOTDIR=%CD%
 
 :REQUIREMENTS
 if not exist "%PF32%" set PF32=%PROGRAMFILES(X86)%
@@ -45,150 +46,122 @@ if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit
 :: ----------------------------------------------------------------
 :PARALLEL
 :: ----------------------------------------------------------------
-:ARG_OPENSSL
 
-if /I "%1" equ "/build-openssl-Win32" (
-	set BUILD_ARCH=Win32
-	set BUILD_SSL_BACKEND=OPENSSL
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32
-	set BUILD_CRT=static
-	set BUILD_ZLIB=static
-	set BUILD_NGHTTP2=
-	set BUILD_OPENSSL=static
-	set BUILD_CURL=static
-	set BUILD_OPENSSL_CONFIGURE_EXTRA=
-	set BUILD_CURL_CONFIGURE_EXTRA=
-	goto :BUILD
-)
+if /i "%~1" equ "/build" goto :BUILD
 
-if /I "%1" equ "/build-openssl-x64" (
-	set BUILD_ARCH=x64
-	set BUILD_SSL_BACKEND=OPENSSL
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64
-	set BUILD_CRT=static
-	set BUILD_ZLIB=static
-	set BUILD_NGHTTP2=
-	set BUILD_OPENSSL=static
-	set BUILD_CURL=static
-	set BUILD_OPENSSL_CONFIGURE_EXTRA=
-	set BUILD_CURL_CONFIGURE_EXTRA=
-	goto :BUILD
-)
+REM =============================================
+:PARALLEL_OPENSSL
+REM =============================================
 
-if /I "%1" equ "/build-openssl-Win32-HTTP_ONLY" (
-	set BUILD_ARCH=Win32
-	set BUILD_SSL_BACKEND=OPENSSL
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32-HTTP_ONLY
-	set BUILD_CRT=static
-	set BUILD_ZLIB=
-	set BUILD_NGHTTP2=
-	set BUILD_OPENSSL=static
-	set BUILD_CURL=static
-	set BUILD_OPENSSL_CONFIGURE_EXTRA=
-	set BUILD_CURL_CONFIGURE_EXTRA=-DHTTP_ONLY=ON
-	goto :BUILD
-)
+REM | Notice the `call` in "start "" cmd /C call <script> <params>"
+REM | Without it parameters such as -PARAM="val1 val2 val3" are incorrectly escaped...
 
-if /I "%1" equ "/build-openssl-x64-HTTP_ONLY" (
-	set BUILD_ARCH=x64
-	set BUILD_SSL_BACKEND=OPENSSL
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64-HTTP_ONLY
-	set BUILD_CRT=static
-	set BUILD_ZLIB=
-	set BUILD_NGHTTP2=
-	set BUILD_OPENSSL=static
-	set BUILD_CURL=static
-	set BUILD_OPENSSL_CONFIGURE_EXTRA=
-	set BUILD_CURL_CONFIGURE_EXTRA=-DHTTP_ONLY=ON
-	goto :BUILD
-)
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=Win32 ^
+	BUILD_SSL_BACKEND=OPENSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32 ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB=static ^
+	BUILD_NGHTTP2=static ^
+	BUILD_OPENSSL=static ^
+	BUILD_CURL=static ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA="" ^
+	BUILD_CURL_CONFIGURE_EXTRA=""
 
-if /I "%1" equ "/build-openssl-Win32-openssl_dll" (
-	set BUILD_ARCH=Win32
-	set BUILD_SSL_BACKEND=OPENSSL
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-Win32
-	set BUILD_CRT=static
-	set BUILD_ZLIB=shared
-	set BUILD_NGHTTP2=shared
-	set BUILD_OPENSSL=shared
-	set BUILD_CURL=shared
-	set BUILD_OPENSSL_CONFIGURE_EXTRA=
-	set BUILD_CURL_CONFIGURE_EXTRA=-DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/%CONFIG%/nghttp2.lib
-	goto :BUILD
-)
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=x64 ^
+	BUILD_SSL_BACKEND=OPENSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64 ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB=static ^
+	BUILD_NGHTTP2=static ^
+	BUILD_OPENSSL=static ^
+	BUILD_CURL=static ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA="" ^
+	BUILD_CURL_CONFIGURE_EXTRA=""
 
-if /I "%1" equ "/build-openssl-x64-openssl_dll" (
-	set BUILD_ARCH=x64
-	set BUILD_SSL_BACKEND=OPENSSL
-	set BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-x64
-	set BUILD_CRT=static
-	set BUILD_ZLIB=shared
-	set BUILD_NGHTTP2=shared
-	set BUILD_OPENSSL=shared
-	set BUILD_CURL=shared
-	set BUILD_OPENSSL_CONFIGURE_EXTRA=
-	set BUILD_CURL_CONFIGURE_EXTRA=-DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/%CONFIG%/nghttp2.lib
-	goto :BUILD
-)
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=Win32 ^
+	BUILD_SSL_BACKEND=OPENSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32-HTTP_ONLY ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB="" ^
+	BUILD_NGHTTP2=static ^
+	BUILD_OPENSSL=static ^
+	BUILD_CURL=static ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA="" ^
+	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
-:ARG_WINSSL
-if /I "%1" equ "/build-winssl-Win32" (
-	set BUILD_ARCH=Win32
-	set BUILD_SSL_BACKEND=WINSSL
-	set BUILD_SUBDIR=%CONFIG%-VC-WinSSL-Win32
-	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=-DCURL_DISABLE_LDAP -DPROV_RSA_AES=24
-	goto :BUILD
-)
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=x64 ^
+	BUILD_SSL_BACKEND=OPENSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64-HTTP_ONLY ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB="" ^
+	BUILD_NGHTTP2=static ^
+	BUILD_OPENSSL=static ^
+	BUILD_CURL=static ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA="" ^
+	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
-if /I "%1" equ "/build-winssl-x64" (
-	set BUILD_ARCH=x64
-	set BUILD_SSL_BACKEND=WINSSL
-	set BUILD_SUBDIR=%CONFIG%-VC-WinSSL-x64
-	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=
-	goto :BUILD
-)
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=Win32 ^
+	BUILD_SSL_BACKEND=OPENSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-Win32 ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB=shared ^
+	BUILD_NGHTTP2=shared ^
+	BUILD_OPENSSL=shared ^
+	BUILD_CURL=shared ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA=""  ^
+	BUILD_CURL_CONFIGURE_EXTRA=""
 
-if /I "%1" equ "/build-winssl-Win32-HTTP_ONLY" (
-	set BUILD_ARCH=Win32
-	set BUILD_SSL_BACKEND=WINSSL
-	set BUILD_SUBDIR=%CONFIG%-VC-WinSSL-Win32-HTTP_ONLY
-	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=-DHTTP_ONLY -DPROV_RSA_AES=24
-	goto :BUILD
-)
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=x64 ^
+	BUILD_SSL_BACKEND=OPENSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-x64 ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB=shared ^
+	BUILD_NGHTTP2=shared ^
+	BUILD_OPENSSL=shared ^
+	BUILD_CURL=shared ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA=""  ^
+	BUILD_CURL_CONFIGURE_EXTRA=""
 
-if /I "%1" equ "/build-winssl-x64-HTTP_ONLY" (
-	set BUILD_ARCH=x64
-	set BUILD_SSL_BACKEND=WINSSL
-	set BUILD_SUBDIR=%CONFIG%-VC-WinSSL-x64-HTTP_ONLY
-	set BUILD_OUTDIR=%~dp0\bin\!BUILD_SUBDIR!
-	set BUILD_LIBCURL_DLL=1
-	set CURL_CFLAGS=-DHTTP_ONLY
-	goto :BUILD
-)
+REM =============================================
+:PARALLEL_WINSSL
+REM =============================================
 
-:: Unknown argument?
-if "%1" neq "" echo ERROR: Unknown argument "%1" && pause && exit /B
+REM start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=Win32 ^
+	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-Win32 ^
+	BUILD_LIBCURL_DLL=1 ^
+	CURL_CFLAGS="-DCURL_DISABLE_LDAP -DPROV_RSA_AES=24"
 
+REM start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=x64 ^
+	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-x64 ^
+	BUILD_LIBCURL_DLL=1 ^
+	CURL_CFLAGS=""
 
-:: Launch parallel builds
-start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32
-start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64
-start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32-HTTP_ONLY
-start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64-HTTP_ONLY
-start "" "%COMSPEC%" /C "%~f0" /build-openssl-Win32-openssl_dll
-start "" "%COMSPEC%" /C "%~f0" /build-openssl-x64-openssl_dll
+REM start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=Win32 ^
+	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-Win32-HTTP_ONLY ^
+	BUILD_LIBCURL_DLL=1 ^
+	CURL_CFLAGS="-DHTTP_ONLY -DPROV_RSA_AES=24"
 
-REM start "" "%COMSPEC%" /C "%~f0" /build-winssl-Win32
-REM start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64
-REM start "" "%COMSPEC%" /C "%~f0" /build-winssl-Win32-HTTP_ONLY
-REM start "" "%COMSPEC%" /C "%~f0" /build-winssl-x64-HTTP_ONLY
-exit /B
+REM start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=x64 ^
+	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-x64-HTTP_ONLY ^
+	BUILD_LIBCURL_DLL=1 ^
+	CURL_CFLAGS="-DHTTP_ONLY"
+
+exit /B 0
+
 
 :: ----------------------------------------------------------------
 :GET_DIR_NAME
@@ -200,6 +173,14 @@ exit /B
 :BUILD
 :: ----------------------------------------------------------------
 
+REM | Command line parameters
+shift
+:loop_params
+	if "%~1" equ "" goto :loop_params_end
+	set %~1=%~2
+	shift & shift
+	goto :loop_params
+:loop_params_end
 call :GET_DIR_NAME "%BUILD_OUTDIR%"
 
 if /I "%BUILD_ARCH%" equ "Win32" set CMAKE_GENERATOR=%CMAKE_GENERATOR_BASE%
@@ -228,7 +209,7 @@ echo  zlib
 echo -----------------------------------
 title %DIRNAME%-zlib
 
-xcopy "%~dp0\zlib" zlib /QEIYD
+xcopy "%ROOTDIR%\zlib" zlib /QEIYD
 
 if not exist zlib\BUILD\CMakeCache.txt (
 	cmake -G "%CMAKE_GENERATOR%" -S zlib -B zlib\BUILD -DCMAKE_VERBOSE_MAKEFILE=ON
@@ -263,7 +244,7 @@ echo  nghttp2
 echo -----------------------------------
 title %DIRNAME%-nghttp2
 
-xcopy "%~dp0\nghttp2" nghttp2 /QEIYD
+xcopy "%ROOTDIR%\nghttp2" nghttp2 /QEIYD
 
 if not exist nghttp2\build\CMakeCache.txt (
 	cmake -G "%CMAKE_GENERATOR%" -S nghttp2 -B nghttp2\build ^
@@ -313,7 +294,7 @@ REM :: Make a copy of the source code
 echo Cloning the source code...
 pushd "%BUILD_OUTDIR%"
 	echo fuzz> exclude.txt
-	xcopy "%~dp0\openssl\*.*" openssl\ /EXCLUDE:exclude.txt /QEIYD
+	xcopy "%ROOTDIR%\openssl\*.*" openssl\ /EXCLUDE:exclude.txt /QEIYD
 	del exclude.txt
 popd
 
@@ -389,7 +370,7 @@ echo  libcurl
 echo -----------------------------------
 title %DIRNAME%-libcurl
 
-xcopy "%~dp0\curl\*.*" curl /QEIYD
+xcopy "%ROOTDIR%\curl\*.*" curl /QEIYD
 
 REM :: curl(*)
 set CMAKE_CURL_VARIABLES=
