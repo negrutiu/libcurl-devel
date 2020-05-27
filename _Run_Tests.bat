@@ -10,5 +10,5 @@ REM pause
 exit /B
 
 :TEST
-if exist "%~1\Test.bat" start "%~n1" %comspec% /C "%~1\Test.bat"
+if exist "%~1\_Test_curl.bat" start "%~n1" %comspec% /C "%~1\_Test_curl.bat"
 exit /B

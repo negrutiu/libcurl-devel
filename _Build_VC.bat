@@ -446,15 +446,16 @@ pushd curl\BUILD\src
 popd
 
 :: test.bat + cacert.pem
-if /I "%BUILD_SSL_BACKEND%" equ "WinSSL" (
-	echo "%%~dp0\curl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%BUILD_OUTDIR%\test.bat"
-	echo "%%~dp0\curl.exe" -V>> "%BUILD_OUTDIR%\test.bat"
-	echo pause>> "%BUILD_OUTDIR%\test.bat"
+set testfile=%BUILD_OUTDIR%\_test_curl.bat
+if /i "%BUILD_SSL_BACKEND%" equ "WinSSL" (
+	echo "%%~dp0\curl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%testfile%"
+	echo "%%~dp0\curl.exe" -V>> "%testfile%"
+	echo pause>> "%testfile%"
 ) else (
-	xcopy "%~dp0\cacert.pem" "%BUILD_OUTDIR%" /FIYD
-	echo "%%~dp0\curl.exe" -L -v --cacert cacert.pem -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%BUILD_OUTDIR%\test.bat"
-	echo "%%~dp0\curl.exe" -V>> "%BUILD_OUTDIR%\test.bat"
-	echo pause>> "%BUILD_OUTDIR%\test.bat"
+	mklink /H cacert.pem "%ROOTDIR%\cacert.pem" 2> NUL
+	echo "%%~dp0\curl.exe" -L -v --cacert cacert.pem -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%testfile%"
+	echo "%%~dp0\curl.exe" -V>> "%testfile%"
+	echo pause>> "%testfile%"
 )
 
 echo **********************************************************
