@@ -130,33 +130,45 @@ REM =============================================
 :PARALLEL_WINSSL
 REM =============================================
 
-REM start "" %COMSPEC% /C call "%~f0" /build ^
+start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-Win32 ^
-	BUILD_LIBCURL_DLL=1 ^
-	CURL_CFLAGS="-DCURL_DISABLE_LDAP -DPROV_RSA_AES=24"
+	BUILD_CRT=static ^
+	BUILD_ZLIB=static ^
+	BUILD_NGHTTP2=static ^
+	BUILD_CURL=static ^
+	BUILD_CURL_CONFIGURE_EXTRA=""
 
-REM start "" %COMSPEC% /C call "%~f0" /build ^
+start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-x64 ^
-	BUILD_LIBCURL_DLL=1 ^
-	CURL_CFLAGS=""
+	BUILD_CRT=static ^
+	BUILD_ZLIB=static ^
+	BUILD_NGHTTP2=static ^
+	BUILD_CURL=static ^
+	BUILD_CURL_CONFIGURE_EXTRA=""
 
-REM start "" %COMSPEC% /C call "%~f0" /build ^
+start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-Win32-HTTP_ONLY ^
-	BUILD_LIBCURL_DLL=1 ^
-	CURL_CFLAGS="-DHTTP_ONLY -DPROV_RSA_AES=24"
+	BUILD_CRT=static ^
+	BUILD_ZLIB=static ^
+	BUILD_NGHTTP2=static ^
+	BUILD_CURL=static ^
+	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
-REM start "" %COMSPEC% /C call "%~f0" /build ^
+start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-x64-HTTP_ONLY ^
-	BUILD_LIBCURL_DLL=1 ^
-	CURL_CFLAGS="-DHTTP_ONLY"
+	BUILD_CRT=static ^
+	BUILD_ZLIB=static ^
+	BUILD_NGHTTP2=static ^
+	BUILD_CURL=static ^
+	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
 exit /B 0
 
@@ -189,6 +201,9 @@ if /I "%BUILD_ARCH%" equ "x64"   set VCVARS_ARCH=x64
 
 mkdir "%BUILD_OUTDIR%" 2> NUL
 cd /d "%BUILD_OUTDIR%"
+
+REM | Parameter cleansing
+if /i "%BUILD_SSL_BACKEND%" neq "OPENSSL" set BUILD_OPENSSL=
 
 REM | Initialize MSVC environment
 pushd "%CD%"
@@ -395,7 +410,7 @@ if "%BUILD_NGHTTP2_VALID%" neq "1" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=OFF
 )
 
-REM :: curl(openssl)
+REM | curl(openssl)
 if /i "%BUILD_OPENSSL%" equ "static" (
 	set BUILD_OPENSSL_VALID=1
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
@@ -425,6 +440,12 @@ if "%BUILD_OPENSSL_VALID%" neq "1" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_USE_OPENSSL=OFF
 )
 
+REM | curl(winssl)
+if /i "%BUILD_SSL_BACKEND%" equ "WINSSL" (
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_USE_WINSSL=ON
+)
+
+REM | Configure
 if not exist curl\BUILD\CMakeCache.txt (
 	cmake -G "NMake Makefiles" -S curl -B curl\BUILD ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
@@ -433,6 +454,7 @@ if not exist curl\BUILD\CMakeCache.txt (
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
 )
 
+REM | Build
 cmake --build curl\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
