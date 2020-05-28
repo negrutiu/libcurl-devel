@@ -4,7 +4,7 @@ REM :: Marius Negrutiu (marius.negrutiu@protonmail.com)
 echo.
 setlocal EnableDelayedExpansion
 
-REM :: CONFIG=Debug|Release
+REM :: CONFIG=Debug|Release|RelWithDebInfo|MinSizeRel
 if not defined CONFIG set CONFIG=Release
 
 cd /d "%~dp0"
@@ -321,7 +321,7 @@ popd
 REM | Collect
 echo.
 pushd openssl
-	for %%f in (lib*.dll lib*.lib lib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+	for %%f in (lib*.dll lib*.lib lib*.pdb ossl_*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
 pushd openssl\apps
 	for %%f in (openssl.exe openssl.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
