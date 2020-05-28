@@ -236,6 +236,9 @@ echo.
 pushd zlib\BUILD
 	for %%f in (zlib*.dll zlib*.lib zlib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
+pushd zlib\BUILD\CMakeFiles\zlibstatic.dir
+	for %%f in (zlib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+popd
 :ZLIB_END
 
 
@@ -270,6 +273,9 @@ REM | Collect
 echo.
 pushd nghttp2\BUILD\lib
 	for %%f in (*.dll *.lib *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+popd
+pushd nghttp2\BUILD\lib\CMakeFiles\nghttp2_static.dir
+	for %%f in (nghttp2*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
 :NGHTTP2_END
 
@@ -444,6 +450,9 @@ REM | Collect
 echo.
 pushd curl\BUILD\lib
 	for %%f in (*.dll *.lib *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+popd
+pushd curl\BUILD\lib\CMakeFiles\libcurl.dir
+	for %%f in (libcurl*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
 pushd curl\BUILD\src
 	for %%f in (*.exe *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
