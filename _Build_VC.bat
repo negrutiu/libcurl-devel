@@ -333,7 +333,7 @@ popd
 :OPENSSL_END
 
 
-:LIBCURL
+:CURL
 echo.
 echo -----------------------------------
 echo  libcurl
@@ -346,7 +346,7 @@ REM :: curl(*)
 set CMAKE_CURL_VARIABLES=
 set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_VERBOSE_MAKEFILE=ON
 set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_TESTING=OFF
-if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON
+if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON -DCMAKE_DEBUG_POSTFIX:STRING=""
 REM :: TODO: --enable-tls-srp
 
 REM :: curl(static .exe)
@@ -448,6 +448,7 @@ popd
 pushd curl\BUILD\src
 	for %%f in (*.exe *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
+:CURL_END
 
 :: test.bat + cacert.pem
 set testfile=%BUILD_OUTDIR%\_test_curl.bat
