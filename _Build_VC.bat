@@ -4,7 +4,7 @@ REM :: Marius Negrutiu (marius.negrutiu@protonmail.com)
 echo.
 setlocal EnableDelayedExpansion
 
-REM :: CONFIG=Debug|Release|RelWithDebInfo|MinSizeRel
+REM | CONFIG=Debug|Release|RelWithDebInfo|MinSizeRel
 if not defined CONFIG set CONFIG=Release
 
 cd /d "%~dp0"
@@ -14,7 +14,7 @@ set ROOTDIR=%CD%
 if not exist "%PF32%" set PF32=%PROGRAMFILES(X86)%
 if not exist "%PF32%" set PF32=%PROGRAMFILES%
 
-REM :: Visual Studio
+REM | Visual Studio
 set VSWHERE=%PF32%\Microsoft Visual Studio\Installer\vswhere.exe
 if not exist "%VSWHERE%" echo ERROR: Missing "%VSHWERE%" && pause && exit /B 1
 for /f "usebackq tokens=1* delims=: " %%i in (`"%VSWHERE%" -version 15 -requires Microsoft.Component.MSBuild`) do if /i "%%i"=="installationPath" set VSDIR=%%j
@@ -22,22 +22,22 @@ for /f "usebackq tokens=1* delims=: " %%i in (`"%VSWHERE%" -version 15 -requires
 set VCVARSALL=%VSDIR%\VC\Auxiliary\Build\vcvarsall.bat
 if not exist "%VCVARSALL%" echo ERROR: Missing "%VCVARSALL%" && pause && exit /B 1
 
-REM :: NASM (required starting with OpenSSL 1.0.2)
-REM :: Use powershell to read NASM path from registry to properly handle paths with spaces (e.g. "C:\Program Files\NASM")
+REM | NASM (required starting with OpenSSL 1.0.2)
+REM | Use powershell to read NASM path from registry to properly handle paths with spaces (e.g. "C:\Program Files\NASM")
 set NASM_PATH=
 for /f "usebackq delims=*" %%a in (`powershell -Command "(gp 'HKCU:\Software\nasm').'(Default)'"`) do set NASM_PATH=%%a
 if not exist "%NASM_PATH%\nasm.exe" echo ERROR: Missing "%NASM_PATH%\nasm.exe" && pause && exit /B 1
 set PATH=%PATH%;%NASM_PATH%
 
-REM :: Perl
+REM | Perl
 perl -v > NUL
 if %errorlevel% neq 0 echo ERROR: Missing Perl && pause && exit /B 1
 
-REM :: cmake
+REM | cmake
 cmake --version > NUL
 if %errorlevel% neq 0 echo ERROR: Missing 'cmake' && pause && exit /B 1
 
-REM :: cacert.pem
+REM | cacert.pem
 if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit /B 2
 
 
@@ -241,7 +241,7 @@ if /i "%BUILD_CRT%" equ "static" (
 cmake --build zlib\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
-REM :: zconf.h
+REM | zconf.h
 echo.
 echo Copying zconf.h...
 copy /Y zlib\BUILD\zconf.h zlib\zconf.h
@@ -303,7 +303,7 @@ echo  openssl
 echo -----------------------------------
 title %DIRNAME%-openssl
 
-REM :: Make a copy of the source code
+REM | Make a copy of the source code
 echo Cloning the source code...
 pushd "%BUILD_OUTDIR%"
 	echo fuzz> exclude.txt
@@ -311,7 +311,7 @@ pushd "%BUILD_OUTDIR%"
 	del exclude.txt
 popd
 
-REM :: Features
+REM | Features
 set BUILD_OPENSSL_PARAMS=shared enable-static-engine no-dynamic-engine no-tests enable-ssl3
 if /i "%BUILD_ARCH%" equ "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN64A
 if /i "%BUILD_ARCH%" neq "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN32
@@ -322,7 +322,7 @@ if /i "%CONFIG%" neq "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --r
 
 pushd "%BUILD_OUTDIR%\openssl"
 
-REM :: Configure
+REM | Configure
 if not exist makefile (
 	perl Configure !BUILD_OPENSSL_PARAMS! !BUILD_OPENSSL_CONFIGURE_EXTRA! --prefix="%CD%\_PACKAGE"
 	if %errorlevel% neq 0 pause && exit /B %errorlevel%
@@ -337,7 +337,7 @@ if /i "%BUILD_CRT%" equ "static" (
 	powershell -Command "(gc makefile) -replace '/MD',  '/MT'  | Out-File -encoding ASCII makefile"
 )
 
-REM :: Make
+REM | Make
 nmake
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
@@ -363,22 +363,22 @@ title %DIRNAME%-libcurl
 
 xcopy "%ROOTDIR%\curl\*.*" curl /QEIYD
 
-REM :: curl(*)
+REM | curl(*)
 set CMAKE_CURL_VARIABLES=
 set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_VERBOSE_MAKEFILE=ON
 set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_TESTING=OFF
 if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON -DCMAKE_DEBUG_POSTFIX:STRING=""
 REM :: TODO: --enable-tls-srp
 
-REM :: curl(static .exe)
+REM | curl(static .exe)
 if /i "%BUILD_CURL%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=OFF
 if /i "%BUILD_CURL%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=ON
 
-REM :: curl(static CRT)
+REM | curl(static CRT)
 if /i "%BUILD_CRT%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=ON
 if /i "%BUILD_CRT%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=OFF
 
-REM :: curl(zlib)
+REM | curl(zlib)
 if /i "%BUILD_ZLIB%" equ "static" (
 	set BUILD_ZLIB_VALID=1
 	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlibstatic.lib
@@ -394,7 +394,7 @@ if "%BUILD_ZLIB_VALID%" neq "1" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=OFF
 )
 
-REM :: curl(nghttp2)
+REM | curl(nghttp2)
 if /i "%BUILD_NGHTTP2%" equ "static" (
 	set BUILD_NGHTTP2_VALID=1
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2_static.lib
@@ -417,10 +417,10 @@ if /i "%BUILD_OPENSSL%" equ "static" (
 		-DCMAKE_USE_OPENSSL=ON ^
 		-DOPENSSL_ROOT_DIR="!BUILD_OUTDIR!/openssl" ^
 		-DOPENSSL_CRYPTO_LIBRARY="!BUILD_OUTDIR!/openssl"
-	REM :: openssl builds both static (libcrypto_static.lib) and shared (libcrypto.lib) libraries
-	REM :: curl always links to libcrypto.lib/libssl.lib and I've found no way to redirect it to the static libraries
-	REM :: Until better workaround is found, we'll temporarily rename libxxx_static.lib -> libxxx.lib
-	REM :: TODO: Research OPENSSL_USE_STATIC_LIBS (see "%PROGRAMFILES%\CMake\share\cmake-3.17\Modules\FindOpenSSL.cmake")
+	REM | openssl builds both static (libcrypto_static.lib) and shared (libcrypto.lib) libraries
+	REM | curl always links to libcrypto.lib/libssl.lib and I've found no way to redirect it to the static libraries
+	REM | Until better workaround is found, we'll temporarily rename libxxx_static.lib -> libxxx.lib
+	REM | TODO: Research OPENSSL_USE_STATIC_LIBS (see "%PROGRAMFILES%\CMake\share\cmake-3.17\Modules\FindOpenSSL.cmake")
 	echo.
 	echo Configure openssl static libraries...
 	move /Y openssl\libcrypto.lib			openssl\libcrypto.dll.lib
@@ -458,7 +458,7 @@ REM | Build
 cmake --build curl\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
-REM :: Revert static libs
+REM | Revert static libs
 if exist openssl\libcrypto.dll.lib (
 	echo.
 	echo Revert openssl static libraries...
