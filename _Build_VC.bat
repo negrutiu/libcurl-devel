@@ -153,6 +153,26 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32-DLL ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB=shared ^
+	BUILD_NGHTTP2=shared ^
+	BUILD_CURL=shared ^
+	BUILD_CURL_CONFIGURE_EXTRA=""
+
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=x64 ^
+	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64-DLL ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB=shared ^
+	BUILD_NGHTTP2=shared ^
+	BUILD_CURL=shared ^
+	BUILD_CURL_CONFIGURE_EXTRA=""
+
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=Win32 ^
+	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-Win32-HTTP_ONLY ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
