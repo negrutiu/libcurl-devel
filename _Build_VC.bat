@@ -366,7 +366,7 @@ xcopy "%ROOTDIR%\curl\*.*" curl /QEIYD
 REM | curl(*)
 set CL=
 set CMAKE_CURL_VARIABLES=
-set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_VERBOSE_MAKEFILE=ON
+REM set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_VERBOSE_MAKEFILE=ON
 set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_TESTING=OFF
 if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON -DCMAKE_DEBUG_POSTFIX:STRING=""
 
@@ -499,3 +499,4 @@ echo **********************************************************
 echo  The End
 echo **********************************************************
 
+REM pause
