@@ -7,10 +7,16 @@ setlocal EnableDelayedExpansion
 REM | CONFIG=Debug|Release|RelWithDebInfo|MinSizeRel
 if not defined CONFIG set CONFIG=Release
 
+REM | BUILDER=MSVC|mingw
+if not defined BUILDER set BUILDER=MSVC
+
 cd /d "%~dp0"
 set ROOTDIR=%CD%
 
-:REQUIREMENTS
+if /i "%BUILDER%" equ "MSVC" goto :REQUIREMENTS_MSVC
+if /i "%BUILDER%" equ "mingw" goto :REQUIREMENTS_mingw
+
+:REQUIREMENTS_MSVC
 if not exist "%PF32%" set PF32=%PROGRAMFILES(X86)%
 if not exist "%PF32%" set PF32=%PROGRAMFILES%
 
@@ -37,6 +43,14 @@ REM | cmake
 cmake --version > NUL
 if %errorlevel% neq 0 echo ERROR: Missing 'cmake' && pause && exit /B 1
 
+goto :REQURIEMENTS_END
+
+:REQUIREMENTS_mingw
+goto :REQURIEMENTS_END
+
+
+:REQURIEMENTS_END
+
 REM | cacert.pem
 if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit /B 2
 
@@ -57,7 +71,7 @@ REM | Without it parameters such as -PARAM="val1 val2 val3" are incorrectly esca
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32 ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
@@ -69,7 +83,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64 ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
@@ -81,7 +95,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-Win32-HTTP_ONLY ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-HTTP_ONLY ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
@@ -93,7 +107,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl-x64-HTTP_ONLY ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-HTTP_ONLY ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
@@ -105,7 +119,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-DLL ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB=shared ^
 	BUILD_NGHTTP2=shared ^
@@ -117,7 +131,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-openssl_dll-x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-DLL ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB=shared ^
 	BUILD_NGHTTP2=shared ^
@@ -133,7 +147,7 @@ REM =============================================
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32 ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
@@ -143,7 +157,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64 ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
@@ -173,7 +187,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-Win32-HTTP_ONLY ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32-HTTP_ONLY ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
@@ -183,7 +197,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%CONFIG%-VC-WinSSL-x64-HTTP_ONLY ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64-HTTP_ONLY ^
 	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
