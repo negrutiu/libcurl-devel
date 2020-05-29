@@ -364,11 +364,11 @@ title %DIRNAME%-libcurl
 xcopy "%ROOTDIR%\curl\*.*" curl /QEIYD
 
 REM | curl(*)
+set CL=
 set CMAKE_CURL_VARIABLES=
 set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_VERBOSE_MAKEFILE=ON
 set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_TESTING=OFF
 if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON -DCMAKE_DEBUG_POSTFIX:STRING=""
-REM :: TODO: --enable-tls-srp
 
 REM | curl(static .exe)
 if /i "%BUILD_CURL%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=OFF
@@ -411,12 +411,17 @@ if "%BUILD_NGHTTP2_VALID%" neq "1" (
 )
 
 REM | curl(openssl)
-if /i "%BUILD_OPENSSL%" equ "static" (
-	set BUILD_OPENSSL_VALID=1
+if /i "%BUILD_SSL_BACKEND%" equ "OPENSSL" (
+	REM | To activate TLS-SRP, defining USE_TLS_SRP cmake variable is not enough. We'll also specify compiler definition /DUSE_TLS_SRP which does the job
+	set CL=!CL! /DUSE_TLS_SRP
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
 		-DCMAKE_USE_OPENSSL=ON ^
 		-DOPENSSL_ROOT_DIR="!BUILD_OUTDIR!/openssl" ^
-		-DOPENSSL_CRYPTO_LIBRARY="!BUILD_OUTDIR!/openssl"
+		-DOPENSSL_CRYPTO_LIBRARY="!BUILD_OUTDIR!/openssl" ^
+		-DUSE_TLS_SRP:BOOL=ON
+)
+if /i "%BUILD_OPENSSL%" equ "static" (
+	set BUILD_OPENSSL_VALID=1
 	REM | openssl builds both static (libcrypto_static.lib) and shared (libcrypto.lib) libraries
 	REM | curl always links to libcrypto.lib/libssl.lib and I've found no way to redirect it to the static libraries
 	REM | Until better workaround is found, we'll temporarily rename libxxx_static.lib -> libxxx.lib
@@ -430,10 +435,6 @@ if /i "%BUILD_OPENSSL%" equ "static" (
 )
 if /i "%BUILD_OPENSSL%" equ "shared" (
 	set BUILD_OPENSSL_VALID=1
-	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
-		-DCMAKE_USE_OPENSSL=ON ^
-		-DOPENSSL_ROOT_DIR="!BUILD_OUTDIR!/openssl" ^
-		-DOPENSSL_CRYPTO_LIBRARY="!BUILD_OUTDIR!/openssl"
 )
 if "%BUILD_OPENSSL_VALID%" neq "1" (
 	if "%BUILD_OPENSSL%" neq "" echo ERROR: Invalid BUILD_OPENSSL=%BUILD_OPENSSL%. Use BUILD_OPENSSL=static^|shared && pause && exit /B 57
