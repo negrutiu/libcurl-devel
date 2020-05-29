@@ -236,8 +236,29 @@ if /I "%BUILD_ARCH%" equ "x64"   set VCVARS_ARCH=x64
 mkdir "%BUILD_OUTDIR%" 2> NUL
 cd /d "%BUILD_OUTDIR%"
 
-REM | Parameter cleansing
+REM | Parameter validation
 if /i "%BUILD_SSL_BACKEND%" neq "OPENSSL" set BUILD_OPENSSL=
+
+echo _%BUILD_ARCH%_| findstr /I /B /E "_x86_ _Win32_ _x64_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_ARCH=%BUILD_ARCH%. Use BUILD_ARCH=Win32^|x64 && pause && exit /B 57
+
+echo _%BUILD_SSL_BACKEND%_| findstr /I /B /E "_openssl_ _winssl_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_SSL_BACKEND=%BUILD_SSL_BACKEND%. Use BUILD_SSL_BACKEND=OPENSSL^|WINSSL && pause && exit /B 57
+
+echo _%BUILD_CRT%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_CRT=%BUILD_CRT%. Use BUILD_CRT=static^|shared && pause && exit /B 57
+
+echo _%BUILD_CURL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_CURL=%BUILD_CURL%. Use BUILD_CURL=static^|shared && pause && exit /B 57
+
+echo _%BUILD_OPENSSL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_OPENSSL=%BUILD_OPENSSL%. Use BUILD_OPENSSL=static^|shared && pause && exit /B 57
+
+echo _%BUILD_NGHTTP2%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_NGHTTP2=%BUILD_NGHTTP2%. Use BUILD_NGHTTP2=static^|shared && pause && exit /B 57
+
+echo _%BUILD_ZLIB%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_ZLIB=%BUILD_ZLIB%. Use BUILD_ZLIB=static^|shared && pause && exit /B 57
 
 REM | Initialize MSVC environment
 pushd "%CD%"
@@ -413,35 +434,29 @@ if /i "%BUILD_CRT%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES!
 if /i "%BUILD_CRT%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=OFF
 
 REM | curl(zlib)
+if "%BUILD_ZLIB%" equ "" (
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=OFF
+)
 if /i "%BUILD_ZLIB%" equ "static" (
-	set BUILD_ZLIB_VALID=1
 	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlibstatic.lib
 	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlibstatic.lib
 )
 if /i "%BUILD_ZLIB%" equ "shared" (
-	set BUILD_ZLIB_VALID=1
 	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlib.lib
 	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlib.lib
 )
-if "%BUILD_ZLIB_VALID%" neq "1" (
-	if "%BUILD_ZLIB%" neq "" echo ERROR: Invalid BUILD_ZLIB=%BUILD_ZLIB%. Use BUILD_ZLIB=static^|shared && pause && exit /B 57
-	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=OFF
-)
 
 REM | curl(nghttp2)
+if "%BUILD_NGHTTP2%" equ "" (
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=OFF
+)
 if /i "%BUILD_NGHTTP2%" equ "static" (
-	set BUILD_NGHTTP2_VALID=1
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2_static.lib
 	REM | Hack: NGHTTP2_STATICLIB must be defined for curl to link statically to nghttp2
 	set CL=/DNGHTTP2_STATICLIB=1 %CL%
 )
 if /i "%BUILD_NGHTTP2%" equ "shared" (
-	set BUILD_NGHTTP2_VALID=1
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2.lib
-)
-if "%BUILD_NGHTTP2_VALID%" neq "1" (
-	if "%BUILD_NGHTTP2%" neq "" echo ERROR: Invalid BUILD_NGHTTP2=%BUILD_NGHTTP2%. Use BUILD_NGHTTP2=static^|shared && pause && exit /B 57
-	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=OFF
 )
 
 REM | curl(openssl)
@@ -455,7 +470,6 @@ if /i "%BUILD_SSL_BACKEND%" equ "OPENSSL" (
 		-DUSE_TLS_SRP:BOOL=ON
 )
 if /i "%BUILD_OPENSSL%" equ "static" (
-	set BUILD_OPENSSL_VALID=1
 	REM | openssl builds both static (libcrypto_static.lib) and shared (libcrypto.lib) libraries
 	REM | curl always links to libcrypto.lib/libssl.lib and I've found no way to redirect it to the static libraries
 	REM | Until better workaround is found, we'll temporarily rename libxxx_static.lib -> libxxx.lib
@@ -466,13 +480,6 @@ if /i "%BUILD_OPENSSL%" equ "static" (
 	move /Y openssl\libssl.lib				openssl\libssl.dll.lib
 	move /Y openssl\libcrypto_static.lib	openssl\libcrypto.lib
 	move /Y openssl\libssl_static.lib		openssl\libssl.lib
-)
-if /i "%BUILD_OPENSSL%" equ "shared" (
-	set BUILD_OPENSSL_VALID=1
-)
-if "%BUILD_OPENSSL_VALID%" neq "1" (
-	if "%BUILD_OPENSSL%" neq "" echo ERROR: Invalid BUILD_OPENSSL=%BUILD_OPENSSL%. Use BUILD_OPENSSL=static^|shared && pause && exit /B 57
-	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_USE_OPENSSL=OFF
 )
 
 REM | curl(winssl)
