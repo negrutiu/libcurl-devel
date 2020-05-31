@@ -51,6 +51,30 @@ set BUILD_CMAKE_GENERATOR=NMake Makefiles
 goto :REQURIEMENTS_END
 
 :REQUIREMENTS_mingw
+REM | msys2
+if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS2
+if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS64
+if not exist "%MSYS2%" echo ERROR: Missing msys2/mingw && pause && exit /B 2
+
+REM | sspi.h
+set p=%MSYS2%\mingw32\i686-w64-mingw32\include\sspi.h
+findstr SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS "%p%" > NUL
+if %errorlevel% neq 0 echo ERROR: In order to support nghttp2 /w SChannel the file "sspi.h" from mingw32 requires patching. && echo ^> move /Y "%p%" "%p%.bak" && echo ^> copy /Y "%CD%\_Patches\sspi.h" "%p%" && echo. && pause && exit /B 57
+
+set p=%MSYS2%\mingw64\x86_64-w64-mingw32\include\sspi.h
+findstr SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS "%p%" > NUL
+if %errorlevel% neq 0 echo ERROR: In order to support nghttp2 /w SChannel the file "sspi.h" from mingw64 requires patching. && echo ^> move /Y "%p%" "%p%.bak" && echo ^> copy /Y "%CD%\_Patches\sspi.h" "%p%" && echo. && pause && exit /B 57
+
+set p=
+
+REM | msys2/perl
+if not exist "%MSYS2%\usr\bin\perl.exe" echo ERROR: Missing msys2/perl. Go ahead and `pacman -S perl` && pause && exit /B 2
+
+REM | cmake
+cmake --version > NUL
+if %errorlevel% neq 0 echo ERROR: Missing 'cmake' && pause && exit /B 1
+set BUILD_CMAKE_GENERATOR=MinGW Makefiles
+
 goto :REQURIEMENTS_END
 
 
@@ -270,6 +294,10 @@ if /i "%BUILDER%" equ "MSVC" (
 	popd
 )
 
+REM | Initialize mingw environment
+if /i "%BUILD_ARCH%" equ "x64" set MINGW=%MSYS2%\mingw64
+if /i "%BUILD_ARCH%" neq "x64" set MINGW=%MSYS2%\mingw32
+if /i "%BUILDER%" equ "mingw" set PATH=%MINGW%\bin;%MSYS2%\usr\bin;%PATH%
 
 :ZLIB
 if "%BUILD_ZLIB%" equ "" goto :ZLIB_END
@@ -290,6 +318,10 @@ if not exist zlib\BUILD\CMakeCache.txt (
 		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
 		-DCMAKE_BUILD_TYPE=%CONFIG%
 	if !errorlevel! neq 0 pause && exit /B !errorlevel!
+
+	REM | Add "-static" compiler parameter to prevent mingw builds from linking to libgcc_*.dll
+	if /i "%BUILDER%" equ "mingw" cmake zlib\BUILD ^
+		-DCMAKE_C_FLAGS="-static"
 )
 
 if /i "%BUILDER%,%BUILD_CRT%" equ "MSVC,static" (
@@ -312,7 +344,7 @@ copy /Y zlib\BUILD\zconf.h zlib\zconf.h
 REM | Collect
 echo.
 pushd zlib\BUILD
-	for %%f in (zlib*.dll zlib*.lib zlib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+	for %%f in (*zlib*.dll *zlib*.lib *zlib*.a *zlib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
 pushd zlib\BUILD\CMakeFiles\zlibstatic.dir
 	for %%f in (zlib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
@@ -343,6 +375,9 @@ if not exist nghttp2\BUILD\CMakeCache.txt (
 
 	if /i "%CONFIG%" equ "Debug" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_DEBUG=ON
 
+	REM | Prevent mingw builds from linking to libgcc-*.dll
+	if /i "%BUILDER%" equ "mingw" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DCMAKE_C_FLAGS=-static
+
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S nghttp2 -B nghttp2\BUILD ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
 		!CMAKE_NGHTTP2_VARIABLES!
@@ -356,7 +391,7 @@ if %errorlevel% neq 0 pause && exit /B %errorlevel%
 REM | Collect
 echo.
 pushd nghttp2\BUILD\lib
-	for %%f in (*.dll *.lib *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+	for %%f in (*.dll *.lib *.a *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
 pushd nghttp2\BUILD\lib\CMakeFiles\nghttp2_static.dir
 	for %%f in (nghttp2*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
@@ -387,6 +422,10 @@ if /i "%BUILDER%" equ "MSVC" (
 	if /i "%BUILD_ARCH%" equ "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN64A
 	if /i "%BUILD_ARCH%" neq "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN32
 )
+if /i "%BUILDER%" equ "mingw" (
+	if /i "%BUILD_ARCH%" equ "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! mingw64
+	if /i "%BUILD_ARCH%" neq "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! mingw
+)
 
 if /i "%CONFIG%" equ "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --debug
 if /i "%CONFIG%" neq "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --release
@@ -413,13 +452,17 @@ if /i "%BUILDER%" equ "MSVC" (
 	nmake.exe
 	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
+if /i "%BUILDER%" equ "mingw" (
+	mingw32-make.exe
+	if !errorlevel! neq 0 pause && exit /B !errorlevel!
+)
 
 popd
 
 REM | Collect
 echo.
 pushd openssl
-	for %%f in (lib*.dll lib*.lib lib*.pdb ossl_*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+	for %%f in (lib*.dll lib*.lib lib*.a lib*.pdb ossl_*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
 pushd openssl\apps
 	for %%f in (openssl.exe openssl.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
@@ -437,7 +480,6 @@ title %DIRNAME%-libcurl
 xcopy "%ROOTDIR%\curl\*.*" curl /QEIYD
 
 REM | curl(*)
-set CL=
 set CMAKE_CURL_C_FLAGS=
 set CMAKE_CURL_VARIABLES=
 
@@ -446,6 +488,9 @@ set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
 	-DBUILD_TESTING=OFF
 
 if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON -DCMAKE_DEBUG_POSTFIX:STRING=""
+
+REM | Prevent mingw builds from linking to libgcc-*.dll
+if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -static
 
 REM | curl(static .exe)
 if /i "%BUILD_CURL%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=OFF
@@ -456,6 +501,9 @@ if /i "%BUILDER%" equ "MSVC" (
 	if /i "%BUILD_CRT%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=ON
 	if /i "%BUILD_CRT%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=OFF
 )
+
+REM | curl(libssh2)
+set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_USE_LIBSSH2=OFF
 
 REM | curl(zlib)
 if "%BUILD_ZLIB%" equ "" (
@@ -471,6 +519,14 @@ if /i "%BUILDER%,%BUILD_ZLIB%" equ "MSVC,shared" (
 	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlib.lib
 	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlib.lib
 )
+if /i "%BUILDER%,%BUILD_ZLIB%" equ "mingw,static" (
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG=zlib/BUILD/libzlibstatic.a
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE=zlib/BUILD/libzlibstatic.a
+)
+if /i "%BUILDER%,%BUILD_ZLIB%" equ "mingw,shared" (
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG=zlib/BUILD/libzlib.dll.a
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE=zlib/BUILD/libzlib.dll.a
+)
 
 REM | curl(nghttp2)
 if "%BUILD_NGHTTP2%" equ "" (
@@ -479,19 +535,29 @@ if "%BUILD_NGHTTP2%" equ "" (
 if /i "%BUILD_NGHTTP2%" equ "static" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes
 	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2_static.lib
+	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/libnghttp2_static.a
 	REM | Hack: NGHTTP2_STATICLIB preprocessor definition must exist for curl to link statically to nghttp2
 	set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DNGHTTP2_STATICLIB -DUSE_NGHTTP2
 )
 if /i "%BUILD_NGHTTP2%" equ "shared" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes
 	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2.lib
+	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/libnghttp2.dll.a
 	set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DUSE_NGHTTP2
 )
 
+REM | To use HTTP2 /w SChannel curl requires a recent version of sspi.h from Windows SDK
+REM | The sspi.h from mingw is missing multiple definitions therefore a "patched" sspi.h is required
+REM | Force use of ALPN (to activate HTTP2 /w SChannel)
+REM | Related topic: https://github.com/curl/curl/issues/2591
+if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DHAS_ALPN
+
+REM | To activate TLS-SRP, defining USE_TLS_SRP cmake variable is apparently not enough
+REM | We need to explicitly specify the USE_TLS_SRP compiler definition as well
+set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DUSE_TLS_SRP
+
 REM | curl(openssl)
 if /i "%BUILD_SSL_BACKEND%" equ "OPENSSL" (
-	REM | To activate TLS-SRP, defining USE_TLS_SRP cmake variable is not enough. We'll also specify compiler definition /DUSE_TLS_SRP which does the job
-	set CL=!CL! /DUSE_TLS_SRP
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
 		-DCMAKE_USE_OPENSSL=ON ^
 		-DOPENSSL_ROOT_DIR="!BUILD_OUTDIR!/openssl" ^
@@ -545,7 +611,7 @@ if exist openssl\libcrypto.dll.lib (
 REM | Collect
 echo.
 pushd curl\BUILD\lib
-	for %%f in (*.dll *.lib *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+	for %%f in (*.dll *.lib *.a *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
 pushd curl\BUILD\lib\CMakeFiles\libcurl.dir
 	for %%f in (libcurl*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
