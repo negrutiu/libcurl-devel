@@ -10,11 +10,15 @@ if not defined CONFIG set CONFIG=Release
 REM | BUILDER=MSVC|mingw
 if not defined BUILDER set BUILDER=MSVC
 
+REM | VERBOSE=ON|OFF
+if not defined VERBOSE set VERBOSE=OFF
+
 cd /d "%~dp0"
 set ROOTDIR=%CD%
 
-if /i "%BUILDER%" equ "MSVC" goto :REQUIREMENTS_MSVC
+if /i "%BUILDER%" equ "MSVC"  goto :REQUIREMENTS_MSVC
 if /i "%BUILDER%" equ "mingw" goto :REQUIREMENTS_mingw
+echo ERROR: BUILDER=%BUILDER%. Use BULDER=MSVC^|mingw && pause && exit /B 57
 
 :REQUIREMENTS_MSVC
 if not exist "%PF32%" set PF32=%PROGRAMFILES(X86)%
@@ -42,6 +46,7 @@ if %errorlevel% neq 0 echo ERROR: Missing Perl && pause && exit /B 1
 REM | cmake
 cmake --version > NUL
 if %errorlevel% neq 0 echo ERROR: Missing 'cmake' && pause && exit /B 1
+set BUILD_CMAKE_GENERATOR=NMake Makefiles
 
 goto :REQURIEMENTS_END
 
@@ -228,11 +233,6 @@ shift
 
 call :GET_DIR_NAME "%BUILD_OUTDIR%"
 
-if /I "%BUILD_ARCH%" equ "Win32" set VCVARS_ARCH=x86
-if /I "%BUILD_ARCH%" equ "x86"   set VCVARS_ARCH=x86
-if /I "%BUILD_ARCH%" equ "Win64" set VCVARS_ARCH=x64
-if /I "%BUILD_ARCH%" equ "x64"   set VCVARS_ARCH=x64
-
 mkdir "%BUILD_OUTDIR%" 2> NUL
 cd /d "%BUILD_OUTDIR%"
 
@@ -261,9 +261,14 @@ echo _%BUILD_ZLIB%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
 if %errorlevel% neq 0 echo ERROR: Invalid BUILD_ZLIB=%BUILD_ZLIB%. Use BUILD_ZLIB=static^|shared && pause && exit /B 57
 
 REM | Initialize MSVC environment
-pushd "%CD%"
-call "%VCVARSALL%" %VCVARS_ARCH%
-popd
+if /i "%BUILDER%" equ "MSVC" (
+	pushd "%CD%"
+	if /i "%BUILD_ARCH%" equ "Win32" call "%VCVARSALL%" x86
+	if /i "%BUILD_ARCH%" equ "x86"   call "%VCVARSALL%" x86
+	if /i "%BUILD_ARCH%" equ "Win64" call "%VCVARSALL%" x64
+	if /i "%BUILD_ARCH%" equ "x64"   call "%VCVARSALL%" x64
+	popd
+)
 
 
 :ZLIB
@@ -279,13 +284,15 @@ xcopy "%ROOTDIR%\zlib" zlib /QEIYD
 REM | Configure
 if not exist zlib\BUILD\CMakeCache.txt (
 	REM | Comment `set(CMAKE_DEBUG_POSTFIX "d")`
-	if /i "%CONFIG%" equ "Debug" powershell -Command "(gc zlib\CMakeLists.txt) -replace '^\s*set\(CMAKE_DEBUG_POSTFIX', '    #set(CMAKE_DEBUG_POSTFIX'  | Out-File -encoding ASCII zlib\CMakeLists.txt"
+	if /i "%BUILDER%,%CONFIG%" equ "MSVC,Debug" powershell -Command "(gc zlib\CMakeLists.txt) -replace '^\s*set\(CMAKE_DEBUG_POSTFIX', '    #set(CMAKE_DEBUG_POSTFIX'  | Out-File -encoding ASCII zlib\CMakeLists.txt"
 
-	cmake -G "NMake Makefiles" -S zlib -B zlib\BUILD ^
+	cmake -G "%BUILD_CMAKE_GENERATOR%" -S zlib -B zlib\BUILD ^
+		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
 		-DCMAKE_BUILD_TYPE=%CONFIG%
-	if %errorlevel% neq 0 pause && exit /B %errorlevel%
+	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
-if /i "%BUILD_CRT%" equ "static" (
+
+if /i "%BUILDER%,%BUILD_CRT%" equ "MSVC,static" (
 	REM | By default zlib links to shared CRT library
 	REM | Because zlib doesn't have a cmake variable to control CRT linkage, we'll do this by replacing in .vcxproj files...
 	echo Configure static CRT...
@@ -293,6 +300,7 @@ if /i "%BUILD_CRT%" equ "static" (
 	powershell -Command "(gc zlib\BUILD\CMakeCache.txt) -replace '/MD',  '/MT'  | Out-File -encoding ASCII zlib\BUILD\CMakeCache.txt"
 )
 
+REM | Build
 cmake --build zlib\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
@@ -322,20 +330,26 @@ title %DIRNAME%-nghttp2
 
 xcopy "%ROOTDIR%\nghttp2" nghttp2 /QEIYD
 
+REM | Configure
 if not exist nghttp2\BUILD\CMakeCache.txt (
-	set CMAKE_NGHTTP2_VARIABLES=-DENABLE_SHARED_LIB=ON -DENABLE_STATIC_LIB=ON -DENABLE_LIB_ONLY=OFF
+	set CMAKE_NGHTTP2_VARIABLES=^
+		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
+		-DENABLE_SHARED_LIB=ON ^
+		-DENABLE_STATIC_LIB=ON ^
+		-DENABLE_LIB_ONLY=OFF
 
 	if /i "%BUILD_CRT%" equ "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=ON
 	if /i "%BUILD_CRT%" neq "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=OFF
 
 	if /i "%CONFIG%" equ "Debug" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_DEBUG=ON
 
-	cmake -G "NMake Makefiles" -S nghttp2 -B nghttp2\BUILD ^
+	cmake -G "%BUILD_CMAKE_GENERATOR%" -S nghttp2 -B nghttp2\BUILD ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
 		!CMAKE_NGHTTP2_VARIABLES!
-	if %errorlevel% neq 0 pause && exit /B %errorlevel%
+	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
 
+REM | Build
 cmake --build nghttp2\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
@@ -364,12 +378,15 @@ pushd "%BUILD_OUTDIR%"
 	echo fuzz> exclude.txt
 	xcopy "%ROOTDIR%\openssl\*.*" openssl\ /EXCLUDE:exclude.txt /QEIYD
 	del exclude.txt
+	mkdir openssl\fuzz 2> NUL
 popd
 
 REM | Features
-set BUILD_OPENSSL_PARAMS=shared enable-static-engine no-dynamic-engine no-tests enable-ssl3
-if /i "%BUILD_ARCH%" equ "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN64A
-if /i "%BUILD_ARCH%" neq "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN32
+set BUILD_OPENSSL_PARAMS=enable-static-engine no-dynamic-engine no-tests enable-ssl3
+if /i "%BUILDER%" equ "MSVC" (
+	if /i "%BUILD_ARCH%" equ "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN64A
+	if /i "%BUILD_ARCH%" neq "x64" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! VC-WIN32
+)
 
 if /i "%CONFIG%" equ "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --debug
 if /i "%CONFIG%" neq "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --release
@@ -380,21 +397,22 @@ pushd "%BUILD_OUTDIR%\openssl"
 REM | Configure
 if not exist makefile (
 	perl Configure !BUILD_OPENSSL_PARAMS! !BUILD_OPENSSL_CONFIGURE_EXTRA! --prefix="%CD%\_PACKAGE"
-	if %errorlevel% neq 0 pause && exit /B %errorlevel%
+	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
 
-if /i "%BUILD_CRT%" equ "static" (
+if /i "%BUILDER%,%BUILD_CRT%" equ "MSVC,static" (
 	REM | By default openssl links to shared CRT library
 	REM | Because openssl doesn't have a variable to control CRT linkage, we'll do this by replacing compiler flag in makefile
-	REM | NOTE: There is the -static parameter, but it's useless in MSVC. It works in mingw though...
 	echo Configure static CRT...
 	powershell -Command "(gc makefile) -replace '/MDd', '/MTd' | Out-File -encoding ASCII makefile"
 	powershell -Command "(gc makefile) -replace '/MD',  '/MT'  | Out-File -encoding ASCII makefile"
 )
 
 REM | Make
-nmake
-if %errorlevel% neq 0 pause && exit /B %errorlevel%
+if /i "%BUILDER%" equ "MSVC" (
+	nmake.exe
+	if !errorlevel! neq 0 pause && exit /B !errorlevel!
+)
 
 popd
 
@@ -420,9 +438,13 @@ xcopy "%ROOTDIR%\curl\*.*" curl /QEIYD
 
 REM | curl(*)
 set CL=
+set CMAKE_CURL_C_FLAGS=
 set CMAKE_CURL_VARIABLES=
-REM set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_VERBOSE_MAKEFILE=ON
-set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_TESTING=OFF
+
+set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
+	-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
+	-DBUILD_TESTING=OFF
+
 if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON -DCMAKE_DEBUG_POSTFIX:STRING=""
 
 REM | curl(static .exe)
@@ -430,20 +452,24 @@ if /i "%BUILD_CURL%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES
 if /i "%BUILD_CURL%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=ON
 
 REM | curl(static CRT)
-if /i "%BUILD_CRT%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=ON
-if /i "%BUILD_CRT%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=OFF
+if /i "%BUILDER%" equ "MSVC" (
+	if /i "%BUILD_CRT%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=ON
+	if /i "%BUILD_CRT%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=OFF
+)
 
 REM | curl(zlib)
 if "%BUILD_ZLIB%" equ "" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=OFF
+) else (
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib"
 )
-if /i "%BUILD_ZLIB%" equ "static" (
-	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlibstatic.lib
-	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlibstatic.lib
+if /i "%BUILDER%,%BUILD_ZLIB%" equ "MSVC,static" (
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlibstatic.lib
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlibstatic.lib
 )
-if /i "%BUILD_ZLIB%" equ "shared" (
-	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlib.lib
-	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib" -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlib.lib
+if /i "%BUILDER%,%BUILD_ZLIB%" equ "MSVC,shared" (
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlib.lib
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlib.lib
 )
 
 REM | curl(nghttp2)
@@ -451,12 +477,15 @@ if "%BUILD_NGHTTP2%" equ "" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=OFF
 )
 if /i "%BUILD_NGHTTP2%" equ "static" (
-	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2_static.lib
-	REM | Hack: NGHTTP2_STATICLIB must be defined for curl to link statically to nghttp2
-	set CL=/DNGHTTP2_STATICLIB=1 %CL%
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes
+	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2_static.lib
+	REM | Hack: NGHTTP2_STATICLIB preprocessor definition must exist for curl to link statically to nghttp2
+	set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DNGHTTP2_STATICLIB -DUSE_NGHTTP2
 )
 if /i "%BUILD_NGHTTP2%" equ "shared" (
-	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2.lib
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes
+	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2.lib
+	set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DUSE_NGHTTP2
 )
 
 REM | curl(openssl)
@@ -469,7 +498,7 @@ if /i "%BUILD_SSL_BACKEND%" equ "OPENSSL" (
 		-DOPENSSL_CRYPTO_LIBRARY="!BUILD_OUTDIR!/openssl" ^
 		-DUSE_TLS_SRP:BOOL=ON
 )
-if /i "%BUILD_OPENSSL%" equ "static" (
+if /i "%BUILDER%,%BUILD_OPENSSL%" equ "MSVC,static" (
 	REM | openssl builds both static (libcrypto_static.lib) and shared (libcrypto.lib) libraries
 	REM | curl always links to libcrypto.lib/libssl.lib and I've found no way to redirect it to the static libraries
 	REM | Until better workaround is found, we'll temporarily rename libxxx_static.lib -> libxxx.lib
@@ -487,13 +516,16 @@ if /i "%BUILD_SSL_BACKEND%" equ "WINSSL" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_USE_WINSSL=ON
 )
 
+REM | curl(C_FLAGS)
+if "!CMAKE_CURL_C_FLAGS!" neq "" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_C_FLAGS="!CMAKE_CURL_C_FLAGS!"
+
 REM | Configure
 if not exist curl\BUILD\CMakeCache.txt (
-	cmake -G "NMake Makefiles" -S curl -B curl\BUILD ^
+	cmake -G "%BUILD_CMAKE_GENERATOR%" -S curl -B curl\BUILD ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
 		!CMAKE_CURL_VARIABLES! ^
 		!BUILD_CURL_CONFIGURE_EXTRA!
-	if %errorlevel% neq 0 pause && exit /B %errorlevel%
+	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
 
 REM | Build
