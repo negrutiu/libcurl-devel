@@ -97,6 +97,32 @@ REM =============================================
 REM | Notice the `call` in "start "" cmd /C call <script> <params>"
 REM | Without it parameters such as -PARAM="val1 val2 val3" are incorrectly escaped...
 
+if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=Win32 ^
+	BUILD_SSL_BACKEND=OPENSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-Legacy ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB=static ^
+	BUILD_NGHTTP2=static ^
+	BUILD_OPENSSL=static ^
+	BUILD_CURL=static ^
+	BUILD_C_FLAGS="-march=pentium2 -D_WIN32_WINNT=0x0400" ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA="no-capieng no-async no-pinshared 386" ^
+	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF"
+
+if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ARCH=x64 ^
+	BUILD_SSL_BACKEND=OPENSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-Legacy ^
+	BUILD_CRT=static ^
+	BUILD_ZLIB=static ^
+	BUILD_NGHTTP2=static ^
+	BUILD_OPENSSL=static ^
+	BUILD_CURL=static ^
+	BUILD_C_FLAGS="-march=x86-64 -D_WIN32_WINNT=0x0502" ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA="no-capieng no-async no-pinshared" ^
+	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF"
+
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
@@ -314,14 +340,12 @@ if not exist zlib\BUILD\CMakeCache.txt (
 	REM | Comment `set(CMAKE_DEBUG_POSTFIX "d")`
 	if /i "%BUILDER%,%CONFIG%" equ "MSVC,Debug" powershell -Command "(gc zlib\CMakeLists.txt) -replace '^\s*set\(CMAKE_DEBUG_POSTFIX', '    #set(CMAKE_DEBUG_POSTFIX'  | Out-File -encoding ASCII zlib\CMakeLists.txt"
 
+	REM | Add "-static" compiler parameter to prevent mingw builds from linking to libgcc_*.dll
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S zlib -B zlib\BUILD ^
 		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
-		-DCMAKE_BUILD_TYPE=%CONFIG%
+		-DCMAKE_BUILD_TYPE=%CONFIG% ^
+		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS! -static"
 	if !errorlevel! neq 0 pause && exit /B !errorlevel!
-
-	REM | Add "-static" compiler parameter to prevent mingw builds from linking to libgcc_*.dll
-	if /i "%BUILDER%" equ "mingw" cmake zlib\BUILD ^
-		-DCMAKE_C_FLAGS="-static"
 )
 
 if /i "%BUILDER%,%BUILD_CRT%" equ "MSVC,static" (
@@ -375,12 +399,12 @@ if not exist nghttp2\BUILD\CMakeCache.txt (
 
 	if /i "%CONFIG%" equ "Debug" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_DEBUG=ON
 
-	REM | Prevent mingw builds from linking to libgcc-*.dll
-	if /i "%BUILDER%" equ "mingw" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DCMAKE_C_FLAGS=-static
-
+	REM | Add "-static" compiler parameter to prevent mingw builds from linking to libgcc_*.dll
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S nghttp2 -B nghttp2\BUILD ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
-		!CMAKE_NGHTTP2_VARIABLES!
+		!CMAKE_NGHTTP2_VARIABLES! ^
+		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS! -static"
+		
 	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
 
@@ -435,7 +459,7 @@ pushd "%BUILD_OUTDIR%\openssl"
 
 REM | Configure
 if not exist makefile (
-	perl Configure !BUILD_OPENSSL_PARAMS! !BUILD_OPENSSL_CONFIGURE_EXTRA! --prefix="%CD%\_PACKAGE"
+	perl Configure !BUILD_OPENSSL_PARAMS! CFLAGS="!BUILD_C_FLAGS!" !BUILD_OPENSSL_CONFIGURE_EXTRA! --prefix="%CD%\_PACKAGE"
 	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
 
@@ -590,7 +614,8 @@ if not exist curl\BUILD\CMakeCache.txt (
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S curl -B curl\BUILD ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
 		!CMAKE_CURL_VARIABLES! ^
-		!BUILD_CURL_CONFIGURE_EXTRA!
+		!BUILD_CURL_CONFIGURE_EXTRA! ^
+		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS! !CMAKE_CURL_C_FLAGS!"
 	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
 

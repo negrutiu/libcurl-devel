@@ -1,51 +1,19 @@
-diff --git a/lib/Makefile.m32 b/lib/Makefile.m32
-index fe8701bdb..566beb30e 100644
---- a/lib/Makefile.m32
-+++ b/lib/Makefile.m32
-@@ -337,6 +337,7 @@ ifndef USE_LDAP_OPENLDAP
- endif
- endif
- DLL_LIBS += -lws2_32
-+DLL_LIBS += $(CURL_LDFLAG_EXTRAS2)
+diff --git a/include/curl/system.h b/include/curl/system.h
+index 867af6141..e2cd514c0 100644
+--- a/include/curl/system.h
++++ b/include/curl/system.h
+@@ -421,7 +421,11 @@
+ #ifdef CURL_PULL_WS2TCPIP_H
+ #  include <winsock2.h>
+ #  include <windows.h>
++#if _WIN32_WINNT >= 0x0501
+ #  include <ws2tcpip.h>
++#else
++#  include <wspiapi.h>
++#endif
+ #endif
  
- # Makefile.inc provides the CSOURCES and HHEADERS defines
- include Makefile.inc
-@@ -354,6 +355,11 @@ libcurl_a_DEPENDENCIES := $(strip $(CSOURCES) $(HHEADERS))
- 
- RESOURCE = libcurl.res
- 
-+$(info [CFLAGS] $(CFLAGS))
-+$(info [LDFLAGS] $(LDFLAGS))
-+$(info [DLL_LIBS] $(DLL_LIBS))
-+$(info [curl_LDADD] $(curl_LDADD))
-+#$(error ***)
- 
- all: $(libcurl_a_LIBRARY) $(libcurl_dll_LIBRARY)
- 
-diff --git a/src/Makefile.m32 b/src/Makefile.m32
-index 802a1da0f..d25b6bf35 100644
---- a/src/Makefile.m32
-+++ b/src/Makefile.m32
-@@ -356,6 +356,7 @@ curl_LDADD += -lwldap32
- endif
- endif
- curl_LDADD += -lws2_32
-+curl_LDADD += $(CURL_LDFLAG_EXTRAS2)
- 
- # Makefile.inc provides the CSOURCES and HHEADERS defines
- include Makefile.inc
-@@ -370,6 +371,11 @@ endif
- 
- RESOURCE = curl.res
- 
-+$(info [CFLAGS] $(CFLAGS))
-+$(info [LDFLAGS] $(LDFLAGS))
-+$(info [DLL_LIBS] $(DLL_LIBS))
-+$(info [curl_LDADD] $(curl_LDADD))
-+#$(error ***)
- 
- all: $(curl_PROGRAMS)
- 
+ /* CURL_PULL_SYS_TYPES_H is defined above when inclusion of header file  */
 diff --git a/src/tool_doswin.c b/src/tool_doswin.c
 index b7df3e615..69f51d046 100644
 --- a/src/tool_doswin.c
