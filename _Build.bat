@@ -559,7 +559,7 @@ if "%BUILD_NGHTTP2%" equ "" (
 if /i "%BUILD_NGHTTP2%" equ "static" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes
 	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2_static.lib
-	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/libnghttp2_static.a
+	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/libnghttp2.a
 	REM | Hack: NGHTTP2_STATICLIB preprocessor definition must exist for curl to link statically to nghttp2
 	set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DNGHTTP2_STATICLIB -DUSE_NGHTTP2
 )
