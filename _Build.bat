@@ -356,8 +356,11 @@ if /i "%BUILDER%,%BUILD_CRT%" equ "MSVC,static" (
 	powershell -Command "(gc zlib\BUILD\CMakeCache.txt) -replace '/MD',  '/MT'  | Out-File -encoding ASCII zlib\BUILD\CMakeCache.txt"
 )
 
+if /i "%BUILD_ZLIB%" equ "static" set TARGET=zlibstatic
+if /i "%BUILD_ZLIB%" equ "shared" set TARGET=zlib
+
 REM | Build
-cmake --build zlib\BUILD --config %CONFIG%
+cmake --build zlib\BUILD --config %CONFIG% --target %TARGET%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 REM | zconf.h
@@ -393,6 +396,9 @@ if not exist nghttp2\BUILD\CMakeCache.txt (
 		-DENABLE_SHARED_LIB=ON ^
 		-DENABLE_STATIC_LIB=ON ^
 		-DENABLE_LIB_ONLY=ON
+
+	if /i "%BUILD_NGHTTP2%" equ "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_SHARED_LIB=OFF -DENABLE_STATIC_LIB=ON
+	if /i "%BUILD_NGHTTP2%" equ "shared" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_SHARED_LIB=ON -DENABLE_STATIC_LIB=OFF
 
 	if /i "%BUILD_CRT%" equ "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=ON
 	if /i "%BUILD_CRT%" neq "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=OFF
@@ -454,6 +460,8 @@ if /i "%BUILDER%" equ "mingw" (
 if /i "%CONFIG%" equ "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --debug
 if /i "%CONFIG%" neq "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --release
 
+if /i "%BUILD_OPENSSL%" equ "static" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! no-shared
+if /i "%BUILD_OPENSSL%" equ "shared" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! shared
 
 pushd "%BUILD_OUTDIR%\openssl"
 
@@ -558,7 +566,7 @@ if "%BUILD_NGHTTP2%" equ "" (
 )
 if /i "%BUILD_NGHTTP2%" equ "static" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes
-	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2_static.lib
+	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2.lib
 	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/libnghttp2.a
 	REM | Hack: NGHTTP2_STATICLIB preprocessor definition must exist for curl to link statically to nghttp2
 	set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DNGHTTP2_STATICLIB -DUSE_NGHTTP2
@@ -587,18 +595,8 @@ if /i "%BUILD_SSL_BACKEND%" equ "OPENSSL" (
 		-DOPENSSL_ROOT_DIR="!BUILD_OUTDIR!/openssl" ^
 		-DOPENSSL_CRYPTO_LIBRARY="!BUILD_OUTDIR!/openssl" ^
 		-DUSE_TLS_SRP:BOOL=ON
-)
-if /i "%BUILDER%,%BUILD_OPENSSL%" equ "MSVC,static" (
-	REM | openssl builds both static (libcrypto_static.lib) and shared (libcrypto.lib) libraries
-	REM | curl always links to libcrypto.lib/libssl.lib and I've found no way to redirect it to the static libraries
-	REM | Until better workaround is found, we'll temporarily rename libxxx_static.lib -> libxxx.lib
-	REM | TODO: Research OPENSSL_USE_STATIC_LIBS (see "%PROGRAMFILES%\CMake\share\cmake-3.17\Modules\FindOpenSSL.cmake")
-	echo.
-	echo Configure openssl static libraries...
-	move /Y openssl\libcrypto.lib			openssl\libcrypto.dll.lib
-	move /Y openssl\libssl.lib				openssl\libssl.dll.lib
-	move /Y openssl\libcrypto_static.lib	openssl\libcrypto.lib
-	move /Y openssl\libssl_static.lib		openssl\libssl.lib
+	REM | ws2_32 library missing from mingw makefile...
+	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_C_STANDARD_LIBRARIES="-lws2_32"
 )
 
 REM | curl(winssl)
@@ -622,16 +620,6 @@ if not exist curl\BUILD\CMakeCache.txt (
 REM | Build
 cmake --build curl\BUILD --config %CONFIG%
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
-
-REM | Revert static libs
-if exist openssl\libcrypto.dll.lib (
-	echo.
-	echo Revert openssl static libraries...
-	move /Y openssl\libcrypto.lib		openssl\libcrypto_static.lib
-	move /Y openssl\libssl.lib			openssl\libssl_static.lib
-	move /Y openssl\libcrypto.dll.lib	openssl\libcrypto.lib
-	move /Y openssl\libssl.dll.lib		openssl\libssl.lib
-)
 
 REM | Collect
 echo.
