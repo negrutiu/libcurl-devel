@@ -499,6 +499,7 @@ popd
 pushd openssl\apps
 	for %%f in (openssl.exe openssl.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
 popd
+if /i "%BUILD_OPENSSL%" neq "static" del libcrypto_static.lib && del libssl_static.lib && del ossl_static.pdb
 :OPENSSL_END
 
 
