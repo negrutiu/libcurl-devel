@@ -22,6 +22,19 @@ xcopy "nghttp2\src\includes\nghttp2\*.h"	"%package%\include\nghttp2\" /EI
 xcopy "zlib\zlib.h"							"%package%\include\zlib\" /I
 xcopy "zlib\zconf.h"						"%package%\include\zlib\" /I
 
+echo Instrument openssl.conf...
+del /Q "%package%\include\openssl\openssl\opensslconf.h.in"
+echo #if defined (_M_IX86)>				   "%package%\include\openssl\openssl\opensslconf.h"
+echo #include ^"opensslconf32.h^">>		   "%package%\include\openssl\openssl\opensslconf.h"
+echo #elif defined (_M_AMD64)>>			   "%package%\include\openssl\openssl\opensslconf.h"
+echo #include ^"opensslconf64.h^">>		   "%package%\include\openssl\openssl\opensslconf.h"
+echo #else>>							   "%package%\include\openssl\openssl\opensslconf.h"
+echo #error Architecture not supported>>   "%package%\include\openssl\openssl\opensslconf.h"
+echo #endif>>							   "%package%\include\openssl\openssl\opensslconf.h"
+
+copy "bin\mingw-openssl-Release-Win32\openssl\include\openssl\opensslconf.h" "%package%\include\openssl\openssl\opensslconf32.h"
+copy "bin\mingw-openssl-Release-x64\openssl\include\openssl\opensslconf.h"   "%package%\include\openssl\openssl\opensslconf64.h"
+
 echo -------------------------------------------------------------------------------
 echo src
 echo -------------------------------------------------------------------------------
