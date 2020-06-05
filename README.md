@@ -7,69 +7,70 @@
 https://github.com/negrutiu/libcurl-devel
 
 ### Features:
-* [curl / libcurl](https://curl.haxx.se/) **Windows** binaries for **x86** and **amd64** architectures
-* [mbedTLS](https://tls.mbed.org/) and [schannel](https://docs.microsoft.com/en-us/windows/win32/secauthn/secure-channel) as SSL backends
-* Optimized for compatibility with legacy hardware (e.g. `mingw-mbedtls-win32` binaries work well in Win NT4)
-* Static libraries (`libcurl.lib`, `libcurl.a`) as well as Windows modules to link to (`libcurl.dll`)
-* Binaries built with **Visual Studio** (Debug and Release configurations) and **msys2/mingw**
-* Debugging files (`*.pdb`) included
+* [libcurl](https://curl.haxx.se/) **Windows** binaries for **x86** and **amd64** architectures
+* [OpenSSL](https://www.openssl.org/) and [schannel](https://docs.microsoft.com/en-us/windows/win32/secauthn/secure-channel/) as SSL backends
+* Built-in support for [HTTP/2](https://www.nghttp2.org/)
+* Binaries built with [Microsoft Visual Studio](https://visualstudio.microsoft.com/) (Debug and Release configurations) and [msys2](https://www.msys2.org/)/[mingw](http://mingw.org/)
+* Package contents:
+	* Configurations compatible with legacy Windows versions (e.g. `mingw-openssl-Release-Win32-Legacy` works well in Win NT4+)
+	* Static and shared libraries for `libcurl`, `openssl`, `nghttp2`, `zlib`
+	* Debugging files (`*.pdb`)
+	* Test tools (`curl.exe`, `openssl.exe`)
 
 ### Binary matrix:
-Binaries|Comments
+Configuration|Comments
 :---|:---
-Debug-VC-mbedTLS-dll-Win32|Visual Studio, mbedTLS as SSL backend, dynamic library (`libcurl.dll`), multiple built-in protocols (ftp, http, imap, telnet, etc.)
-Debug-VC-mbedTLS-dll-Win32-HTTP_ONLY|Same configuration, HTTP protocol only
-Debug-VC-mbedTLS-dll-x64|...
-Debug-VC-mbedTLS-dll-x64-HTTP_ONLY|...
-Debug-VC-mbedTLS-lib-Win32|Same configuration, static library (`libcurl.lib`)
-Debug-VC-mbedTLS-lib-Win32-HTTP_ONLY|...
-Debug-VC-mbedTLS-lib-x64|...
-Debug-VC-mbedTLS-lib-x64-HTTP_ONLY|...
-Debug-VC-WinSSL-dll-Win32|Use `schannel` (aka WinSSL) as SSL backend
-Debug-VC-WinSSL-dll-Win32-HTTP_ONLY|...
-Debug-VC-WinSSL-dll-x64|...
-Debug-VC-WinSSL-dll-x64-HTTP_ONLY|...
-Debug-VC-WinSSL-lib-Win32|...
-Debug-VC-WinSSL-lib-Win32-HTTP_ONLY|...
-Debug-VC-WinSSL-lib-x64|...
-Debug-VC-WinSSL-lib-x64-HTTP_ONLY|...
-Release-mingw-mbedTLS-Win32|Built with `gcc` in msys2/mingw.<br>This is the most backward compatible configuration. It works well in NT4, Win10, and everything in between...
-Release-mingw-mbedTLS-Win32-HTTP_ONLY|...
-Release-mingw-mbedTLS-x64|...
-Release-mingw-mbedTLS-x64-HTTP_ONLY|...
-Release-mingw-WinSSL-Win32|...
-Release-mingw-WinSSL-Win32-HTTP_ONLY|...
-Release-mingw-WinSSL-x64|...
-Release-mingw-WinSSL-x64-HTTP_ONLY|...
-Release-VC-mbedTLS-dll-Win32|...
-Release-VC-mbedTLS-dll-Win32-HTTP_ONLY|...
-Release-VC-mbedTLS-dll-x64|...
-Release-VC-mbedTLS-dll-x64-HTTP_ONLY|...
-Release-VC-mbedTLS-lib-Win32|...
-Release-VC-mbedTLS-lib-Win32-HTTP_ONLY|...
-Release-VC-mbedTLS-lib-x64|...
-Release-VC-mbedTLS-lib-x64-HTTP_ONLY|...
-Release-VC-WinSSL-dll-Win32|...
-Release-VC-WinSSL-dll-Win32-HTTP_ONLY|...
-Release-VC-WinSSL-dll-x64|...
-Release-VC-WinSSL-dll-x64-HTTP_ONLY|...
-Release-VC-WinSSL-lib-Win32|...
-Release-VC-WinSSL-lib-Win32-HTTP_ONLY|...
-Release-VC-WinSSL-lib-x64|...
-Release-VC-WinSSL-lib-x64-HTTP_ONLY|...
+mingw-openssl-Release-Win32|Built with `mingw`. Static libraries. `OpenSSL` backend
+mingw-openssl-Release-Win32-DLL|Built with `mingw`. Shared libraries. `OpenSSL` backend
+mingw-openssl-Release-Win32-HTTP_ONLY|HTTP protocol only
+mingw-openssl-Release-Win32-Legacy|HTTP protocol only. Compatible with old Windows versions (NT4+)
+mingw-openssl-Release-x64|
+mingw-openssl-Release-x64-DLL|
+mingw-openssl-Release-x64-HTTP_ONLY|
+mingw-openssl-Release-x64-Legacy|HTTP protocol only. Compatible with old Windows versions (XP64+)
+mingw-WinSSL-Release-Win32|Built with `mingw`. Static libraries. `WinSSL` (aka `schannel`) backend
+mingw-WinSSL-Release-Win32-DLL|
+mingw-WinSSL-Release-Win32-HTTP_ONLY|
+mingw-WinSSL-Release-x64|
+mingw-WinSSL-Release-x64-DLL|
+mingw-WinSSL-Release-x64-HTTP_ONLY|
+MSVC-openssl-Debug-Win32|Built with `Microsoft Visual Studio`
+MSVC-openssl-Debug-Win32-DLL|
+MSVC-openssl-Debug-Win32-HTTP_ONLY|
+MSVC-openssl-Debug-x64|
+MSVC-openssl-Debug-x64-DLL|
+MSVC-openssl-Debug-x64-HTTP_ONLY|
+MSVC-openssl-Release-Win32|
+MSVC-openssl-Release-Win32-DLL|
+MSVC-openssl-Release-Win32-HTTP_ONLY|
+MSVC-openssl-Release-x64|
+MSVC-openssl-Release-x64-DLL|
+MSVC-openssl-Release-x64-HTTP_ONLY|
+MSVC-WinSSL-Debug-Win32|
+MSVC-WinSSL-Debug-Win32-DLL|
+MSVC-WinSSL-Debug-Win32-HTTP_ONLY|
+MSVC-WinSSL-Debug-x64|
+MSVC-WinSSL-Debug-x64-DLL|
+MSVC-WinSSL-Debug-x64-HTTP_ONLY|
+MSVC-WinSSL-Release-Win32|
+MSVC-WinSSL-Release-Win32-DLL|
+MSVC-WinSSL-Release-Win32-HTTP_ONLY|
+MSVC-WinSSL-Release-x64|
+MSVC-WinSSL-Release-x64-DLL|
+MSVC-WinSSL-Release-x64-HTTP_ONLY|
 
-### [mbedTLS](https://tls.mbed.org/) vs. [schannel](https://docs.microsoft.com/en-us/windows/win32/secauthn/secure-channel) (aka WinSSL):
+### [OpenSSL](https://www.openssl.org/) vs. [schannel](https://docs.microsoft.com/en-us/windows/win32/secauthn/secure-channel) (aka WinSSL):
 Parameter|Comments
 :---|:---
-Size|`schannel` is a Windows native engine, `mbedTLS` is a 3rd party engine.<br>Binaries built for `schannel` are smaller.
-Certificate store|`schannel` uses the system certificate store (run `certmgr.msc` to view it) whereas <br>`mbedTLS` requires [cacert.pem](https://curl.haxx.se/ca/cacert.pem) alongside your binaries, which adds another 200-300KB to your package...<br>Although `schannel` sounds better, older Windows versions (XP, Vista, Win7) stop receiving certificate store updates, so they quickly become unable to connect to modern HTTPS servers.<br>If your binaries are required to support older Windows versions, `mbedTLS` is your only choice here.
-SSL/TLS versions|`schannel` has different capabilities depending on the Windows version (e.g. XP only supports TLS 1.0). Check out [this blog](https://docs.microsoft.com/en-us/archive/blogs/kaushal/support-for-ssltls-protocols-on-windows) for details.<br>`mbedTLS` supports all modern TLS protocols.
+File sizes|`schannel` is a Windows native engine, `OpenSSL` is a 3rd party engine.<br>Binaries built on top of `schannel` are smaller.
+Certificate store|`schannel` uses the system certificate store (run `certmgr.msc` to view it) whereas <br>`OpenSSL` requires [cacert.pem](https://curl.haxx.se/ca/cacert.pem) alongside your binaries, which adds another 200-300KB to your package...<br>Although `schannel` sounds better, older Windows versions (XP, Vista, Win7) stop receiving certificate store updates, so they quickly become unable to connect to modern HTTPS servers.<br>If your binaries are required to support older Windows versions, `OpenSSL` is your only choice here.
+Protocols & Ciphers|`schannel` has different capabilities depending on the Windows version (e.g. XP only supports TLS 1.0) (See [this blog](https://docs.microsoft.com/en-us/archive/blogs/kaushal/support-for-ssltls-protocols-on-windows)).<br>3rd party software can interfere with `schannel` (See [this article](https://support.microsoft.com/en-us/help/245030/how-to-restrict-the-use-of-certain-cryptographic-algorithms-and-protoc)).<br>`OpenSSL` supports all modern encryption including TLS1.3, HTTP/2, etc.
 
 ### Licenses:
 Project|License
 :---|:---
 This project itself|[0BSD](LICENSE)
 libcurl|[MIT/X inspired](https://curl.haxx.se/docs/copyright.html)
-mbed TLS|[Apache 2.0](https://tls.mbed.org/how-to-get)
+OpenSSL|[Dual License](https://www.openssl.org/source/license.html)
 nghttp2|[MIT](https://github.com/nghttp2/nghttp2/blob/master/COPYING)
 zlib|[zlib](https://www.zlib.net/zlib_license.html)
