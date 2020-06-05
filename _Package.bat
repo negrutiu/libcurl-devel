@@ -17,8 +17,7 @@ echo include
 echo -------------------------------------------------------------------------------
 
 xcopy "curl\include\curl\*.h"				"%package%\include\curl\" /EI
-xcopy "mbedtls\include\mbedtls\*.h"			"%package%\include\mbedtls\" /EI
-xcopy "mbedtls\include\psa\*.h"				"%package%\include\mbedtls\psa\" /EI
+xcopy "openssl\include\*.*"					"%package%\include\openssl\" /EI
 xcopy "nghttp2\src\includes\nghttp2\*.h"	"%package%\include\nghttp2\" /EI
 xcopy "zlib\zlib.h"							"%package%\include\zlib\" /I
 xcopy "zlib\zconf.h"						"%package%\include\zlib\" /I
@@ -35,14 +34,17 @@ xcopy "curl\include\*.*"					"%package%\src\curl\include\" /EI
 xcopy "curl\lib\*.*"						"%package%\src\curl\lib\" /EI
 xcopy "curl\src\*.*"						"%package%\src\curl\src\" /EI
 
-xcopy "mbedtls\*.md"						"%package%\src\mbedtls\" /IY
-xcopy "mbedtls\README*.*"					"%package%\src\mbedtls\" /IY
-xcopy "mbedtls\LICENSE"						"%package%\src\mbedtls\" /IY
-xcopy "mbedtls\apache-2.0.txt"				"%package%\src\mbedtls\" /IY
-REM xcopy "mbedtls\3rdparty\*.*"				"%package%\src\mbedtls\3rdparty\" /EI
-xcopy "mbedtls\include\*.*"					"%package%\src\mbedtls\include\" /EI
-xcopy "mbedtls\library\*.*"					"%package%\src\mbedtls\library\" /EI
-xcopy "mbedtls\programs\*.*"				"%package%\src\mbedtls\programs\" /EI
+xcopy "openssl\LICENSE"						"%package%\src\openssl\" /IY
+xcopy "openssl\AUTHORS"						"%package%\src\openssl\" /IY
+xcopy "openssl\ACKNOWLEDGEMENTS"			"%package%\src\openssl\" /IY
+xcopy "openssl\NEWS"						"%package%\src\openssl\" /IY
+xcopy "openssl\CHANGES"						"%package%\src\openssl\" /IY
+xcopy "openssl\NOTES*.*"					"%package%\src\openssl\" /IY
+xcopy "openssl\README*.*"					"%package%\src\openssl\" /IY
+xcopy "openssl\*.h"							"%package%\src\openssl\" /IY
+xcopy "openssl\crypto\*.*"					"%package%\src\openssl\crypto\" /EI
+xcopy "openssl\ssl\*.*"						"%package%\src\openssl\ssl\" /EI
+xcopy "openssl\engines\*.*"					"%package%\src\openssl\engines\" /EI
 
 echo -------------------------------------------------------------------------------
 echo readme
@@ -52,7 +54,7 @@ set README=%package%\src\Readme.txt
 echo Git tags:> "%readme%"
 
 call :log_git_tag curl
-call :log_git_tag mbedtls
+call :log_git_tag openssl
 call :log_git_tag nghttp2
 call :log_git_tag zlib
 
@@ -73,26 +75,30 @@ goto :log_git_tag_end
 
 echo.>> "%readme%"
 echo NOTE:>> "%readme%"
-echo The source files saved here are incomplete.>> "%readme%"
-echo Still, they are sufficient for stepping into CURL code during debugging.>> "%readme%"
-echo You are welcome to clone their respective Git projects for the complete source code.>> "%readme%"
+echo This directory contains part of the source code of the main sub-projects.>> "%readme%"
+echo Although incomplete, these files should allow you to step into CURL sources during debugging.>> "%readme%"
+echo For the complete source code please clone their respective Git repositories.>> "%readme%"
 
 echo -------------------------------------------------------------------------------
 echo bin
 echo -------------------------------------------------------------------------------
 
-for /d %%d in (bin\*) do call :copy_bin %%d
+for /d %%d in (bin\MSVC-*) do call :copy_bin %%d
+for /d %%d in (bin\mingw-*-Release*) do call :copy_bin %%d
 
 goto :copy_bin_end
 :copy_bin
 echo %~1
+echo \curl.pdb> skip.txt
+echo \openssl.pdb>> skip.txt
 xcopy "%~1\*.exe"							"%package%\%~1\" /I > NUL 2> NUL
 xcopy "%~1\*.dll"							"%package%\%~1\" /I > NUL 2> NUL
-xcopy "%~1\*.pdb"							"%package%\%~1\" /I > NUL 2> NUL
+xcopy "%~1\*.pdb"							"%package%\%~1\" /I /EXCLUDE:skip.txt > NUL 2> NUL
 xcopy "%~1\*.lib"							"%package%\%~1\" /I > NUL 2> NUL
 xcopy "%~1\*.a"								"%package%\%~1\" /I > NUL 2> NUL
 xcopy "%~1\cacert.pem"						"%package%\%~1\" /I > NUL 2> NUL
 xcopy "%~1\test.bat"						"%package%\%~1\" /I > NUL 2> NUL
+del skip.txt
 exit /B
 :copy_bin_end
 
