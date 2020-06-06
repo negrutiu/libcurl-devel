@@ -102,7 +102,7 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-Legacy ^
 	BUILD_CRT=static ^
-	BUILD_ZLIB=static ^
+	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_OPENSSL=static ^
 	BUILD_CURL=static ^
@@ -115,7 +115,7 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-Legacy ^
 	BUILD_CRT=static ^
-	BUILD_ZLIB=static ^
+	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_OPENSSL=static ^
 	BUILD_CURL=static ^
@@ -244,7 +244,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32-HTTP_ONLY ^
 	BUILD_CRT=static ^
-	BUILD_ZLIB=static ^
+	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
@@ -254,7 +254,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64-HTTP_ONLY ^
 	BUILD_CRT=static ^
-	BUILD_ZLIB=static ^
+	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
