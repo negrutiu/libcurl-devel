@@ -98,8 +98,6 @@ exit /B 1
 :PATCH
 cd /d "%~dp0"
 
-echo Copy "%LIBNAME%\lib\Makefile"
-copy /Y _Patches\_patch-%LIBNAME%-Makefile "%LIBNAME%\lib\Makefile"
 
 REM ---------------------------------
 REM Extract string version from tag name (e.g. "1.2.3")
