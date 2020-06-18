@@ -36,16 +36,16 @@ REM | NASM (required starting with OpenSSL 1.0.2)
 REM | Use powershell to read NASM path from registry to properly handle paths with spaces (e.g. "C:\Program Files\NASM")
 set NASM_PATH=
 for /f "usebackq delims=*" %%a in (`powershell -Command "(gp 'HKCU:\Software\nasm').'(Default)'"`) do set NASM_PATH=%%a
-if not exist "%NASM_PATH%\nasm.exe" echo ERROR: Missing "%NASM_PATH%\nasm.exe" && pause && exit /B 1
+if not exist "%NASM_PATH%\nasm.exe" echo ERROR: Missing NASM. Install from `https://nasm.us/` && pause && exit /B 1
 set PATH=%PATH%;%NASM_PATH%
 
 REM | Perl
 perl -v > NUL
-if %errorlevel% neq 0 echo ERROR: Missing Perl && pause && exit /B 1
+if %errorlevel% neq 0 echo ERROR: Missing Perl. Install it from `http://strawberryperl.com/` && pause && exit /B 1
 
 REM | cmake
 cmake --version > NUL
-if %errorlevel% neq 0 echo ERROR: Missing 'cmake' && pause && exit /B 1
+if %errorlevel% neq 0 echo ERROR: Missing cmake. Install it from `https://cmake.org/` && pause && exit /B 1
 set BUILD_CMAKE_GENERATOR=NMake Makefiles
 
 goto :REQURIEMENTS_END
@@ -54,25 +54,35 @@ goto :REQURIEMENTS_END
 REM | msys2
 if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS2
 if not exist "%MSYS2%" set MSYS2=%SYSTEMDRIVE%\MSYS64
-if not exist "%MSYS2%" echo ERROR: Missing msys2/mingw && pause && exit /B 2
-
-REM | sspi.h
-set p=%MSYS2%\mingw32\i686-w64-mingw32\include\sspi.h
-findstr SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS "%p%" > NUL
-if %errorlevel% neq 0 echo ERROR: In order to support nghttp2 /w SChannel the file "sspi.h" from mingw32 requires patching. && echo ^> move /Y "%p%" "%p%.bak" && echo ^> copy /Y "%CD%\_Patches\sspi.h" "%p%" && echo. && pause && exit /B 57
-
-set p=%MSYS2%\mingw64\x86_64-w64-mingw32\include\sspi.h
-findstr SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS "%p%" > NUL
-if %errorlevel% neq 0 echo ERROR: In order to support nghttp2 /w SChannel the file "sspi.h" from mingw64 requires patching. && echo ^> move /Y "%p%" "%p%.bak" && echo ^> copy /Y "%CD%\_Patches\sspi.h" "%p%" && echo. && pause && exit /B 57
-
-set p=
+if not exist "%MSYS2%" echo ERROR: Missing msys2. Install from `https://msys2.org/` && pause && exit /B 2
 
 REM | msys2/perl
-if not exist "%MSYS2%\usr\bin\perl.exe" echo ERROR: Missing msys2/perl. Go ahead and `pacman -S perl` && pause && exit /B 2
+if not exist "%MSYS2%\usr\bin\perl.exe" echo ERROR: Missing msys2/perl. Run `pacman -S perl` in msys2 && pause && exit /B 2
+
+REM | mingw
+if not exist "%MINGW64%\bin\gcc.exe" set MINGW64=%MSYS2%\mingw64
+if not exist "%MINGW64%\bin\gcc.exe" echo ERROR: Missing mingw64. Run `pacman -S mingw-w64-x86_64-toolchain` in msys2 && pause && exit /B 2
+
+if not exist "%MINGW32%\bin\gcc.exe" set MINGW32=%MSYS2%\mingw32
+if not exist "%MINGW32%\bin\gcc.exe" echo ERROR: Missing mingw32. Run `pacman -S mingw-w64-i686-toolchain` in msys2 && pause && exit /B 2
+
+REM | sspi.h
+set sspi32_h=%MINGW32%\i686-w64-mingw32\include\sspi.h
+findstr SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS "%sspi32_h%" > NUL
+if %errorlevel% neq 0 set sspi32_ok=FALSE
+
+set sspi64_h=%MINGW64%\x86_64-w64-mingw32\include\sspi.h
+findstr SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS "%sspi64_h%" > NUL
+if %errorlevel% neq 0 set sspi64_ok=FALSE
+
+if /i "%sspi32_ok%,%sspi64_ok%" neq "," echo ERROR: In order to support nghttp2 /w SChannel the file "sspi.h" from mingw32/64 requires patching && echo Run these commands:
+if /i "%sspi32_ok%" neq "" echo   move /Y "%sspi32_h%" "%sspi32_h%.bak" && echo   copy /Y "%CD%\_Patches\sspi.h" "%sspi32_h%"
+if /i "%sspi64_ok%" neq "" echo   move /Y "%sspi64_h%" "%sspi64_h%.bak" && echo   copy /Y "%CD%\_Patches\sspi.h" "%sspi64_h%"
+if /i "%sspi32_ok%,%sspi64_ok%" neq "," pause && exit /B 2
 
 REM | cmake
 cmake --version > NUL
-if %errorlevel% neq 0 echo ERROR: Missing 'cmake' && pause && exit /B 1
+if %errorlevel% neq 0 echo ERROR: Missing cmake. Install it from `https://cmake.org/` && pause && exit /B 1
 set BUILD_CMAKE_GENERATOR=MinGW Makefiles
 
 goto :REQURIEMENTS_END
@@ -81,7 +91,7 @@ goto :REQURIEMENTS_END
 :REQURIEMENTS_END
 
 REM | cacert.pem
-if not exist cacert.pem echo ERROR: Missing cacert.pem. Get it! && pause && exit /B 2
+if not exist cacert.pem echo ERROR: Missing cacert.pem. Run `_Get_cacert_pem.bat` && pause && exit /B 2
 
 
 :: ----------------------------------------------------------------
@@ -321,9 +331,10 @@ if /i "%BUILDER%" equ "MSVC" (
 )
 
 REM | Initialize mingw environment
-if /i "%BUILD_ARCH%" equ "x64" set MINGW=%MSYS2%\mingw64
-if /i "%BUILD_ARCH%" neq "x64" set MINGW=%MSYS2%\mingw32
+if /i "%BUILD_ARCH%" equ "x64" set MINGW=%MINGW64%
+if /i "%BUILD_ARCH%" neq "x64" set MINGW=%MINGW32%
 if /i "%BUILDER%" equ "mingw" set PATH=%MINGW%\bin;%MSYS2%\usr\bin;%PATH%
+REM if /i "%BUILDER%" equ "mingw" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -D__USE_MINGW_ANSI_STDIO=0
 
 :ZLIB
 if "%BUILD_ZLIB%" equ "" goto :ZLIB_END
