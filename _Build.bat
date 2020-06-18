@@ -60,9 +60,11 @@ REM | msys2/perl
 if not exist "%MSYS2%\usr\bin\perl.exe" echo ERROR: Missing msys2/perl. Run `pacman -S perl` in msys2 && pause && exit /B 2
 
 REM | mingw
+if not exist "%MINGW64%\bin\gcc.exe" set MINGW64=%MINGW64_INSTDIR%
 if not exist "%MINGW64%\bin\gcc.exe" set MINGW64=%MSYS2%\mingw64
 if not exist "%MINGW64%\bin\gcc.exe" echo ERROR: Missing mingw64. Run `pacman -S mingw-w64-x86_64-toolchain` in msys2 && pause && exit /B 2
 
+if not exist "%MINGW32%\bin\gcc.exe" set MINGW32=%MINGW32_INSTDIR%
 if not exist "%MINGW32%\bin\gcc.exe" set MINGW32=%MSYS2%\mingw32
 if not exist "%MINGW32%\bin\gcc.exe" echo ERROR: Missing mingw32. Run `pacman -S mingw-w64-i686-toolchain` in msys2 && pause && exit /B 2
 
