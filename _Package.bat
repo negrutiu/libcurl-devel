@@ -32,8 +32,8 @@ echo #else>>							   "%package%\include\openssl\openssl\opensslconf.h"
 echo #error Architecture not supported>>   "%package%\include\openssl\openssl\opensslconf.h"
 echo #endif>>							   "%package%\include\openssl\openssl\opensslconf.h"
 
-copy "bin\mingw-openssl-Release-Win32\openssl\include\openssl\opensslconf.h" "%package%\include\openssl\openssl\opensslconf32.h"
-copy "bin\mingw-openssl-Release-x64\openssl\include\openssl\opensslconf.h"   "%package%\include\openssl\openssl\opensslconf64.h"
+copy "bin\mingw-openssl-Release-Win32-Legacy\openssl\include\openssl\opensslconf.h" "%package%\include\openssl\openssl\opensslconf32.h"
+copy "bin\mingw-openssl-Release-x64-Legacy\openssl\include\openssl\opensslconf.h"   "%package%\include\openssl\openssl\opensslconf64.h"
 
 echo -------------------------------------------------------------------------------
 echo src
