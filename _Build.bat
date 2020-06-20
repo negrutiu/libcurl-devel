@@ -365,17 +365,14 @@ if not exist zlib\BUILD\CMakeCache.txt (
 
 if /i "%BUILDER%,%BUILD_CRT%" equ "MSVC,static" (
 	REM | By default zlib links to shared CRT library
-	REM | Because zlib doesn't have a cmake variable to control CRT linkage, we'll do this by replacing in .vcxproj files...
+	REM | Zlib doesn't provide a variable to control CRT linkage, so we'll replace compiler flags in .vcxproj files...
 	echo Configure static CRT...
 	powershell -Command "(gc zlib\BUILD\CMakeCache.txt) -replace '/MDd', '/MTd' | Out-File -encoding ASCII zlib\BUILD\CMakeCache.txt"
 	powershell -Command "(gc zlib\BUILD\CMakeCache.txt) -replace '/MD',  '/MT'  | Out-File -encoding ASCII zlib\BUILD\CMakeCache.txt"
 )
 
-if /i "%BUILD_ZLIB%" equ "static" set TARGET=zlibstatic
-if /i "%BUILD_ZLIB%" equ "shared" set TARGET=zlib
-
 REM | Build
-cmake --build zlib\BUILD --config %CONFIG% --target %TARGET%
+cmake --build zlib\BUILD --config %CONFIG% --target zlibstatic zlib
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 REM | zconf.h
