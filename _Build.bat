@@ -338,6 +338,9 @@ if /i "%BUILD_ARCH%" neq "x64" set MINGW=%MINGW32%
 if /i "%BUILDER%" equ "mingw" set PATH=%MINGW%\bin;%MSYS2%\usr\bin;%PATH%
 REM if /i "%BUILDER%" equ "mingw" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -D__USE_MINGW_ANSI_STDIO=0
 
+REM | Prevent mingw builds from linking to libgcc_*.dll
+if /i "%BUILDER%" equ "mingw" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -static-libgcc
+
 :ZLIB
 if "%BUILD_ZLIB%" equ "" goto :ZLIB_END
 echo.
@@ -353,11 +356,10 @@ if not exist zlib\BUILD\CMakeCache.txt (
 	REM | Comment `set(CMAKE_DEBUG_POSTFIX "d")`
 	if /i "%BUILDER%,%CONFIG%" equ "MSVC,Debug" powershell -Command "(gc zlib\CMakeLists.txt) -replace '^\s*set\(CMAKE_DEBUG_POSTFIX', '    #set(CMAKE_DEBUG_POSTFIX'  | Out-File -encoding ASCII zlib\CMakeLists.txt"
 
-	REM | Add "-static" compiler parameter to prevent mingw builds from linking to libgcc_*.dll
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S zlib -B zlib\BUILD ^
 		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
-		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS! -static"
+		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS!"
 	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
 
@@ -418,11 +420,10 @@ if not exist nghttp2\BUILD\CMakeCache.txt (
 
 	if /i "%CONFIG%" equ "Debug" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_DEBUG=ON
 
-	REM | Add "-static" compiler parameter to prevent mingw builds from linking to libgcc_*.dll
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S nghttp2 -B nghttp2\BUILD ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
 		!CMAKE_NGHTTP2_VARIABLES! ^
-		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS! -static"
+		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS!"
 		
 	if !errorlevel! neq 0 pause && exit /B !errorlevel!
 )
@@ -534,9 +535,6 @@ set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
 	-DBUILD_TESTING=OFF
 
 if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON -DCMAKE_DEBUG_POSTFIX:STRING=""
-
-REM | Prevent mingw builds from linking to libgcc-*.dll
-if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -static
 
 REM | curl(static .exe)
 if /i "%BUILD_CURL%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=OFF
