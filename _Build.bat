@@ -92,8 +92,8 @@ goto :REQURIEMENTS_END
 
 :REQURIEMENTS_END
 
-REM | cacert.pem
-if not exist cacert.pem echo ERROR: Missing cacert.pem. Run `_Get_cacert_pem.bat` && pause && exit /B 2
+REM | curl-ca-bundle.crt
+if not exist curl-ca-bundle.crt echo ERROR: Missing curl-ca-bundle.crt. Run `_Get_ca_bundle.bat` && pause && exit /B 2
 
 
 :: ----------------------------------------------------------------
@@ -648,18 +648,14 @@ pushd curl\BUILD\src
 popd
 :CURL_END
 
-:: test.bat + cacert.pem
+:: curl-ca-bundle.crt
+if /i "%BUILD_SSL_BACKEND%" neq "WINSSL" mklink /H "%BUILD_OUTDIR%\curl-ca-bundle.crt" "%ROOTDIR%\curl-ca-bundle.crt" || pause && exit /B %errorlevel%
+
+:: _test_curl.bat
 set testfile=%BUILD_OUTDIR%\_test_curl.bat
-if /i "%BUILD_SSL_BACKEND%" equ "WinSSL" (
-	echo "%%~dp0\curl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%testfile%"
-	echo "%%~dp0\curl.exe" -V>> "%testfile%"
-	echo pause>> "%testfile%"
-) else (
-	mklink /H cacert.pem "%ROOTDIR%\cacert.pem" 2> NUL
-	echo "%%~dp0\curl.exe" -L -v --cacert cacert.pem -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%testfile%"
-	echo "%%~dp0\curl.exe" -V>> "%testfile%"
-	echo pause>> "%testfile%"
-)
+echo "%%~dp0\curl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%testfile%"
+echo "%%~dp0\curl.exe" -V>> "%testfile%"
+echo pause>> "%testfile%"
 
 echo **********************************************************
 echo  The End

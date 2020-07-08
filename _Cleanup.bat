@@ -17,6 +17,7 @@ goto :EOF
 rd /S /Q bin
 rd /S /Q Release
 del cacert.pem
+del curl-ca-bundle.crt
 
 rd /S /Q .vs
 rd /S /Q ipch

@@ -31,10 +31,7 @@ set txt=!txt! HTTPS-proxy:%err%
 set err=[*]&& "%~1\curl.exe" -V | findstr "libz" > NUL || set err=[ ]
 set txt=!txt! libz:%err%
 
-set arg_cacert=
-if /i "%~2" equ "openssl" set arg_cacert=!arg_cacert! --cacert %~1\cacert.pem
-
-"%~1\curl.exe" -L -v !arg_cacert! -w "HTTPCODE:%%{response_code}" %url% > "%~1\test-data.md" 2> "%~1\test-trace.md"
+"%~1\curl.exe" -L -v -w "HTTPCODE:%%{response_code}" %url% > "%~1\test-data.md" 2> "%~1\test-trace.md"
 set txt=!txt! CURLE:[%errorlevel%]
 
 set err=???&& for /f "delims=: tokens=2" %%l in ('type "%1\test-data.md" ^| findstr "HTTPCODE:"') do set err=%%l

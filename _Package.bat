@@ -109,8 +109,8 @@ xcopy "%~1\*.dll"							"%package%\%~1\" /I > NUL 2> NUL
 xcopy "%~1\*.pdb"							"%package%\%~1\" /I /EXCLUDE:skip.txt > NUL 2> NUL
 xcopy "%~1\*.lib"							"%package%\%~1\" /I > NUL 2> NUL
 xcopy "%~1\*.a"								"%package%\%~1\" /I > NUL 2> NUL
-xcopy "%~1\cacert.pem"						"%package%\%~1\" /I > NUL 2> NUL
-xcopy "%~1\test.bat"						"%package%\%~1\" /I > NUL 2> NUL
+xcopy "%~1\curl-ca-bundle.crt"				"%package%\%~1\" /I > NUL 2> NUL
+xcopy "%~1\_test_curl.bat"					"%package%\%~1\" /I > NUL 2> NUL
 del skip.txt
 exit /B
 :copy_bin_end
