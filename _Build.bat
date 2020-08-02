@@ -10,6 +10,9 @@ if not defined CONFIG set CONFIG=Release
 REM | BUILDER=MSVC|mingw
 if not defined BUILDER set BUILDER=MSVC
 
+REM | CRT=static|shared
+if not defined CRT set CRT=static
+
 REM | VERBOSE=ON|OFF
 if not defined VERBOSE set VERBOSE=OFF
 
@@ -97,23 +100,123 @@ if not exist curl-ca-bundle.crt echo ERROR: Missing curl-ca-bundle.crt. Run `_Ge
 
 
 :: ----------------------------------------------------------------
-:PARALLEL
+REM | PARALLEL
 :: ----------------------------------------------------------------
 
 if /i "%~1" equ "/build" goto :BUILD
+
+title [%BUILDER%] %CONFIG%
+del "bin\build*.flag" 2> NUL > NUL
+
+REM | Notice the `call` in `start "" cmd /C call <script> <params>`
+REM | Without it parameters such as -PARAM="val1 val2 val3" are incorrectly escaped...
+
+REM =============================================
+:PARALLEL_ZLIB
+REM =============================================
+
+if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ZLIB=1 ^
+	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-zlib-%CONFIG%-Win32-Legacy ^
+	BUILD_C_FLAGS="-march=pentium2 -D_WIN32_WINNT=0x0400"
+
+if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ZLIB=1 ^
+	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-zlib-%CONFIG%-x64-Legacy ^
+	BUILD_C_FLAGS="-march=x86-64 -D_WIN32_WINNT=0x0502"
+
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ZLIB=1 ^
+	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-zlib-%CONFIG%-Win32
+
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_ZLIB=1 ^
+	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-zlib-%CONFIG%-x64
+
+
+REM =============================================
+:PARALLEL_NGHTTP2
+REM =============================================
+
+if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_NGHTTP2=1 ^
+	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-Win32-Legacy ^
+	BUILD_C_FLAGS="-march=pentium2 -D_WIN32_WINNT=0x0400"
+
+if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_NGHTTP2=1 ^
+	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-x64-Legacy ^
+	BUILD_C_FLAGS="-march=x86-64 -D_WIN32_WINNT=0x0502"
+
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_NGHTTP2=1 ^
+	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-Win32
+
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_NGHTTP2=1 ^
+	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-x64
+
 
 REM =============================================
 :PARALLEL_OPENSSL
 REM =============================================
 
-REM | Notice the `call` in "start "" cmd /C call <script> <params>"
-REM | Without it parameters such as -PARAM="val1 val2 val3" are incorrectly escaped...
+if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_OPENSSL=1 ^
+	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-Legacy ^
+	BUILD_C_FLAGS="-march=pentium2 -D_WIN32_WINNT=0x0400" ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA="no-capieng no-async no-pinshared 386"
+
+if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_OPENSSL=1 ^
+	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-Legacy ^
+	BUILD_C_FLAGS="-march=x86-64 -D_WIN32_WINNT=0x0502" ^
+	BUILD_OPENSSL_CONFIGURE_EXTRA="no-capieng no-async no-pinshared"
+
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_OPENSSL=1 ^
+	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32
+
+start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_OPENSSL=1 ^
+	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64
+
+
+REM | Wait for build-running-*.flag to appear
+echo Starting . . .
+:WAIT_2START
+	if not exist "bin\build-running-%BUILDER%*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_2START
+
+REM | Wait for build-running-*.flag to go away
+echo Building libraries . . .
+:WAIT_4LIBS
+	if exist "bin\build-running-%BUILDER%*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4LIBS
+
+if exist "bin\build-error-%BUILDER%*%CONFIG%*.flag" exit /B 1
+
+REM pause
+exit /B
+
+REM =============================================
+:PARALLEL_OPENSSL2
+REM =============================================
 
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-Legacy ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_OPENSSL=static ^
@@ -126,7 +229,6 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-Legacy ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_OPENSSL=static ^
@@ -139,7 +241,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32 ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
 	BUILD_OPENSSL=static ^
@@ -151,7 +252,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64 ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
 	BUILD_OPENSSL=static ^
@@ -163,7 +263,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-HTTP_ONLY ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_OPENSSL=static ^
@@ -175,7 +274,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-HTTP_ONLY ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_OPENSSL=static ^
@@ -187,7 +285,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-DLL ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB=shared ^
 	BUILD_NGHTTP2=shared ^
 	BUILD_OPENSSL=shared ^
@@ -199,7 +296,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-DLL ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB=shared ^
 	BUILD_NGHTTP2=shared ^
 	BUILD_OPENSSL=shared ^
@@ -215,7 +311,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32 ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
@@ -225,7 +320,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64 ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
@@ -235,7 +329,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32-DLL ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB=shared ^
 	BUILD_NGHTTP2=shared ^
 	BUILD_CURL=shared ^
@@ -245,7 +338,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64-DLL ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB=shared ^
 	BUILD_NGHTTP2=shared ^
 	BUILD_CURL=shared ^
@@ -255,7 +347,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=Win32 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32-HTTP_ONLY ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
@@ -265,7 +356,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=x64 ^
 	BUILD_SSL_BACKEND=WINSSL ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64-HTTP_ONLY ^
-	BUILD_CRT=static ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
@@ -299,28 +389,11 @@ mkdir "%BUILD_OUTDIR%" 2> NUL
 cd /d "%BUILD_OUTDIR%"
 
 REM | Parameter validation
-if /i "%BUILD_SSL_BACKEND%" neq "OPENSSL" set BUILD_OPENSSL=
+echo _%BUILDER%_| findstr /I /B /E "_msvc_ _mingw_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILDER=%BUILDER%. Use BUILDER=mingw^|msvc && pause && exit /B 57
 
-echo _%BUILD_ARCH%_| findstr /I /B /E "_x86_ _Win32_ _x64_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_ARCH=%BUILD_ARCH%. Use BUILD_ARCH=Win32^|x64 && pause && exit /B 57
-
-echo _%BUILD_SSL_BACKEND%_| findstr /I /B /E "_openssl_ _winssl_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_SSL_BACKEND=%BUILD_SSL_BACKEND%. Use BUILD_SSL_BACKEND=OPENSSL^|WINSSL && pause && exit /B 57
-
-echo _%BUILD_CRT%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_CRT=%BUILD_CRT%. Use BUILD_CRT=static^|shared && pause && exit /B 57
-
-echo _%BUILD_CURL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_CURL=%BUILD_CURL%. Use BUILD_CURL=static^|shared && pause && exit /B 57
-
-echo _%BUILD_OPENSSL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_OPENSSL=%BUILD_OPENSSL%. Use BUILD_OPENSSL=static^|shared && pause && exit /B 57
-
-echo _%BUILD_NGHTTP2%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_NGHTTP2=%BUILD_NGHTTP2%. Use BUILD_NGHTTP2=static^|shared && pause && exit /B 57
-
-echo _%BUILD_ZLIB%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_ZLIB=%BUILD_ZLIB%. Use BUILD_ZLIB=static^|shared && pause && exit /B 57
+echo _%CRT%_| findstr /I /B /E "_static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid CRT=%CRT%. Use CRT=static^|shared && pause && exit /B 57
 
 REM | Initialize MSVC environment
 if /i "%BUILDER%" equ "MSVC" (
@@ -341,118 +414,131 @@ REM if /i "%BUILDER%" equ "mingw" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -D__USE_MING
 REM | Prevent mingw builds from linking to libgcc_*.dll
 if /i "%BUILDER%" equ "mingw" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -static-libgcc
 
+
+if "%BUILD_ZLIB%" equ "1" goto :ZLIB
+if "%BUILD_NGHTTP2%" equ "1" goto :NGHTTP2
+if "%BUILD_OPENSSL%" equ "1" goto :OPENSSL
+
+echo **************
+echo Don't know what to build
+echo **************
+pause
+exit /B 2
+
+
+echo _%BUILD_CURL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_CURL=%BUILD_CURL%. Use BUILD_CURL=static^|shared && pause && exit /B 57
+
+if /i "%BUILD_SSL_BACKEND%" neq "OPENSSL" set BUILD_OPENSSL=
+
+echo _%BUILD_SSL_BACKEND%_| findstr /I /B /E "_openssl_ _winssl_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_SSL_BACKEND=%BUILD_SSL_BACKEND%. Use BUILD_SSL_BACKEND=OPENSSL^|WINSSL && pause && exit /B 57
+
+echo _%BUILD_CURL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_CURL=%BUILD_CURL%. Use BUILD_CURL=static^|shared && pause && exit /B 57
+
+echo _%BUILD_OPENSSL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_OPENSSL=%BUILD_OPENSSL%. Use BUILD_OPENSSL=static^|shared && pause && exit /B 57
+
+echo _%BUILD_NGHTTP2%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_NGHTTP2=%BUILD_NGHTTP2%. Use BUILD_NGHTTP2=static^|shared && pause && exit /B 57
+
+echo _%BUILD_ZLIB%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_ZLIB=%BUILD_ZLIB%. Use BUILD_ZLIB=static^|shared && pause && exit /B 57
+
+
 :ZLIB
-if "%BUILD_ZLIB%" equ "" goto :ZLIB_END
-echo.
-echo -----------------------------------
-echo  zlib
-echo -----------------------------------
+set FLAG_RUNNING=%BUILD_OUTDIR%\..\build-running-%DIRNAME%.flag
+set FLAG_ERROR=%BUILD_OUTDIR%\..\build-error-%DIRNAME%.flag
+echo todo> "%FLAG_RUNNING%"
+
 title %DIRNAME%-zlib
 
-xcopy "%ROOTDIR%\zlib" zlib /QEIYD
+xcopy "%ROOTDIR%\zlib" .build /QEIYD
 
 REM | Configure
-if not exist zlib\BUILD\CMakeCache.txt (
+if not exist .build\BUILD\CMakeCache.txt (
 	REM | Comment `set(CMAKE_DEBUG_POSTFIX "d")`
-	if /i "%BUILDER%,%CONFIG%" equ "MSVC,Debug" powershell -Command "(gc zlib\CMakeLists.txt) -replace '^\s*set\(CMAKE_DEBUG_POSTFIX', '    #set(CMAKE_DEBUG_POSTFIX'  | Out-File -encoding ASCII zlib\CMakeLists.txt"
+	if /i "%BUILDER%,%CONFIG%" equ "MSVC,Debug" powershell -Command "(gc .build\CMakeLists.txt) -replace '^\s*set\(CMAKE_DEBUG_POSTFIX', '    #set(CMAKE_DEBUG_POSTFIX'  | Out-File -encoding ASCII .build\CMakeLists.txt"
 
-	cmake -G "%BUILD_CMAKE_GENERATOR%" -S zlib -B zlib\BUILD ^
+	cmake -G "%BUILD_CMAKE_GENERATOR%" -S .build -B .build\BUILD ^
 		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
+		-DCMAKE_INSTALL_PREFIX="%BUILD_OUTDIR%" ^
 		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS!"
-	if !errorlevel! neq 0 pause && exit /B !errorlevel!
+	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 )
 
-if /i "%BUILDER%,%BUILD_CRT%" equ "MSVC,static" (
+if /i "%BUILDER%,%CRT%" equ "MSVC,static" (
 	REM | By default zlib links to shared CRT library
 	REM | Zlib doesn't provide a variable to control CRT linkage, so we'll replace compiler flags in .vcxproj files...
 	echo Configure static CRT...
-	powershell -Command "(gc zlib\BUILD\CMakeCache.txt) -replace '/MDd', '/MTd' | Out-File -encoding ASCII zlib\BUILD\CMakeCache.txt"
-	powershell -Command "(gc zlib\BUILD\CMakeCache.txt) -replace '/MD',  '/MT'  | Out-File -encoding ASCII zlib\BUILD\CMakeCache.txt"
+	powershell -Command "(gc .build\BUILD\CMakeCache.txt) -replace '/MDd', '/MTd' | Out-File -encoding ASCII .build\BUILD\CMakeCache.txt"
+	powershell -Command "(gc .build\BUILD\CMakeCache.txt) -replace '/MD',  '/MT'  | Out-File -encoding ASCII .build\BUILD\CMakeCache.txt"
 )
 
 REM | Build
-cmake --build zlib\BUILD --config %CONFIG% --target zlibstatic zlib
-if %errorlevel% neq 0 pause && exit /B %errorlevel%
+cmake --build .build\BUILD --config %CONFIG% --target zlibstatic zlib install
+if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 
-REM | zconf.h
-echo.
-echo Copying zconf.h...
-copy /Y zlib\BUILD\zconf.h zlib\zconf.h
-
-REM | Collect
-echo.
-pushd zlib\BUILD
-	for %%f in (*zlib*.dll *zlib*.lib *zlib*.a *zlib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-popd
-pushd zlib\BUILD\CMakeFiles\zlibstatic.dir
-	for %%f in (zlib*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-popd
-:ZLIB_END
+del /Q "%FLAG_RUNNING%"
+exit /B
 
 
 :NGHTTP2
-if "%BUILD_NGHTTP2%" equ "" goto :NGHTTP2_END
-echo.
-echo -----------------------------------
-echo  nghttp2
-echo -----------------------------------
+set FLAG_RUNNING=%BUILD_OUTDIR%\..\build-running-%DIRNAME%.flag
+set FLAG_ERROR=%BUILD_OUTDIR%\..\build-error-%DIRNAME%.flag
+echo todo> "%FLAG_RUNNING%"
+
 title %DIRNAME%-nghttp2
 
-xcopy "%ROOTDIR%\nghttp2" nghttp2 /QEIYD
+xcopy "%ROOTDIR%\nghttp2" .build /QEIYD
 
 REM | Configure
-if not exist nghttp2\BUILD\CMakeCache.txt (
+if not exist .build\BUILD\CMakeCache.txt (
 	set CMAKE_NGHTTP2_VARIABLES=^
 		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
 		-DSTATIC_LIB_SUFFIX:STRING=_static ^
+		-DCMAKE_INSTALL_PREFIX="%BUILD_OUTDIR%" ^
 		-DENABLE_SHARED_LIB=ON ^
 		-DENABLE_STATIC_LIB=ON ^
 		-DENABLE_LIB_ONLY=ON
 
-	if /i "%BUILD_CRT%" equ "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=ON
-	if /i "%BUILD_CRT%" neq "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=OFF
+	if /i "%CRT%" equ "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=ON
+	if /i "%CRT%" neq "static" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_STATIC_CRT=OFF
 
 	if /i "%CONFIG%" equ "Debug" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_DEBUG=ON
 
-	cmake -G "%BUILD_CMAKE_GENERATOR%" -S nghttp2 -B nghttp2\BUILD ^
+	cmake -G "%BUILD_CMAKE_GENERATOR%" -S .build -B .build\BUILD ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
 		!CMAKE_NGHTTP2_VARIABLES! ^
 		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS!"
 		
-	if !errorlevel! neq 0 pause && exit /B !errorlevel!
+	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 )
 
 REM | Build
-cmake --build nghttp2\BUILD --config %CONFIG%
-if %errorlevel% neq 0 pause && exit /B %errorlevel%
+cmake --build .build\BUILD --config %CONFIG% --target nghttp2_static nghttp2 install
+if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 
-REM | Collect
-echo.
-pushd nghttp2\BUILD\lib
-	for %%f in (*.dll *.lib *.a *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-popd
-pushd nghttp2\BUILD\lib\CMakeFiles\nghttp2_static.dir
-	for %%f in (nghttp2*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-popd
-:NGHTTP2_END
+del /Q "%FLAG_RUNNING%"
+exit /B
 
 
 :OPENSSL
-if /i "%BUILD_SSL_BACKEND%" neq "OPENSSL" goto :OPENSSL_END
-echo.
-echo -----------------------------------
-echo  openssl
-echo -----------------------------------
+set FLAG_RUNNING=%BUILD_OUTDIR%\..\build-running-%DIRNAME%.flag
+set FLAG_ERROR=%BUILD_OUTDIR%\..\build-error-%DIRNAME%.flag
+echo todo> "%FLAG_RUNNING%"
+
 title %DIRNAME%-openssl
 
 REM | Make a copy of the source code
 echo Cloning the source code...
 pushd "%BUILD_OUTDIR%"
 	echo fuzz> exclude.txt
-	xcopy "%ROOTDIR%\openssl\*.*" openssl\ /EXCLUDE:exclude.txt /QEIYD
+	xcopy "%ROOTDIR%\openssl\*.*" .build\ /EXCLUDE:exclude.txt /QEIYD
 	del exclude.txt
-	mkdir openssl\fuzz 2> NUL
+	mkdir .build\fuzz 2> NUL
 popd
 
 REM | Features
@@ -469,18 +555,15 @@ if /i "%BUILDER%" equ "mingw" (
 if /i "%CONFIG%" equ "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --debug
 if /i "%CONFIG%" neq "Debug" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! --release
 
-if /i "%BUILD_OPENSSL%" equ "static" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! no-shared
-if /i "%BUILD_OPENSSL%" equ "shared" set BUILD_OPENSSL_PARAMS=!BUILD_OPENSSL_PARAMS! shared
-
-pushd "%BUILD_OUTDIR%\openssl"
+pushd "%BUILD_OUTDIR%\.build"
 
 REM | Configure
 if not exist makefile (
-	perl Configure !BUILD_OPENSSL_PARAMS! CFLAGS="!BUILD_C_FLAGS!" !BUILD_OPENSSL_CONFIGURE_EXTRA! --prefix="%CD%\_PACKAGE"
-	if !errorlevel! neq 0 pause && exit /B !errorlevel!
+	perl Configure !BUILD_OPENSSL_PARAMS! CFLAGS="!BUILD_C_FLAGS!" !BUILD_OPENSSL_CONFIGURE_EXTRA! --prefix="%BUILD_OUTDIR%" --openssldir="%BUILD_OUTDIR%\config"
+	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 )
 
-if /i "%BUILDER%,%BUILD_CRT%" equ "MSVC,static" (
+if /i "%BUILDER%,%CRT%" equ "MSVC,static" (
 	REM | By default openssl links to shared CRT library
 	REM | Because openssl doesn't have a variable to control CRT linkage, we'll do this by replacing compiler flag in makefile
 	echo Configure static CRT...
@@ -490,26 +573,27 @@ if /i "%BUILDER%,%BUILD_CRT%" equ "MSVC,static" (
 
 REM | Make
 if /i "%BUILDER%" equ "MSVC" (
-	nmake.exe
-	if !errorlevel! neq 0 pause && exit /B !errorlevel!
+	nmake.exe all install_sw install_ssldirs
+	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 )
 if /i "%BUILDER%" equ "mingw" (
-	mingw32-make.exe
-	if !errorlevel! neq 0 pause && exit /B !errorlevel!
+	mingw32-make.exe all install_sw install_ssldirs
+	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 )
 
 popd
 
 REM | Collect
-echo.
-pushd openssl
-	for %%f in (lib*.dll lib*.lib lib*.a lib*.pdb ossl_*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-popd
-pushd openssl\apps
-	for %%f in (openssl.exe openssl.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-popd
-if /i "%BUILD_OPENSSL%" neq "static" del libcrypto_static.lib && del libssl_static.lib && del ossl_static.pdb
-:OPENSSL_END
+REM echo.
+REM pushd openssl
+	REM for %%f in (lib*.dll lib*.lib lib*.a lib*.pdb ossl_*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+REM popd
+REM pushd openssl\apps
+	REM for %%f in (openssl.exe openssl.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+REM popd
+
+del /Q "%FLAG_RUNNING%"
+exit /B
 
 
 :CURL
@@ -537,8 +621,8 @@ if /i "%BUILD_CURL%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES
 
 REM | curl(static CRT)
 if /i "%BUILDER%" equ "MSVC" (
-	if /i "%BUILD_CRT%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=ON
-	if /i "%BUILD_CRT%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=OFF
+	if /i "%CRT%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=ON
+	if /i "%CRT%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_STATIC_CRT=OFF
 )
 
 REM | curl(libssh2)
