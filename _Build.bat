@@ -204,158 +204,204 @@ echo Building libraries . . .
 :WAIT_4LIBS
 	if exist "bin\build-running-%BUILDER%*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4LIBS
 
+REM | Abort on build errors
 if exist "bin\build-error-%BUILDER%*%CONFIG%*.flag" exit /B 1
 
-REM pause
-exit /B
 
 REM =============================================
 :PARALLEL_CURL_OPENSSL
 REM =============================================
 
+set ARCH=Win32
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
-	BUILD_ARCH=Win32 ^
+	BUILD_CURL=1 ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-%ARCH%-Legacy ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-Legacy ^
-	BUILD_ZLIB="" ^
-	BUILD_NGHTTP2=static ^
-	BUILD_OPENSSL=static ^
-	BUILD_CURL=static ^
+	BUILD_ZLIB_DIR="" ^
+	BUILD_ZLIB_LNK="" ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%-Legacy" ^
+	BUILD_NGHTTP2_LNK=static ^
+	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
+	BUILD_OPENSSL_LNK=static ^
+	BUILD_CURL_LNK=static ^
 	BUILD_C_FLAGS="-march=pentium2 -D_WIN32_WINNT=0x0400" ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="no-capieng no-async no-pinshared 386" ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF"
 
+set ARCH=x64
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
-	BUILD_ARCH=x64 ^
+	BUILD_CURL=1 ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-%ARCH%-Legacy ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-Legacy ^
-	BUILD_ZLIB="" ^
-	BUILD_NGHTTP2=static ^
-	BUILD_OPENSSL=static ^
-	BUILD_CURL=static ^
+	BUILD_ZLIB_DIR="" ^
+	BUILD_ZLIB_LNK="" ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%-Legacy" ^
+	BUILD_NGHTTP2_LNK=static ^
+	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
+	BUILD_OPENSSL_LNK=static ^
+	BUILD_CURL_LNK=static ^
 	BUILD_C_FLAGS="-march=x86-64 -D_WIN32_WINNT=0x0502" ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="no-capieng no-async no-pinshared" ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF"
 
+set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
-	BUILD_ARCH=Win32 ^
+	BUILD_CURL=1 ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-%ARCH% ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32 ^
-	BUILD_ZLIB=static ^
-	BUILD_NGHTTP2=static ^
-	BUILD_OPENSSL=static ^
-	BUILD_CURL=static ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="" ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=static ^
+	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%" ^
+	BUILD_OPENSSL_LNK=static ^
+	BUILD_CURL_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
+set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-x64 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64 ^
-	BUILD_ZLIB=static ^
-	BUILD_NGHTTP2=static ^
-	BUILD_OPENSSL=static ^
-	BUILD_CURL=static ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="" ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=static ^
+	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%" ^
+	BUILD_OPENSSL_LNK=static ^
+	BUILD_CURL_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
+set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-Win32-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-HTTP_ONLY ^
-	BUILD_ZLIB="" ^
-	BUILD_NGHTTP2=static ^
-	BUILD_OPENSSL=static ^
-	BUILD_CURL=static ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="" ^
+	BUILD_ZLIB_DIR="" ^
+	BUILD_ZLIB_LNK="" ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=static ^
+	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%" ^
+	BUILD_OPENSSL_LNK=static ^
+	BUILD_CURL_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
+set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-x64-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-HTTP_ONLY ^
-	BUILD_ZLIB="" ^
-	BUILD_NGHTTP2=static ^
-	BUILD_OPENSSL=static ^
-	BUILD_CURL=static ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="" ^
+	BUILD_ZLIB_DIR="" ^
+	BUILD_ZLIB_LNK="" ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=static ^
+	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%" ^
+	BUILD_OPENSSL_LNK=static ^
+	BUILD_CURL_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
+set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-Win32-DLL ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-DLL ^
-	BUILD_ZLIB=shared ^
-	BUILD_NGHTTP2=shared ^
-	BUILD_OPENSSL=shared ^
-	BUILD_CURL=shared ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA=""  ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=shared ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=shared ^
+	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%" ^
+	BUILD_OPENSSL_LNK=shared ^
+	BUILD_CURL_LNK=shared ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
+set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-x64-DLL ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-DLL ^
-	BUILD_ZLIB=shared ^
-	BUILD_NGHTTP2=shared ^
-	BUILD_OPENSSL=shared ^
-	BUILD_CURL=shared ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA=""  ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=shared ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=shared ^
+	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%" ^
+	BUILD_OPENSSL_LNK=shared ^
+	BUILD_CURL_LNK=shared ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
+
+REM pause
+exit /B
 
 REM =============================================
 :PARALLEL_CURL_WINSSL
 REM =============================================
 
+set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-Win32 ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32 ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
+set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-x64 ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64 ^
 	BUILD_ZLIB=static ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
+set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-Win32-DLL ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32-DLL ^
 	BUILD_ZLIB=shared ^
 	BUILD_NGHTTP2=shared ^
 	BUILD_CURL=shared ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
+set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-x64-DLL ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64-DLL ^
 	BUILD_ZLIB=shared ^
 	BUILD_NGHTTP2=shared ^
 	BUILD_CURL=shared ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
+set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=Win32 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-Win32-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-Win32-HTTP_ONLY ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
+set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
+	BUILD_CURL=1 ^
 	BUILD_ARCH=x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-x64-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-WinSSL-%CONFIG%-x64-HTTP_ONLY ^
 	BUILD_ZLIB="" ^
 	BUILD_NGHTTP2=static ^
 	BUILD_CURL=static ^
@@ -420,32 +466,9 @@ if "%BUILD_NGHTTP2%" equ "1" goto :BUILD_NGHTTP2
 if "%BUILD_OPENSSL%" equ "1" goto :BUILD_OPENSSL
 if "%BUILD_CURL%" equ "1" goto :BUILD_CURL
 
-echo **************
-echo Don't know what to build
-echo **************
+echo ERROR: Unknown build request
 pause
 exit /B 2
-
-
-echo _%BUILD_CURL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_CURL=%BUILD_CURL%. Use BUILD_CURL=static^|shared && pause && exit /B 57
-
-if /i "%BUILD_SSL_BACKEND%" neq "OPENSSL" set BUILD_OPENSSL=
-
-echo _%BUILD_SSL_BACKEND%_| findstr /I /B /E "_openssl_ _winssl_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_SSL_BACKEND=%BUILD_SSL_BACKEND%. Use BUILD_SSL_BACKEND=OPENSSL^|WINSSL && pause && exit /B 57
-
-echo _%BUILD_CURL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_CURL=%BUILD_CURL%. Use BUILD_CURL=static^|shared && pause && exit /B 57
-
-echo _%BUILD_OPENSSL%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_OPENSSL=%BUILD_OPENSSL%. Use BUILD_OPENSSL=static^|shared && pause && exit /B 57
-
-echo _%BUILD_NGHTTP2%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_NGHTTP2=%BUILD_NGHTTP2%. Use BUILD_NGHTTP2=static^|shared && pause && exit /B 57
-
-echo _%BUILD_ZLIB%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_ZLIB=%BUILD_ZLIB%. Use BUILD_ZLIB=static^|shared && pause && exit /B 57
 
 
 :BUILD_ZLIB
@@ -569,7 +592,7 @@ if not exist makefile (
 
 if /i "%BUILDER%,%CRT%" equ "MSVC,static" (
 	REM | By default openssl links to shared CRT library
-	REM | Because openssl doesn't have a variable to control CRT linkage, we'll do this by replacing compiler flag in makefile
+	REM | openssl doesn't expose any variable to control the CRT linkage, therefore we'll do some replacing in files...
 	echo Configure static CRT...
 	powershell -Command "(gc makefile) -replace '/MDd', '/MTd' | Out-File -encoding ASCII makefile"
 	powershell -Command "(gc makefile) -replace '/MD',  '/MT'  | Out-File -encoding ASCII makefile"
@@ -607,7 +630,34 @@ echo  libcurl
 echo -----------------------------------
 title %DIRNAME%-libcurl
 
-xcopy "%ROOTDIR%\curl\*.*" curl /QEIYD
+REM | Parameter validation
+echo _%BUILD_SSL_BACKEND%_| findstr /I /B /E "_openssl_ _winssl_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_SSL_BACKEND=%BUILD_SSL_BACKEND%. Use BUILD_SSL_BACKEND=OPENSSL^|WINSSL && pause && exit /B 57
+
+echo _%BUILD_CURL_LNK%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_CURL_LNK=%BUILD_CURL_LNK%. Use BUILD_CURL_LNK=static^|shared && pause && exit /B 57
+
+if "%BUILD_ZLIB_DIR%" neq "" (
+	if not exist "%BUILD_ZLIB_DIR%" echo ERROR: Not found BUILD_ZLIB_DIR=%BUILD_ZLIB_DIR% && pause && exit /B 57
+)
+
+echo _%BUILD_ZLIB_LNK%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_ZLIB_LNK=%BUILD_ZLIB_LNK%. Use BUILD_ZLIB_LNK=static^|shared && pause && exit /B 57
+
+if "%BUILD_NGHTTP2_DIR%" neq "" (
+	if not exist "%BUILD_NGHTTP2_DIR%" echo ERROR: Not found BUILD_NGHTTP2_DIR=%BUILD_NGHTTP2_DIR% && pause && exit /B 57
+)
+
+echo _%BUILD_NGHTTP2_LNK%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_NGHTTP2_LNK=%BUILD_NGHTTP2_LNK%. Use BUILD_NGHTTP2_LNK=static^|shared && pause && exit /B 57
+
+if "%BUILD_OPENSSL_DIR%" neq "" (
+	if not exist "%BUILD_OPENSSL_DIR%" echo ERROR: Not found BUILD_OPENSSL_DIR=%BUILD_OPENSSL_DIR% && pause && exit /B 57
+)
+
+echo _%BUILD_OPENSSL_LNK%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_OPENSSL_LNK=%BUILD_OPENSSL_LNK%. Use BUILD_OPENSSL_LNK=static^|shared && pause && exit /B 57
+
 
 REM | curl(*)
 set CMAKE_CURL_C_FLAGS=
@@ -620,8 +670,8 @@ set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
 if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DENABLE_CURLDEBUG=ON -DENABLE_DEBUG=ON -DCMAKE_DEBUG_POSTFIX:STRING=""
 
 REM | curl(static .exe)
-if /i "%BUILD_CURL%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=OFF
-if /i "%BUILD_CURL%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=ON
+if /i "%BUILD_CURL_LNK%" equ "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=OFF
+if /i "%BUILD_CURL_LNK%" neq "static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DBUILD_SHARED_LIBS=ON
 
 REM | curl(static CRT)
 if /i "%BUILDER%" equ "MSVC" (
@@ -633,43 +683,43 @@ REM | curl(libssh2)
 set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_USE_LIBSSH2=OFF
 
 REM | curl(zlib)
-if "%BUILD_ZLIB%" equ "" (
+if "%BUILD_ZLIB_LNK%" equ "" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=OFF
 ) else (
-	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="!BUILD_OUTDIR!/zlib"
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCURL_ZLIB=ON -DZLIB_INCLUDE_DIR="%BUILD_ZLIB_DIR%\include"
 )
-if /i "%BUILDER%,%BUILD_ZLIB%" equ "MSVC,static" (
-	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlibstatic.lib
-	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlibstatic.lib
+if /i "%BUILDER%,%BUILD_ZLIB_LNK%" equ "MSVC,static" (
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG="%BUILD_ZLIB_DIR%\lib\zlibstatic.lib"
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE="%BUILD_ZLIB_DIR%\lib\zlibstatic.lib"
 )
-if /i "%BUILDER%,%BUILD_ZLIB%" equ "MSVC,shared" (
-	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG=zlib/BUILD/zlib.lib
-	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE=zlib/BUILD/zlib.lib
+if /i "%BUILDER%,%BUILD_ZLIB_LNK%" equ "MSVC,shared" (
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG="%BUILD_ZLIB_DIR%\lib\zlib.lib"
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE="%BUILD_ZLIB_DIR%\lib\zlib.lib"
 )
-if /i "%BUILDER%,%BUILD_ZLIB%" equ "mingw,static" (
-	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG=zlib/BUILD/libzlibstatic.a
-	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE=zlib/BUILD/libzlibstatic.a
+if /i "%BUILDER%,%BUILD_ZLIB_LNK%" equ "mingw,static" (
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG="%BUILD_ZLIB_DIR%\lib\libzlibstatic.a"
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE="%BUILD_ZLIB_DIR%\lib\libzlibstatic.a"
 )
-if /i "%BUILDER%,%BUILD_ZLIB%" equ "mingw,shared" (
-	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG=zlib/BUILD/libzlib.dll.a
-	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE=zlib/BUILD/libzlib.dll.a
+if /i "%BUILDER%,%BUILD_ZLIB_LNK%" equ "mingw,shared" (
+	if /i "%CONFIG%" equ "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_DEBUG="%BUILD_ZLIB_DIR%\lib\libzlib.dll.a"
+	if /i "%CONFIG%" neq "Debug" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DZLIB_LIBRARY_RELEASE="%BUILD_ZLIB_DIR%\lib\libzlib.dll.a"
 )
 
 REM | curl(nghttp2)
-if "%BUILD_NGHTTP2%" equ "" (
+if "%BUILD_NGHTTP2_LNK%" equ "" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=OFF
 )
-if /i "%BUILD_NGHTTP2%" equ "static" (
-	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes
-	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2.lib
-	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/libnghttp2.a
+if /i "%BUILD_NGHTTP2_LNK%" equ "static" (
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR="%BUILD_NGHTTP2_DIR%\include"
+	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY="%BUILD_NGHTTP2_DIR%\lib\nghttp2_static.lib"
+	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY="%BUILD_NGHTTP2_DIR%\lib\libnghttp2_static.a"
 	REM | Hack: NGHTTP2_STATICLIB preprocessor definition must exist for curl to link statically to nghttp2
 	set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DNGHTTP2_STATICLIB -DUSE_NGHTTP2
 )
-if /i "%BUILD_NGHTTP2%" equ "shared" (
-	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR=nghttp2/lib/includes
-	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/nghttp2.lib
-	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY=nghttp2/BUILD/lib/libnghttp2.dll.a
+if /i "%BUILD_NGHTTP2_LNK%" equ "shared" (
+	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DUSE_NGHTTP2=ON -DNGHTTP2_INCLUDE_DIR="%BUILD_NGHTTP2_DIR%\include"
+	if /i "%BUILDER%" equ "MSVC"  set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY="%BUILD_NGHTTP2_DIR%\lib\nghttp2.lib"
+	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DNGHTTP2_LIBRARY="%BUILD_NGHTTP2_DIR%\lib\libnghttp2.dll.a"
 	set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DUSE_NGHTTP2
 )
 
@@ -684,14 +734,28 @@ REM | We need to explicitly specify the USE_TLS_SRP compiler definition as well
 set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DUSE_TLS_SRP
 
 REM | curl(openssl)
+REM set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DCURL_STATICLIB
 if /i "%BUILD_SSL_BACKEND%" equ "OPENSSL" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
 		-DCMAKE_USE_OPENSSL=ON ^
-		-DOPENSSL_ROOT_DIR="!BUILD_OUTDIR!/openssl" ^
-		-DOPENSSL_CRYPTO_LIBRARY="!BUILD_OUTDIR!/openssl" ^
+		-DOPENSSL_ROOT_DIR:PATH="%BUILD_OPENSSL_DIR%" ^
 		-DUSE_TLS_SRP:BOOL=ON
+	REM | OpenSSL linkage
+	if "%BUILDER%,%BUILD_OPENSSL_LNK%" equ "mingw,static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
+		-DLIB_EAY="%BUILD_OPENSSL_DIR%\lib\libcrypto.a" ^
+		-DSSL_EAY="%BUILD_OPENSSL_DIR%\lib\libssl.a"
+	if "%BUILDER%,%BUILD_OPENSSL_LNK%" equ "mingw,shared" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
+		-DLIB_EAY="%BUILD_OPENSSL_DIR%\lib\libcrypto.dll.a" ^
+		-DSSL_EAY="%BUILD_OPENSSL_DIR%\lib\libssl.dll.a"
+	if "%BUILDER%,%BUILD_OPENSSL_LNK%" equ "MSVC,static" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
+		-DLIB_EAY="%BUILD_OPENSSL_DIR%\lib\libcrypto_static.lib" ^
+		-DSSL_EAY="%BUILD_OPENSSL_DIR%\lib\libssl_static.lib"
+	if "%BUILDER%,%BUILD_OPENSSL_LNK%" equ "MSVC,shared" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
+		-DLIB_EAY="%BUILD_OPENSSL_DIR%\lib\libcrypto.lib" ^
+		-DSSL_EAY="%BUILD_OPENSSL_DIR%\lib\libssl.lib"
 	REM | ws2_32 library missing from mingw makefile...
-	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_C_STANDARD_LIBRARIES="-lws2_32"
+	if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
+		-DCMAKE_C_STANDARD_LIBRARIES="-lws2_32"
 )
 
 REM | curl(winssl)
@@ -702,10 +766,21 @@ if /i "%BUILD_SSL_BACKEND%" equ "WINSSL" (
 REM | curl(C_FLAGS)
 if "!CMAKE_CURL_C_FLAGS!" neq "" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_C_FLAGS="!CMAKE_CURL_C_FLAGS!"
 
+echo.
+echo ----------------------------------------------------------------------------------
+echo CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES!
+echo ----------------------------------------------------------------------------------
+echo BUILD_C_FLAGS=!BUILD_C_FLAGS!
+echo CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS!
+echo BUILD_CURL_CONFIGURE_EXTRA=!BUILD_CURL_CONFIGURE_EXTRA!
+echo ----------------------------------------------------------------------------------
+REM pause
+
 REM | Configure
-if not exist curl\BUILD\CMakeCache.txt (
-	cmake -G "%BUILD_CMAKE_GENERATOR%" -S curl -B curl\BUILD ^
+if not exist .build\CMakeCache.txt (
+	cmake -G "%BUILD_CMAKE_GENERATOR%" -S "%ROOTDIR%\curl" -B .build ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
+		-DCMAKE_INSTALL_PREFIX="%BUILD_OUTDIR%" ^
 		!CMAKE_CURL_VARIABLES! ^
 		!BUILD_CURL_CONFIGURE_EXTRA! ^
 		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS! !CMAKE_CURL_C_FLAGS!"
@@ -713,27 +788,29 @@ if not exist curl\BUILD\CMakeCache.txt (
 )
 
 REM | Build
-cmake --build curl\BUILD --config %CONFIG%
+cmake --build .build --config %CONFIG%
+if %errorlevel% neq 0 pause && exit /B %errorlevel%
+
+cmake --build .build --config %CONFIG% --target install
 if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
 REM | Collect
-echo.
-pushd curl\BUILD\lib
-	for %%f in (*.dll *.lib *.a *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-popd
-pushd curl\BUILD\lib\CMakeFiles\libcurl.dir
-	for %%f in (libcurl*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-popd
-pushd curl\BUILD\src
-	for %%f in (*.exe *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-popd
-:CURL_END
+REM echo.
+REM pushd curl\BUILD\lib
+	REM for %%f in (*.dll *.lib *.a *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+REM popd
+REM pushd curl\BUILD\lib\CMakeFiles\libcurl.dir
+	REM for %%f in (libcurl*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+REM popd
+REM pushd curl\BUILD\src
+	REM for %%f in (*.exe *.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
+REM popd
 
 :: curl-ca-bundle.crt
-if /i "%BUILD_SSL_BACKEND%" neq "WINSSL" mklink /H "%BUILD_OUTDIR%\curl-ca-bundle.crt" "%ROOTDIR%\curl-ca-bundle.crt" || pause && exit /B %errorlevel%
+if /i "%BUILD_SSL_BACKEND%" neq "WINSSL" if not exist "%BUILD_OUTDIR%\bin\curl-ca-bundle.crt" mklink /H "%BUILD_OUTDIR%\bin\curl-ca-bundle.crt" "%ROOTDIR%\curl-ca-bundle.crt" || pause && exit /B %errorlevel%
 
 :: _test_curl.bat
-set testfile=%BUILD_OUTDIR%\_test_curl.bat
+set testfile=%BUILD_OUTDIR%\bin\_test_curl.bat
 echo "%%~dp0\curl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }" -H "Content-Type: application/json" https://httpbin.org/post> "%testfile%"
 echo "%%~dp0\curl.exe" -V>> "%testfile%"
 echo pause>> "%testfile%"
