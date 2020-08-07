@@ -455,11 +455,9 @@ echo todo> "%FLAG_RUNNING%"
 
 title %DIRNAME%-zlib
 
-xcopy "%ROOTDIR%\zlib" .build /QEIYD
-
 REM | Configure
 if not exist .build\BUILD\CMakeCache.txt (
-	cmake -G "%BUILD_CMAKE_GENERATOR%" -S .build -B .build\BUILD ^
+	cmake -G "%BUILD_CMAKE_GENERATOR%" -S "%ROOTDIR%\zlib" -B .build ^
 		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
 		-DCMAKE_INSTALL_PREFIX="%BUILD_OUTDIR%" ^
@@ -469,15 +467,19 @@ if not exist .build\BUILD\CMakeCache.txt (
 
 if /i "%BUILDER%,%CRT%" equ "MSVC,static" (
 	REM | By default zlib links to shared CRT library
-	REM | Zlib doesn't provide a variable to control CRT linkage, so we'll replace compiler flags in .vcxproj files...
+	REM | zlib doesn't expose any variable to control the CRT linkage, therefore we'll do some replacing in files...
 	echo Configure static CRT...
-	powershell -Command "(gc .build\BUILD\CMakeCache.txt) -replace '/MDd', '/MTd' | Out-File -encoding ASCII .build\BUILD\CMakeCache.txt"
-	powershell -Command "(gc .build\BUILD\CMakeCache.txt) -replace '/MD',  '/MT'  | Out-File -encoding ASCII .build\BUILD\CMakeCache.txt"
+	powershell -Command "(gc .build\CMakeCache.txt) -replace '/MDd', '/MTd' | Out-File -encoding ASCII .build\CMakeCache.txt"
+	powershell -Command "(gc .build\CMakeCache.txt) -replace '/MD',  '/MT'  | Out-File -encoding ASCII .build\CMakeCache.txt"
 )
 
 REM | Build
-cmake --build .build\BUILD --config %CONFIG% --target zlibstatic zlib install
+cmake --build .build --config %CONFIG% --target zlibstatic zlib install
 if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
+
+REM | Collect extra
+if exist .build\zlib.pdb if not exist bin\zlib.pdb mklink /H bin\zlib.pdb .build\zlib.pdb
+if exist .build\CMakeFiles\zlibstatic.dir\zlibstatic.pdb if not exist lib\zlibstatic.pdb mklink /H lib\zlibstatic.pdb .build\CMakeFiles\zlibstatic.dir\zlibstatic.pdb
 
 del /Q "%FLAG_RUNNING%"
 exit /B
