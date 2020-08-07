@@ -458,9 +458,6 @@ xcopy "%ROOTDIR%\zlib" .build /QEIYD
 
 REM | Configure
 if not exist .build\BUILD\CMakeCache.txt (
-	REM | Comment `set(CMAKE_DEBUG_POSTFIX "d")`
-	if /i "%BUILDER%,%CONFIG%" equ "MSVC,Debug" powershell -Command "(gc .build\CMakeLists.txt) -replace '^\s*set\(CMAKE_DEBUG_POSTFIX', '    #set(CMAKE_DEBUG_POSTFIX'  | Out-File -encoding ASCII .build\CMakeLists.txt"
-
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S .build -B .build\BUILD ^
 		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^

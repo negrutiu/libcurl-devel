@@ -89,15 +89,15 @@ if %ERRORLEVEL% neq 0 pause && exit /B %ERRORLEVEL%
 
 
 :: Patch
-REM echo.
-REM set /p answer=Apply patch? ([yes]/no) 
-REM if /I "%answer%" equ "" goto :PATCH
-REM if /I "%answer%" equ "yes" goto :PATCH
-REM if /I "%answer%" equ "y" goto :PATCH
-REM exit /B 1
-REM :PATCH
-REM cd /d "%~dp0"
-REM git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
+echo.
+set /p answer=Apply patch? ([yes]/no) 
+if /I "%answer%" equ "" goto :PATCH
+if /I "%answer%" equ "yes" goto :PATCH
+if /I "%answer%" equ "y" goto :PATCH
+exit /B 1
+:PATCH
+cd /d "%~dp0"
+git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%-cmake.diff
 
 echo.
 pause
