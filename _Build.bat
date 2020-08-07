@@ -492,7 +492,7 @@ echo todo> "%FLAG_RUNNING%"
 
 title %DIRNAME%-nghttp2
 
-xcopy "%ROOTDIR%\nghttp2" .build /QEIYD
+REM xcopy "%ROOTDIR%\nghttp2" .build /QEIYD
 
 REM | Configure
 if not exist .build\BUILD\CMakeCache.txt (
@@ -509,7 +509,7 @@ if not exist .build\BUILD\CMakeCache.txt (
 
 	if /i "%CONFIG%" equ "Debug" set CMAKE_NGHTTP2_VARIABLES=!CMAKE_NGHTTP2_VARIABLES! -DENABLE_DEBUG=ON
 
-	cmake -G "%BUILD_CMAKE_GENERATOR%" -S .build -B .build\BUILD ^
+	cmake -G "%BUILD_CMAKE_GENERATOR%" -S "%ROOTDIR%\nghttp2" -B .build ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
 		!CMAKE_NGHTTP2_VARIABLES! ^
 		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS!"
@@ -518,8 +518,12 @@ if not exist .build\BUILD\CMakeCache.txt (
 )
 
 REM | Build
-cmake --build .build\BUILD --config %CONFIG% --target nghttp2_static nghttp2 install
+cmake --build .build --config %CONFIG% --target nghttp2_static nghttp2 install
 if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
+
+REM | Collect extra
+if exist .build\lib\nghttp2.pdb if not exist bin\nghttp2.pdb mklink /H bin\nghttp2.pdb .build\lib\nghttp2.pdb
+if exist .build\lib\CMakeFiles\nghttp2_static.dir\nghttp2_static.pdb if not exist lib\nghttp2_static.pdb mklink /H lib\nghttp2_static.pdb .build\lib\CMakeFiles\nghttp2_static.dir\nghttp2_static.pdb
 
 del /Q "%FLAG_RUNNING%"
 exit /B
