@@ -210,7 +210,7 @@ REM pause
 exit /B
 
 REM =============================================
-:PARALLEL_OPENSSL2
+:PARALLEL_CURL_OPENSSL
 REM =============================================
 
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
@@ -304,7 +304,7 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
 REM =============================================
-:PARALLEL_WINSSL
+:PARALLEL_CURL_WINSSL
 REM =============================================
 
 start "" %COMSPEC% /C call "%~f0" /build ^
@@ -415,9 +415,10 @@ REM | Prevent mingw builds from linking to libgcc_*.dll
 if /i "%BUILDER%" equ "mingw" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -static-libgcc
 
 
-if "%BUILD_ZLIB%" equ "1" goto :ZLIB
-if "%BUILD_NGHTTP2%" equ "1" goto :NGHTTP2
-if "%BUILD_OPENSSL%" equ "1" goto :OPENSSL
+if "%BUILD_ZLIB%" equ "1" goto :BUILD_ZLIB
+if "%BUILD_NGHTTP2%" equ "1" goto :BUILD_NGHTTP2
+if "%BUILD_OPENSSL%" equ "1" goto :BUILD_OPENSSL
+if "%BUILD_CURL%" equ "1" goto :BUILD_CURL
 
 echo **************
 echo Don't know what to build
@@ -447,7 +448,7 @@ echo _%BUILD_ZLIB%_| findstr /I /B /E "__ _static_ _shared_" > NUL 2> NUL
 if %errorlevel% neq 0 echo ERROR: Invalid BUILD_ZLIB=%BUILD_ZLIB%. Use BUILD_ZLIB=static^|shared && pause && exit /B 57
 
 
-:ZLIB
+:BUILD_ZLIB
 set FLAG_RUNNING=%BUILD_OUTDIR%\..\build-running-%DIRNAME%.flag
 set FLAG_ERROR=%BUILD_OUTDIR%\..\build-error-%DIRNAME%.flag
 echo todo> "%FLAG_RUNNING%"
@@ -482,7 +483,7 @@ del /Q "%FLAG_RUNNING%"
 exit /B
 
 
-:NGHTTP2
+:BUILD_NGHTTP2
 set FLAG_RUNNING=%BUILD_OUTDIR%\..\build-running-%DIRNAME%.flag
 set FLAG_ERROR=%BUILD_OUTDIR%\..\build-error-%DIRNAME%.flag
 echo todo> "%FLAG_RUNNING%"
@@ -522,7 +523,7 @@ del /Q "%FLAG_RUNNING%"
 exit /B
 
 
-:OPENSSL
+:BUILD_OPENSSL
 set FLAG_RUNNING=%BUILD_OUTDIR%\..\build-running-%DIRNAME%.flag
 set FLAG_ERROR=%BUILD_OUTDIR%\..\build-error-%DIRNAME%.flag
 echo todo> "%FLAG_RUNNING%"
@@ -593,7 +594,7 @@ del /Q "%FLAG_RUNNING%"
 exit /B
 
 
-:CURL
+:BUILD_CURL
 echo.
 echo -----------------------------------
 echo  libcurl
