@@ -600,24 +600,31 @@ if /i "%BUILDER%,%CRT%" equ "MSVC,static" (
 
 REM | Make
 if /i "%BUILDER%" equ "MSVC" (
-	nmake.exe all install_sw install_ssldirs
+	nmake.exe
 	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 )
 if /i "%BUILDER%" equ "mingw" (
-	mingw32-make.exe all install_sw install_ssldirs
+	mingw32-make.exe
 	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 )
 
 popd
 
 REM | Collect
-REM echo.
-REM pushd openssl
-	REM for %%f in (lib*.dll lib*.lib lib*.a lib*.pdb ossl_*.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-REM popd
-REM pushd openssl\apps
-	REM for %%f in (openssl.exe openssl.pdb) do del "%BUILD_OUTDIR%\%%~f" 2> NUL & mklink /H "%BUILD_OUTDIR%\%%~f" "%%~f"
-REM popd
+REM | We try to emulate what 'make install' does
+REM | Unfortunately openssl 'make install' always overwrites existing files (*.h *.lib *.a *.exe) causing 'curl' to always recompile later on
+mklink /J include .build\include > NUL 2> NUL
+mkdir bin > NUL 2> NUL
+mkdir lib > NUL 2> NUL
+
+pushd .build
+	for %%f in (lib*.dll lib*.pdb) do del "%BUILD_OUTDIR%\bin\%%~f" 2> NUL && mklink /H "%BUILD_OUTDIR%\bin\%%~f" "%%~f"
+	for %%f in (lib*.lib lib*.a) do del "%BUILD_OUTDIR%\lib\%%~f" 2> NUL && mklink /H "%BUILD_OUTDIR%\lib\%%~f" "%%~f"
+popd
+pushd .build\apps
+	for %%f in (openssl.exe openssl.pdb) do del "%BUILD_OUTDIR%\bin\%%~f" 2> NUL && mklink /H "%BUILD_OUTDIR%\bin\%%~f" "%%~f"
+popd
+if exist .build\ossl_static.pdb del lib\ossl_static.pdb 2> NUL && mklink /H lib\ossl_static.pdb .build\ossl_static.pdb
 
 del /Q "%FLAG_RUNNING%"
 exit /B
