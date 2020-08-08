@@ -7,6 +7,7 @@ zlib
 /Release/
 libcurl-devel-*.7z
 libcurl-devel-*.7z.bak
+*nogit*
 
 cacert.pem
 
