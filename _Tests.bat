@@ -2,8 +2,8 @@
 SetLocal EnableDelayedExpansion
 
 pushd "%~dp0\bin"
-for /d %%d in (*-openssl-*.*) do if exist "%%d\curl.exe" call :test_curl "%%d" openssl
-for /d %%d in (*-winssl-*.*)  do if exist "%%d\curl.exe" call :test_curl "%%d" winssl
+for /d %%d in (*-curl_openssl-*.*) do if exist "%%d\bin\curl.exe" call :test_curl "%%d\bin" openssl
+for /d %%d in (*-curl_winssl-*.*)  do if exist "%%d\bin\curl.exe" call :test_curl "%%d\bin" winssl
 popd
 
 echo.
