@@ -13,29 +13,6 @@ rmdir /S /Q "%package%" > NUL 2> NUL
 mkdir "%package%"
 
 echo -------------------------------------------------------------------------------
-echo include
-echo -------------------------------------------------------------------------------
-
-xcopy "curl\include\curl\*.h"				"%package%\include\curl\" /EI
-xcopy "openssl\include\*.*"					"%package%\include\openssl\" /EI
-xcopy "nghttp2\src\includes\nghttp2\*.h"	"%package%\include\nghttp2\" /EI
-xcopy "zlib\zlib.h"							"%package%\include\zlib\" /I
-xcopy "zlib\zconf.h"						"%package%\include\zlib\" /I
-
-echo Instrument openssl.conf...
-del /Q "%package%\include\openssl\openssl\opensslconf.h.in"
-echo #if defined (_M_IX86)>				   "%package%\include\openssl\openssl\opensslconf.h"
-echo #include ^"opensslconf32.h^">>		   "%package%\include\openssl\openssl\opensslconf.h"
-echo #elif defined (_M_AMD64)>>			   "%package%\include\openssl\openssl\opensslconf.h"
-echo #include ^"opensslconf64.h^">>		   "%package%\include\openssl\openssl\opensslconf.h"
-echo #else>>							   "%package%\include\openssl\openssl\opensslconf.h"
-echo #error Architecture not supported>>   "%package%\include\openssl\openssl\opensslconf.h"
-echo #endif>>							   "%package%\include\openssl\openssl\opensslconf.h"
-
-copy "bin\mingw-openssl-Release-Win32-Legacy\openssl\include\openssl\opensslconf.h" "%package%\include\openssl\openssl\opensslconf32.h"
-copy "bin\mingw-openssl-Release-x64-Legacy\openssl\include\openssl\opensslconf.h"   "%package%\include\openssl\openssl\opensslconf64.h"
-
-echo -------------------------------------------------------------------------------
 echo src
 echo -------------------------------------------------------------------------------
 
@@ -60,11 +37,11 @@ xcopy "openssl\ssl\*.*"						"%package%\src\openssl\ssl\" /EI
 xcopy "openssl\engines\*.*"					"%package%\src\openssl\engines\" /EI
 
 echo -------------------------------------------------------------------------------
-echo readme
+echo NOTES.md
 echo -------------------------------------------------------------------------------
 
-set README=%package%\src\Readme.txt
-echo Git tags:> "%readme%"
+set f=%package%\NOTES.md
+echo # Git tags> "%f%"
 
 call :log_git_tag curl
 call :log_git_tag openssl
@@ -80,51 +57,57 @@ goto :log_git_tag_end
 		for /f usebackq %%i in (`git describe --tags`) do set TAG=%%i
 	)
 	popd
-	echo %~1: %TAG%
-	echo %~1: %TAG%>> "%readme%"
+	echo `%~1` %TAG%
+	echo `%~1` %TAG%>> "%f%"
 	exit /B 0
 :log_git_tag_end
 
 
-echo.>> "%readme%"
-echo NOTE:>> "%readme%"
-echo This directory contains part of the source code of the main sub-projects.>> "%readme%"
-echo Although incomplete, these files should allow you to step into CURL sources during debugging.>> "%readme%"
-echo For the complete source code please clone their respective Git repositories.>> "%readme%"
+echo.>> "%f%"
+echo # Notes>> "%f%"
+echo Directory `src` contains parts of the source code.>> "%f%"
+echo Although incomplete, these files should allow you to step into `curl` sources during debugging.>> "%f%"
+echo For the complete source code please clone their respective Git repositories.>> "%f%"
 
+xcopy "LICENSE*" "%package%\" /Y
+xcopy "README*" "%package%\" /Y
+
+REM -------------------------------------------------------------------------------
+REM bin
+REM -------------------------------------------------------------------------------
+for /D %%d in ("bin\MSVC-curl*") do call :dir "%%~fd"
+for /D %%d in ("bin\mingw-curl*-Release*") do call :dir "%%~fd"
+
+goto :dir_end
+:dir
 echo -------------------------------------------------------------------------------
-echo bin
+echo %~n1
 echo -------------------------------------------------------------------------------
 
-for /d %%d in (bin\MSVC-*) do call :copy_bin %%d
-for /d %%d in (bin\mingw-*-Release*) do call :copy_bin %%d
+robocopy "%~1\include" "%package%\%~n1\include" *.h /XF __DECC_*.h /MIR /NS /NC /NDL /NP /NJH /NJS
+xcopy "%~1\bin" "%package%\%~n1\bin" /YI
+xcopy "%~1\lib" "%package%\%~n1\lib" /YI
 
-goto :copy_bin_end
-:copy_bin
-echo %~1
-echo \curl.pdb> skip.txt
-echo \openssl.pdb>> skip.txt
-xcopy "%~1\*.exe"							"%package%\%~1\" /I > NUL 2> NUL
-xcopy "%~1\*.dll"							"%package%\%~1\" /I > NUL 2> NUL
-xcopy "%~1\*.pdb"							"%package%\%~1\" /I /EXCLUDE:skip.txt > NUL 2> NUL
-xcopy "%~1\*.lib"							"%package%\%~1\" /I > NUL 2> NUL
-xcopy "%~1\*.a"								"%package%\%~1\" /I > NUL 2> NUL
-xcopy "%~1\curl-ca-bundle.crt"				"%package%\%~1\" /I > NUL 2> NUL
-xcopy "%~1\_test_curl.bat"					"%package%\%~1\" /I > NUL 2> NUL
-del skip.txt
+if not exist "%~1\include\openssl" exit /B 0
+copy /Y "bin\mingw-curl_openssl-Release-Win32\include\openssl\opensslconf.h" "%package%\%~n1\include\openssl\opensslconf32.h"
+copy /Y "bin\mingw-curl_openssl-Release-x64\include\openssl\opensslconf.h" "%package%\%~n1\include\openssl\opensslconf64.h"
+
+echo #if defined (_M_IX86)>				   "%package%\%~n1\include\openssl\opensslconf.h"
+echo #include ^"opensslconf32.h^">>		   "%package%\%~n1\include\openssl\opensslconf.h"
+echo #elif defined (_M_AMD64)>>			   "%package%\%~n1\include\openssl\opensslconf.h"
+echo #include ^"opensslconf64.h^">>		   "%package%\%~n1\include\openssl\opensslconf.h"
+echo #else>>							   "%package%\%~n1\include\openssl\opensslconf.h"
+echo #error Architecture not supported>>   "%package%\%~n1\include\openssl\opensslconf.h"
+echo #endif>>							   "%package%\%~n1\include\openssl\opensslconf.h"
+
 exit /B
-:copy_bin_end
-
-echo -------------------------------------------------------------------------------
-echo package
-echo -------------------------------------------------------------------------------
-
-xcopy "LICENSE"								"%package%\" /Y
-xcopy "README.md"							"%package%\" /Y
-
-REM for /f tokens^=2^ delims^=^" %%v in ('find "LIBCURL_VERSION " "curl\include\curl\curlver.h"') do set CURL_VERSION=%%v
+:dir_end
 
 echo.
+echo -------------------------------------------------------------------------------
+echo Archive
+echo -------------------------------------------------------------------------------
+REM for /f tokens^=2^ delims^=^" %%v in ('find "LIBCURL_VERSION " "curl\include\curl\curlver.h"') do set CURL_VERSION=%%v
 set /P prompt7z=Build .7z archive? [Y/n] 
 if /I "%prompt7z%" equ "n" goto :7z_end
 	move /Y libcurl-devel-negrutiu.7z libcurl-devel-negrutiu.7z.bak 2> NUL
@@ -135,3 +118,4 @@ if /I "%prompt7z%" equ "n" goto :7z_end
 
 echo -------------------------------------------------------------------------------
 pause
+exit /B
