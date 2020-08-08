@@ -846,8 +846,4 @@ echo "%%~dp0\libcurl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }"
 echo "%%~dp0\libcurl.exe" -V>> "%testfile%"
 echo pause>> "%testfile%"
 
-echo **********************************************************
-echo  The End
-echo **********************************************************
-
-REM pause
+exit /B
