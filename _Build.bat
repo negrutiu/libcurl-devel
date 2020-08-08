@@ -259,8 +259,8 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=x64 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-x64 ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH% ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=static ^
@@ -273,8 +273,8 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=Win32 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-Win32-HTTP_ONLY ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="" ^
 	BUILD_ZLIB_LNK="" ^
@@ -287,8 +287,8 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=x64 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-x64-HTTP_ONLY ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="" ^
 	BUILD_ZLIB_LNK="" ^
@@ -301,8 +301,8 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=Win32 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-Win32-Shared ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-Shared ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=shared ^
@@ -315,8 +315,8 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=x64 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-x64-Shared ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-Shared ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=shared ^
