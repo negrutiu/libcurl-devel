@@ -80,7 +80,7 @@ set sspi64_h=%MINGW64%\x86_64-w64-mingw32\include\sspi.h
 findstr SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS "%sspi64_h%" > NUL
 if %errorlevel% neq 0 set sspi64_ok=FALSE
 
-if /i "%sspi32_ok%,%sspi64_ok%" neq "," echo ERROR: In order to support nghttp2 /w SChannel the file "sspi.h" from mingw32/64 requires patching && echo Run these commands:
+if /i "%sspi32_ok%,%sspi64_ok%" neq "," echo ERROR: To support nghttp2 /w SChannel the file "sspi.h" from mingw32/64 requires patching && echo Run these commands:
 if /i "%sspi32_ok%" neq "" echo   move /Y "%sspi32_h%" "%sspi32_h%.bak" && echo   copy /Y "%CD%\_Patches\sspi.h" "%sspi32_h%"
 if /i "%sspi64_ok%" neq "" echo   move /Y "%sspi64_h%" "%sspi64_h%.bak" && echo   copy /Y "%CD%\_Patches\sspi.h" "%sspi64_h%"
 if /i "%sspi32_ok%,%sspi64_ok%" neq "," pause && exit /B 2
@@ -216,7 +216,7 @@ set ARCH=Win32
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=%ARCH% ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-%ARCH%-Legacy ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-Legacy ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="" ^
 	BUILD_ZLIB_LNK="" ^
@@ -232,7 +232,7 @@ set ARCH=x64
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=%ARCH% ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-%ARCH%-Legacy ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-Legacy ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="" ^
 	BUILD_ZLIB_LNK="" ^
@@ -248,7 +248,7 @@ set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=%ARCH% ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH% ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=static ^
@@ -263,7 +263,7 @@ set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=x64 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-x64 ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-x64 ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=static ^
@@ -278,7 +278,7 @@ set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=Win32 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-Win32-HTTP_ONLY ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-Win32-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="" ^
 	BUILD_ZLIB_LNK="" ^
@@ -293,7 +293,7 @@ set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=x64 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-x64-HTTP_ONLY ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-x64-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="" ^
 	BUILD_ZLIB_LNK="" ^
@@ -308,7 +308,7 @@ set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=Win32 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-Win32-DLL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-Win32-Shared ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=shared ^
@@ -323,7 +323,7 @@ set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=x64 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-openssl-%CONFIG%-x64-DLL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-x64-Shared ^
 	BUILD_SSL_BACKEND=OPENSSL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=shared ^
@@ -741,7 +741,6 @@ REM | We need to explicitly specify the USE_TLS_SRP compiler definition as well
 set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DUSE_TLS_SRP
 
 REM | curl(openssl)
-REM set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DCURL_STATICLIB
 if /i "%BUILD_SSL_BACKEND%" equ "OPENSSL" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! ^
 		-DCMAKE_USE_OPENSSL=ON ^
@@ -773,15 +772,6 @@ if /i "%BUILD_SSL_BACKEND%" equ "WINSSL" (
 REM | curl(C_FLAGS)
 if "!CMAKE_CURL_C_FLAGS!" neq "" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_C_FLAGS="!CMAKE_CURL_C_FLAGS!"
 
-echo.
-echo ----------------------------------------------------------------------------------
-echo CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES!
-echo ----------------------------------------------------------------------------------
-echo BUILD_C_FLAGS=!BUILD_C_FLAGS!
-echo CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS!
-echo BUILD_CURL_CONFIGURE_EXTRA=!BUILD_CURL_CONFIGURE_EXTRA!
-echo ----------------------------------------------------------------------------------
-REM pause
 
 REM | Configure
 if not exist .build\CMakeCache.txt (
