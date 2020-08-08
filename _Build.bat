@@ -326,8 +326,6 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_OPENSSL_LNK=shared ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
-REM pause
-exit /B
 
 REM =============================================
 :PARALLEL_CURL_WINSSL
@@ -336,67 +334,73 @@ REM =============================================
 set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=Win32 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-Win32 ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH% ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_ZLIB=static ^
-	BUILD_NGHTTP2=static ^
-	BUILD_CURL=static ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
 set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=x64 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-x64 ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH% ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_ZLIB=static ^
-	BUILD_NGHTTP2=static ^
-	BUILD_CURL=static ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
 set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=Win32 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-Win32-DLL ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH%-Shared ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_ZLIB=shared ^
-	BUILD_NGHTTP2=shared ^
-	BUILD_CURL=shared ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=shared ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=shared ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
 set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=x64 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-x64-DLL ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH%-Shared ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_ZLIB=shared ^
-	BUILD_NGHTTP2=shared ^
-	BUILD_CURL=shared ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=shared ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=shared ^
 	BUILD_CURL_CONFIGURE_EXTRA=""
 
 set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=Win32 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-Win32-HTTP_ONLY ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH%-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_ZLIB="" ^
-	BUILD_NGHTTP2=static ^
-	BUILD_CURL=static ^
+	BUILD_ZLIB_DIR="" ^
+	BUILD_ZLIB_LNK="" ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
 set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
-	BUILD_ARCH=x64 ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl-WinSSL-%CONFIG%-x64-HTTP_ONLY ^
+	BUILD_ARCH=%ARCH% ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH%-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=WINSSL ^
-	BUILD_ZLIB="" ^
-	BUILD_NGHTTP2=static ^
-	BUILD_CURL=static ^
+	BUILD_ZLIB_DIR="" ^
+	BUILD_ZLIB_LNK="" ^
+	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
+	BUILD_NGHTTP2_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
 exit /B 0
