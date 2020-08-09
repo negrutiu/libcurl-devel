@@ -13,6 +13,25 @@ rmdir /S /Q "%package%" > NUL 2> NUL
 mkdir "%package%"
 
 echo -------------------------------------------------------------------------------
+echo include
+echo -------------------------------------------------------------------------------
+
+robocopy "bin\mingw-curl_openssl-Release-x64\include" "%package%\include" *.h /XF __DECC_*.h /MIR /NS /NC /NDL /NP /NJH /NJS
+robocopy "openssl\include\crypto" "%package%\include\openssl\crypto" *.h /XF __DECC_*.h /MIR /NS /NC /NDL /NP /NJH /NJS
+robocopy "openssl\include\internal" "%package%\include\openssl\internal" *.h /XF __DECC_*.h /MIR /NS /NC /NDL /NP /NJH /NJS
+
+move "%package%\include\openssl\opensslconf.h" "%package%\include\openssl\opensslconf64.h"
+copy /Y "bin\mingw-curl_openssl-Release-Win32\include\openssl\opensslconf.h" "%package%\include\openssl\opensslconf32.h"
+
+echo #if defined (_M_IX86)>				   "%package%\include\openssl\opensslconf.h"
+echo #include ^"opensslconf32.h^">>		   "%package%\include\openssl\opensslconf.h"
+echo #elif defined (_M_AMD64)>>			   "%package%\include\openssl\opensslconf.h"
+echo #include ^"opensslconf64.h^">>		   "%package%\include\openssl\opensslconf.h"
+echo #else>>							   "%package%\include\openssl\opensslconf.h"
+echo #error Architecture not supported>>   "%package%\include\openssl\opensslconf.h"
+echo #endif>>							   "%package%\include\openssl\opensslconf.h"
+
+echo -------------------------------------------------------------------------------
 echo src
 echo -------------------------------------------------------------------------------
 
@@ -83,23 +102,8 @@ goto :dir_end
 echo -------------------------------------------------------------------------------
 echo %~n1
 echo -------------------------------------------------------------------------------
-
-robocopy "%~1\include" "%package%\%~n1\include" *.h /XF __DECC_*.h /MIR /NS /NC /NDL /NP /NJH /NJS
 xcopy "%~1\bin" "%package%\%~n1\bin" /YI
 xcopy "%~1\lib" "%package%\%~n1\lib" /YI
-
-if not exist "%~1\include\openssl" exit /B 0
-copy /Y "bin\mingw-curl_openssl-Release-Win32\include\openssl\opensslconf.h" "%package%\%~n1\include\openssl\opensslconf32.h"
-copy /Y "bin\mingw-curl_openssl-Release-x64\include\openssl\opensslconf.h" "%package%\%~n1\include\openssl\opensslconf64.h"
-
-echo #if defined (_M_IX86)>				   "%package%\%~n1\include\openssl\opensslconf.h"
-echo #include ^"opensslconf32.h^">>		   "%package%\%~n1\include\openssl\opensslconf.h"
-echo #elif defined (_M_AMD64)>>			   "%package%\%~n1\include\openssl\opensslconf.h"
-echo #include ^"opensslconf64.h^">>		   "%package%\%~n1\include\openssl\opensslconf.h"
-echo #else>>							   "%package%\%~n1\include\openssl\opensslconf.h"
-echo #error Architecture not supported>>   "%package%\%~n1\include\openssl\opensslconf.h"
-echo #endif>>							   "%package%\%~n1\include\openssl\opensslconf.h"
-
 exit /B
 :dir_end
 
