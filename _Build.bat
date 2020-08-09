@@ -224,7 +224,7 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
 	BUILD_OPENSSL_LNK=static ^
-	BUILD_C_FLAGS="-march=pentium2 -D_WIN32_WINNT=0x0400" ^
+	BUILD_C_FLAGS="-march=pentium2 -U_WIN32_WINNT -D_WIN32_WINNT=0x0400" ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF"
 
 set ARCH=x64
@@ -239,7 +239,7 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
 	BUILD_OPENSSL_LNK=static ^
-	BUILD_C_FLAGS="-march=x86-64 -D_WIN32_WINNT=0x0502" ^
+	BUILD_C_FLAGS="-march=x86-64 -U_WIN32_WINNT -D_WIN32_WINNT=0x0502" ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF"
 
 set ARCH=Win32
