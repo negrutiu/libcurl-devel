@@ -108,6 +108,11 @@ if /i "%~1" equ "/build" goto :BUILD
 title [%BUILDER%] %CONFIG%
 del "bin\build*.flag" 2> NUL > NUL
 
+REM | Start time
+for /f "delims=*" %%t in ('powershell -Command "(Get-Date).ToString()"') do set BUILD_T0=%%t
+echo Time: %BUILD_T0%
+
+
 REM | Notice the `call` in `start "" cmd /C call <script> <params>`
 REM | Without it parameters such as -PARAM="val1 val2 val3" are incorrectly escaped...
 
@@ -195,17 +200,22 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 
 
 REM | Wait for build-running-*.flag to appear
-echo Starting . . .
-:WAIT_2START
-	if not exist "bin\build-running-%BUILDER%*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_2START
+echo Starting libraries . . .
+:WAIT_4LIBS_2START
+	if not exist "bin\build-running-%BUILDER%*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4LIBS_2START
 
 REM | Wait for build-running-*.flag to go away
 echo Building libraries . . .
-:WAIT_4LIBS
-	if exist "bin\build-running-%BUILDER%*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4LIBS
+:WAIT_4LIBS_2FINISH
+	if exist "bin\build-running-%BUILDER%*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4LIBS_2FINISH
 
 REM | Abort on build errors
 if exist "bin\build-error-%BUILDER%*%CONFIG%*.flag" exit /B 1
+
+REM | Intermediate time
+for /f "delims=*" %%t in ('powershell -Command "(Get-Date).ToString()"') do set BUILD_T1=%%t
+for /f "usebackq delims=*" %%t in (`powershell -Command "(New-TimeSpan -Start '%BUILD_T0%' -End '%BUILD_T1%').ToString()"`) do set BUILD_DT=%%t
+echo Time: %BUILD_T1% ( +%BUILD_DT% )
 
 
 REM =============================================
@@ -403,6 +413,24 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
+
+REM | Wait for build-running-*.flag to appear
+echo Starting curl . . .
+:WAIT_4CURL_2START
+	if not exist "bin\build-running-%BUILDER%-curl*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4CURL_2START
+
+REM | Wait for build-running-*.flag to go away
+echo Building curl . . .
+:WAIT_4CURL_2FINISH
+	if exist "bin\build-running-%BUILDER%-curl*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4CURL_2FINISH
+
+REM | End time
+for /f "delims=*" %%t in ('powershell -Command "(Get-Date).ToString()"') do set BUILD_T1=%%t
+for /f "usebackq delims=*" %%t in (`powershell -Command "(New-TimeSpan -Start '%BUILD_T0%' -End '%BUILD_T1%').ToString()"`) do set BUILD_DT=%%t
+echo Time: %BUILD_T1% ( +%BUILD_DT% )
+
+echo.
+pause
 exit /B 0
 
 
@@ -627,10 +655,10 @@ exit /B
 
 
 :BUILD_CURL
-echo.
-echo -----------------------------------
-echo  libcurl
-echo -----------------------------------
+set FLAG_RUNNING=%BUILD_OUTDIR%\..\build-running-%DIRNAME%.flag
+set FLAG_ERROR=%BUILD_OUTDIR%\..\build-error-%DIRNAME%.flag
+echo todo> "%FLAG_RUNNING%"
+
 title %DIRNAME%-libcurl
 
 REM | Parameter validation
@@ -763,6 +791,7 @@ if "!CMAKE_CURL_C_FLAGS!" neq "" set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES!
 
 
 REM | Configure (shared)
+title %DIRNAME%-libcurl (shared)
 if not exist .shared\CMakeCache.txt (
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S "%ROOTDIR%\curl" -B .shared ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
@@ -794,6 +823,7 @@ if "%BUILDER%" equ "MSVC" mklink /H lib\libcurl.dll.lib .shared\lib\libcurl_imp.
 if "%BUILDER%" neq "MSVC" mklink /H lib\libcurl.dll.a   .shared\lib\libcurl_imp.lib 2> NUL
 
 REM | Configure (static)
+title %DIRNAME%-libcurl (static)
 if not exist .static\CMakeCache.txt (
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S "%ROOTDIR%\curl" -B .static ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
@@ -846,4 +876,5 @@ echo "%%~dp0\libcurl.exe" -L -v -X POST -d "{ """number_of_the_beast""" : 666 }"
 echo "%%~dp0\libcurl.exe" -V>> "%testfile%"
 echo pause>> "%testfile%"
 
+del /Q "%FLAG_RUNNING%"
 exit /B
