@@ -20,44 +20,44 @@ https://github.com/negrutiu/libcurl-devel
 ### Binary matrix:
 Configuration|Comments
 :---|:---
-mingw-openssl-Release-Win32|Built with `mingw`. Static libraries. `OpenSSL` backend
-mingw-openssl-Release-Win32-DLL|Built with `mingw`. Shared libraries. `OpenSSL` backend
-mingw-openssl-Release-Win32-HTTP_ONLY|HTTP protocol only
-mingw-openssl-Release-Win32-Legacy|HTTP protocol only. Compatible with old Windows versions (NT4+)
-mingw-openssl-Release-x64|
-mingw-openssl-Release-x64-DLL|
-mingw-openssl-Release-x64-HTTP_ONLY|
-mingw-openssl-Release-x64-Legacy|HTTP protocol only. Compatible with old Windows versions (XP64+)
-mingw-WinSSL-Release-Win32|Built with `mingw`. Static libraries. `WinSSL` (aka `schannel`) backend
-mingw-WinSSL-Release-Win32-DLL|
-mingw-WinSSL-Release-Win32-HTTP_ONLY|
-mingw-WinSSL-Release-x64|
-mingw-WinSSL-Release-x64-DLL|
-mingw-WinSSL-Release-x64-HTTP_ONLY|
-MSVC-openssl-Debug-Win32|Built with `Microsoft Visual Studio`
-MSVC-openssl-Debug-Win32-DLL|
-MSVC-openssl-Debug-Win32-HTTP_ONLY|
-MSVC-openssl-Debug-x64|
-MSVC-openssl-Debug-x64-DLL|
-MSVC-openssl-Debug-x64-HTTP_ONLY|
-MSVC-openssl-Release-Win32|
-MSVC-openssl-Release-Win32-DLL|
-MSVC-openssl-Release-Win32-HTTP_ONLY|
-MSVC-openssl-Release-x64|
-MSVC-openssl-Release-x64-DLL|
-MSVC-openssl-Release-x64-HTTP_ONLY|
-MSVC-WinSSL-Debug-Win32|
-MSVC-WinSSL-Debug-Win32-DLL|
-MSVC-WinSSL-Debug-Win32-HTTP_ONLY|
-MSVC-WinSSL-Debug-x64|
-MSVC-WinSSL-Debug-x64-DLL|
-MSVC-WinSSL-Debug-x64-HTTP_ONLY|
-MSVC-WinSSL-Release-Win32|
-MSVC-WinSSL-Release-Win32-DLL|
-MSVC-WinSSL-Release-Win32-HTTP_ONLY|
-MSVC-WinSSL-Release-x64|
-MSVC-WinSSL-Release-x64-DLL|
-MSVC-WinSSL-Release-x64-HTTP_ONLY|
+mingw-curl_openssl-Release-Win32|Built with `mingw`. Static libraries. `OpenSSL` backend
+mingw-curl_openssl-Release-Win32-HTTP_ONLY|HTTP protocol only
+mingw-curl_openssl-Release-Win32-Legacy|HTTP protocol only. Backward compatible with legacy Windows versions (NT4+)
+mingw-curl_openssl-Release-Win32-Shared|Built with `mingw`. Shared libraries. `OpenSSL` backend
+mingw-curl_openssl-Release-x64|
+mingw-curl_openssl-Release-x64-HTTP_ONLY|
+mingw-curl_openssl-Release-x64-Legacy|HTTP protocol only. Backward compatible with legacy Windows versions (XP64+)
+mingw-curl_openssl-Release-x64-Shared|
+mingw-curl_winssl-Release-Win32|Built with `mingw`. Static libraries. `WinSSL` (aka `schannel`) backend
+mingw-curl_winssl-Release-Win32-HTTP_ONLY|
+mingw-curl_winssl-Release-Win32-Shared|
+mingw-curl_winssl-Release-x64|
+mingw-curl_winssl-Release-x64-HTTP_ONLY|
+mingw-curl_winssl-Release-x64-Shared|
+MSVC-curl_openssl-Debug-Win32|Built with `Microsoft Visual Studio`
+MSVC-curl_openssl-Debug-Win32-HTTP_ONLY|
+MSVC-curl_openssl-Debug-Win32-Shared|
+MSVC-curl_openssl-Debug-x64|
+MSVC-curl_openssl-Debug-x64-HTTP_ONLY|
+MSVC-curl_openssl-Debug-x64-Shared|
+MSVC-curl_openssl-Release-Win32|
+MSVC-curl_openssl-Release-Win32-HTTP_ONLY|
+MSVC-curl_openssl-Release-Win32-Shared|
+MSVC-curl_openssl-Release-x64|
+MSVC-curl_openssl-Release-x64-HTTP_ONLY|
+MSVC-curl_openssl-Release-x64-Shared|
+MSVC-curl_winssl-Debug-Win32|
+MSVC-curl_winssl-Debug-Win32-HTTP_ONLY|
+MSVC-curl_winssl-Debug-Win32-Shared|
+MSVC-curl_winssl-Debug-x64|
+MSVC-curl_winssl-Debug-x64-HTTP_ONLY|
+MSVC-curl_winssl-Debug-x64-Shared|
+MSVC-curl_winssl-Release-Win32|
+MSVC-curl_winssl-Release-Win32-HTTP_ONLY|
+MSVC-curl_winssl-Release-Win32-Shared|
+MSVC-curl_winssl-Release-x64|
+MSVC-curl_winssl-Release-x64-HTTP_ONLY|
+MSVC-curl_winssl-Release-x64-Shared|
 
 ### [OpenSSL](https://www.openssl.org/) vs. [schannel](https://docs.microsoft.com/en-us/windows/win32/secauthn/secure-channel) (aka WinSSL):
 Parameter|Comments
