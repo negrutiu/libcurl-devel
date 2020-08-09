@@ -582,7 +582,7 @@ pushd "%BUILD_OUTDIR%\.build"
 
 REM | Configure
 if not exist makefile (
-	perl Configure !BUILD_OPENSSL_PARAMS! CFLAGS="!BUILD_C_FLAGS!" !BUILD_OPENSSL_CONFIGURE_EXTRA! --prefix="%BUILD_OUTDIR%" --openssldir="%BUILD_OUTDIR%\config"
+	perl Configure !BUILD_OPENSSL_PARAMS! CFLAGS="!BUILD_C_FLAGS!" !BUILD_OPENSSL_CONFIGURE_EXTRA!
 	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 )
 
