@@ -525,8 +525,8 @@ cmake --build .build --config %CONFIG% --target zlibstatic zlib install
 if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 
 REM | Collect extra
-if exist .build\zlib.pdb if not exist bin\zlib.pdb mklink /H bin\zlib.pdb .build\zlib.pdb
-if exist .build\CMakeFiles\zlibstatic.dir\zlibstatic.pdb if not exist lib\zlibstatic.pdb mklink /H lib\zlibstatic.pdb .build\CMakeFiles\zlibstatic.dir\zlibstatic.pdb
+call :make_link /H bin\zlib.pdb .build\zlib.pdb
+call :make_link /H lib\zlibstatic.pdb .build\CMakeFiles\zlibstatic.dir\zlibstatic.pdb
 
 del /Q "%FLAG_RUNNING%"
 exit /B
@@ -569,8 +569,8 @@ cmake --build .build --config %CONFIG% --target nghttp2_static nghttp2 install
 if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 
 REM | Collect extra
-if exist .build\lib\nghttp2.pdb if not exist bin\nghttp2.pdb mklink /H bin\nghttp2.pdb .build\lib\nghttp2.pdb
-if exist .build\lib\CMakeFiles\nghttp2_static.dir\nghttp2_static.pdb if not exist lib\nghttp2_static.pdb mklink /H lib\nghttp2_static.pdb .build\lib\CMakeFiles\nghttp2_static.dir\nghttp2_static.pdb
+call :make_link /H bin\nghttp2.pdb .build\lib\nghttp2.pdb
+call :make_link /H lib\nghttp2_static.pdb .build\lib\CMakeFiles\nghttp2_static.dir\nghttp2_static.pdb
 
 del /Q "%FLAG_RUNNING%"
 exit /B
@@ -637,18 +637,18 @@ popd
 REM | Collect
 REM | We try to emulate what 'make install' does
 REM | Unfortunately openssl 'make install' always overwrites existing files (*.h *.lib *.a *.exe) causing 'curl' to always recompile later on
-mklink /J include .build\include > NUL 2> NUL
+call :make_link /J include .build\include
 mkdir bin > NUL 2> NUL
 mkdir lib > NUL 2> NUL
 
 pushd .build
-	for %%f in (lib*.dll lib*.pdb) do del "%BUILD_OUTDIR%\bin\%%~f" 2> NUL && mklink /H "%BUILD_OUTDIR%\bin\%%~f" "%%~f"
-	for %%f in (lib*.lib lib*.a) do del "%BUILD_OUTDIR%\lib\%%~f" 2> NUL && mklink /H "%BUILD_OUTDIR%\lib\%%~f" "%%~f"
+	for %%f in (lib*.dll lib*.pdb) do call :make_link /H "%BUILD_OUTDIR%\bin\%%~f" "%%~f"
+	for %%f in (lib*.lib lib*.a) do call :make_link /H "%BUILD_OUTDIR%\lib\%%~f" "%%~f"
 popd
 pushd .build\apps
-	for %%f in (openssl.exe openssl.pdb.skip) do del "%BUILD_OUTDIR%\bin\%%~f" 2> NUL && mklink /H "%BUILD_OUTDIR%\bin\%%~f" "%%~f"
+	for %%f in (openssl.exe openssl.pdb.skip) do call :make_link /H "%BUILD_OUTDIR%\bin\%%~f" "%%~f"
 popd
-if exist .build\ossl_static.pdb del lib\ossl_static.pdb 2> NUL && mklink /H lib\ossl_static.pdb .build\ossl_static.pdb
+if exist .build\ossl_static.pdb call :make_link /H lib\ossl_static.pdb .build\ossl_static.pdb
 
 del /Q "%FLAG_RUNNING%"
 exit /B
@@ -813,14 +813,14 @@ REM if %errorlevel% neq 0 pause && exit /B %errorlevel%
 mkdir bin > NUL 2> NUL
 mkdir include > NUL 2> NUL
 mkdir lib > NUL 2> NUL
-mklink /J include\curl "%ROOTDIR%\curl\include\curl" > NUL 2> NUL
+call :make_link /J include\curl "%ROOTDIR%\curl\include\curl"
 
-mklink /H bin\libcurl.exe .shared\src\curl.exe 2> NUL
-REM mklink /H bin\libcurl.exe.pdb .shared\src\curl.pdb 2> NUL
-mklink /H bin\libcurl.dll .shared\lib\libcurl.dll 2> NUL
-mklink /H bin\libcurl.pdb .shared\lib\libcurl.pdb 2> NUL
-if "%BUILDER%" equ "MSVC" mklink /H lib\libcurl.dll.lib .shared\lib\libcurl_imp.lib 2> NUL
-if "%BUILDER%" neq "MSVC" mklink /H lib\libcurl.dll.a   .shared\lib\libcurl_imp.lib 2> NUL
+call :make_link /H bin\libcurl.exe .shared\src\curl.exe
+REM call :make_link /H bin\libcurl.exe.pdb .shared\src\curl.pdb
+call :make_link /H bin\libcurl.dll .shared\lib\libcurl.dll
+call :make_link /H bin\libcurl.pdb .shared\lib\libcurl.pdb
+if "%BUILDER%" equ "MSVC" call :make_link /H lib\libcurl.dll.lib .shared\lib\libcurl_imp.lib
+if "%BUILDER%" neq "MSVC" call :make_link /H lib\libcurl.dll.a   .shared\lib\libcurl_imp.lib
 
 REM | Configure (static)
 title %DIRNAME%-libcurl (static)
@@ -842,27 +842,27 @@ REM | Collect (static)
 REM cmake --build .static --config %CONFIG% --target install
 REM if %errorlevel% neq 0 pause && exit /B %errorlevel%
 
-mklink /H bin\curl.exe .static\src\curl.exe 2> NUL
-REM mklink /H bin\curl.pdb .static\src\curl.pdb 2> NUL
-if /i "%BUILDER%" equ "MSVC" mklink /H lib\libcurl.lib .static\lib\libcurl.lib 2> NUL
-if /i "%BUILDER%" equ "MSVC" mklink /H lib\libcurl.pdb .static\lib\CMakeFiles\libcurl.dir\libcurl.pdb 2> NUL
-if /i "%BUILDER%" neq "MSVC" mklink /H lib\libcurl.a   .static\lib\libcurl.a 2> NUL
+call :make_link /H bin\curl.exe .static\src\curl.exe
+REM call :make_link /H bin\curl.pdb .static\src\curl.pdb
+if /i "%BUILDER%" equ "MSVC" call :make_link /H lib\libcurl.lib .static\lib\libcurl.lib
+if /i "%BUILDER%" equ "MSVC" call :make_link /H lib\libcurl.pdb .static\lib\CMakeFiles\libcurl.dir\libcurl.pdb
+if /i "%BUILDER%" neq "MSVC" call :make_link /H lib\libcurl.a   .static\lib\libcurl.a
 
 REM | Collect libraries
-if "%BUILD_ZLIB_DIR%" neq "" for %%f in ("%BUILD_ZLIB_DIR%\bin\*.*")    do mklink /H "bin\%%~nxf" "%%~ff" 2> NUL
-if "%BUILD_ZLIB_DIR%" neq "" for %%f in ("%BUILD_ZLIB_DIR%\lib\*.*")    do mklink /H "lib\%%~nxf" "%%~ff" 2> NUL
-if "%BUILD_ZLIB_DIR%" neq "" mklink /J "include\zlib" "%BUILD_ZLIB_DIR%\include" 2> NUL
+if "%BUILD_ZLIB_DIR%" neq "" for %%f in ("%BUILD_ZLIB_DIR%\bin\*.*")    do call :make_link /H "bin\%%~nxf" "%%~ff"
+if "%BUILD_ZLIB_DIR%" neq "" for %%f in ("%BUILD_ZLIB_DIR%\lib\*.*")    do call :make_link /H "lib\%%~nxf" "%%~ff"
+if "%BUILD_ZLIB_DIR%" neq "" call :make_link /J "include\zlib" "%BUILD_ZLIB_DIR%\include"
 
-if "%BUILD_NGHTTP2_DIR%" neq "" for %%f in ("%BUILD_NGHTTP2_DIR%\bin\*.*") do mklink /H "bin\%%~nxf" "%%~ff" 2> NUL
-if "%BUILD_NGHTTP2_DIR%" neq "" for %%f in ("%BUILD_NGHTTP2_DIR%\lib\*.*") do mklink /H "lib\%%~nxf" "%%~ff" 2> NUL
-if "%BUILD_NGHTTP2_DIR%" neq "" mklink /J "include\nghttp2" "%BUILD_NGHTTP2_DIR%\include\nghttp2" 2> NUL
+if "%BUILD_NGHTTP2_DIR%" neq "" for %%f in ("%BUILD_NGHTTP2_DIR%\bin\*.*") do call :make_link /H "bin\%%~nxf" "%%~ff"
+if "%BUILD_NGHTTP2_DIR%" neq "" for %%f in ("%BUILD_NGHTTP2_DIR%\lib\*.*") do call :make_link /H "lib\%%~nxf" "%%~ff"
+if "%BUILD_NGHTTP2_DIR%" neq "" call :make_link /J "include\nghttp2" "%BUILD_NGHTTP2_DIR%\include\nghttp2"
 
-if "%BUILD_OPENSSL_DIR%" neq "" for %%f in ("%BUILD_OPENSSL_DIR%\bin\*.*") do mklink /H "bin\%%~nxf" "%%~ff" 2> NUL
-if "%BUILD_OPENSSL_DIR%" neq "" for %%f in ("%BUILD_OPENSSL_DIR%\lib\*.*") do mklink /H "lib\%%~nxf" "%%~ff" 2> NUL
-if "%BUILD_OPENSSL_DIR%" neq "" mklink /J "include\openssl" "%BUILD_OPENSSL_DIR%\include\openssl" 2> NUL
+if "%BUILD_OPENSSL_DIR%" neq "" for %%f in ("%BUILD_OPENSSL_DIR%\bin\*.*") do call :make_link /H "bin\%%~nxf" "%%~ff"
+if "%BUILD_OPENSSL_DIR%" neq "" for %%f in ("%BUILD_OPENSSL_DIR%\lib\*.*") do call :make_link /H "lib\%%~nxf" "%%~ff"
+if "%BUILD_OPENSSL_DIR%" neq "" call :make_link /J "include\openssl" "%BUILD_OPENSSL_DIR%\include\openssl
 
 :: curl-ca-bundle.crt
-if /i "%BUILD_SSL_BACKEND%" neq "WINSSL" if not exist "%BUILD_OUTDIR%\bin\curl-ca-bundle.crt" mklink /H "%BUILD_OUTDIR%\bin\curl-ca-bundle.crt" "%ROOTDIR%\curl-ca-bundle.crt" || pause && exit /B %errorlevel%
+if /i "%BUILD_SSL_BACKEND%" neq "WINSSL" call :make_link /H "%BUILD_OUTDIR%\bin\curl-ca-bundle.crt" "%ROOTDIR%\curl-ca-bundle.crt" || pause && exit /B %errorlevel%
 
 :: _test_curl.bat
 set testfile=%BUILD_OUTDIR%\bin\_test_curl.bat
@@ -878,3 +878,13 @@ echo pause>> "%testfile%"
 
 del /Q "%FLAG_RUNNING%"
 exit /B
+
+
+REM | make_link /J|/H <Link> <Target>
+:make_link
+REM | NOTE: We need to remove & recreate existing hardlinks because *if* the previous target got deleted & recreated the existing link retains the old content
+if /i "%~1" equ "/H" if exist "%~2" echo del /Q "%~2" && del /Q "%~2" || pause
+if /i "%~1" equ "/J" if exist "%~2" echo rd /Q "%~2"  && rd /Q "%~2"  || pause
+if not exist "%~3" exit /B 2
+mklink %1 "%~2" "%~3" || pause
+exit /B %errorlevel%
