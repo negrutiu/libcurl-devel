@@ -37,22 +37,3 @@ index b7df3e615..69f51d046 100644
    return slist;
  }
  
-@@ -702,6 +707,8 @@ bool tool_isVistaOrGreater;
- 
- CURLcode win32_init(void)
- {
-+  /* [marius]: VER_SET_CONDITION expands to kernel32!VerSetConditionMask which is available in W2K+ */
-+#if _WIN32_WINNT >= _WIN32_WINNT_WIN2K
-   OSVERSIONINFOEXA osvi;
-   unsigned __int64 mask = 0;
-   unsigned char op = VER_GREATER_EQUAL;
-@@ -718,6 +725,9 @@ CURLcode win32_init(void)
-     tool_isVistaOrGreater = false;
-   else
-     return CURLE_FAILED_INIT;
-+#else
-+  tool_isVistaOrGreater = (LOBYTE(LOWORD(GetVersion())) >= 6);
-+#endif
- 
-   QueryPerformanceFrequency(&tool_freq);
-   return CURLE_OK;
