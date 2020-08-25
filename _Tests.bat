@@ -57,6 +57,8 @@ if /i "%~2" equ "openssl" (
 	set txt=!txt! TLSv1.3:[?]
 )
 
+for /f "delims=" %%i in ('%~1 -V ^| findstr "curl"') do set txt=!txt! %%i
+
 del "%~1\test-trace.md" 2> NUL
 del "%~1\test-data.md" 2> NUL
 
