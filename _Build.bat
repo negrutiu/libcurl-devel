@@ -338,15 +338,15 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 
 
 REM =============================================
-:PARALLEL_CURL_WINSSL
+:PARALLEL_CURL_SCHANNEL
 REM =============================================
 
 set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=%ARCH% ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH% ^
-	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_schannel-%CONFIG%-%ARCH% ^
+	BUILD_SSL_BACKEND=SCHANNEL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=static ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
@@ -357,8 +357,8 @@ set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=%ARCH% ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH% ^
-	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_schannel-%CONFIG%-%ARCH% ^
+	BUILD_SSL_BACKEND=SCHANNEL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=static ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
@@ -369,8 +369,8 @@ set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=%ARCH% ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH%-Shared ^
-	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_schannel-%CONFIG%-%ARCH%-Shared ^
+	BUILD_SSL_BACKEND=SCHANNEL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=shared ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
@@ -381,8 +381,8 @@ set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=%ARCH% ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH%-Shared ^
-	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_schannel-%CONFIG%-%ARCH%-Shared ^
+	BUILD_SSL_BACKEND=SCHANNEL ^
 	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
 	BUILD_ZLIB_LNK=shared ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
@@ -393,8 +393,8 @@ set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=%ARCH% ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH%-HTTP_ONLY ^
-	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_schannel-%CONFIG%-%ARCH%-HTTP_ONLY ^
+	BUILD_SSL_BACKEND=SCHANNEL ^
 	BUILD_ZLIB_DIR="" ^
 	BUILD_ZLIB_LNK="" ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
@@ -405,8 +405,8 @@ set ARCH=x64
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
 	BUILD_ARCH=%ARCH% ^
-	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_winssl-%CONFIG%-%ARCH%-HTTP_ONLY ^
-	BUILD_SSL_BACKEND=WINSSL ^
+	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_schannel-%CONFIG%-%ARCH%-HTTP_ONLY ^
+	BUILD_SSL_BACKEND=SCHANNEL ^
 	BUILD_ZLIB_DIR="" ^
 	BUILD_ZLIB_LNK="" ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
@@ -662,8 +662,8 @@ echo todo> "%FLAG_RUNNING%"
 title %DIRNAME%-libcurl
 
 REM | Parameter validation
-echo _%BUILD_SSL_BACKEND%_| findstr /I /B /E "_openssl_ _winssl_" > NUL 2> NUL
-if %errorlevel% neq 0 echo ERROR: Invalid BUILD_SSL_BACKEND=%BUILD_SSL_BACKEND%. Use BUILD_SSL_BACKEND=OPENSSL^|WINSSL && pause && exit /B 57
+echo _%BUILD_SSL_BACKEND%_| findstr /I /B /E "_openssl_ _schannel_" > NUL 2> NUL
+if %errorlevel% neq 0 echo ERROR: Invalid BUILD_SSL_BACKEND=%BUILD_SSL_BACKEND%. Use BUILD_SSL_BACKEND=OPENSSL^|SCHANNEL && pause && exit /B 57
 
 if "%BUILD_ZLIB_DIR%" neq "" (
 	if not exist "%BUILD_ZLIB_DIR%" echo ERROR: Not found BUILD_ZLIB_DIR=%BUILD_ZLIB_DIR% && pause && exit /B 57
@@ -781,8 +781,8 @@ if /i "%BUILD_SSL_BACKEND%" equ "OPENSSL" (
 		-DCMAKE_C_STANDARD_LIBRARIES="-lws2_32"
 )
 
-REM | curl(winssl)
-if /i "%BUILD_SSL_BACKEND%" equ "WINSSL" (
+REM | curl(schannel)
+if /i "%BUILD_SSL_BACKEND%" equ "SCHANNEL" (
 	set CMAKE_CURL_VARIABLES=!CMAKE_CURL_VARIABLES! -DCMAKE_USE_SCHANNEL=ON
 )
 
@@ -862,7 +862,7 @@ if "%BUILD_OPENSSL_DIR%" neq "" for %%f in ("%BUILD_OPENSSL_DIR%\lib\*.*") do ca
 if "%BUILD_OPENSSL_DIR%" neq "" call :make_link /J "include\openssl" "%BUILD_OPENSSL_DIR%\include\openssl
 
 :: curl-ca-bundle.crt
-if /i "%BUILD_SSL_BACKEND%" neq "WINSSL" call :make_link /H "%BUILD_OUTDIR%\bin\curl-ca-bundle.crt" "%ROOTDIR%\curl-ca-bundle.crt" || pause && exit /B %errorlevel%
+if /i "%BUILD_SSL_BACKEND%" neq "SCHANNEL" call :make_link /H "%BUILD_OUTDIR%\bin\curl-ca-bundle.crt" "%ROOTDIR%\curl-ca-bundle.crt" || pause && exit /B %errorlevel%
 
 :: _test_curl.bat
 set testfile=%BUILD_OUTDIR%\bin\_test_curl.bat

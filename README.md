@@ -28,12 +28,12 @@ mingw-curl_openssl-Release-x64|
 mingw-curl_openssl-Release-x64-HTTP_ONLY|
 mingw-curl_openssl-Release-x64-Legacy|HTTP protocol only. Backward compatible with legacy Windows versions (XP64+)
 mingw-curl_openssl-Release-x64-Shared|
-mingw-curl_winssl-Release-Win32|Built with `mingw`. Static libraries. `WinSSL` (aka `schannel`) backend
-mingw-curl_winssl-Release-Win32-HTTP_ONLY|
-mingw-curl_winssl-Release-Win32-Shared|
-mingw-curl_winssl-Release-x64|
-mingw-curl_winssl-Release-x64-HTTP_ONLY|
-mingw-curl_winssl-Release-x64-Shared|
+mingw-curl_schannel-Release-Win32|Built with `mingw`. Static libraries. `schannel` (aka `WinSSL`) backend
+mingw-curl_schannel-Release-Win32-HTTP_ONLY|
+mingw-curl_schannel-Release-Win32-Shared|
+mingw-curl_schannel-Release-x64|
+mingw-curl_schannel-Release-x64-HTTP_ONLY|
+mingw-curl_schannel-Release-x64-Shared|
 MSVC-curl_openssl-Debug-Win32|Built with `Microsoft Visual Studio`
 MSVC-curl_openssl-Debug-Win32-HTTP_ONLY|
 MSVC-curl_openssl-Debug-Win32-Shared|
@@ -46,18 +46,18 @@ MSVC-curl_openssl-Release-Win32-Shared|
 MSVC-curl_openssl-Release-x64|
 MSVC-curl_openssl-Release-x64-HTTP_ONLY|
 MSVC-curl_openssl-Release-x64-Shared|
-MSVC-curl_winssl-Debug-Win32|
-MSVC-curl_winssl-Debug-Win32-HTTP_ONLY|
-MSVC-curl_winssl-Debug-Win32-Shared|
-MSVC-curl_winssl-Debug-x64|
-MSVC-curl_winssl-Debug-x64-HTTP_ONLY|
-MSVC-curl_winssl-Debug-x64-Shared|
-MSVC-curl_winssl-Release-Win32|
-MSVC-curl_winssl-Release-Win32-HTTP_ONLY|
-MSVC-curl_winssl-Release-Win32-Shared|
-MSVC-curl_winssl-Release-x64|
-MSVC-curl_winssl-Release-x64-HTTP_ONLY|
-MSVC-curl_winssl-Release-x64-Shared|
+MSVC-curl_schannel-Debug-Win32|
+MSVC-curl_schannel-Debug-Win32-HTTP_ONLY|
+MSVC-curl_schannel-Debug-Win32-Shared|
+MSVC-curl_schannel-Debug-x64|
+MSVC-curl_schannel-Debug-x64-HTTP_ONLY|
+MSVC-curl_schannel-Debug-x64-Shared|
+MSVC-curl_schannel-Release-Win32|
+MSVC-curl_schannel-Release-Win32-HTTP_ONLY|
+MSVC-curl_schannel-Release-Win32-Shared|
+MSVC-curl_schannel-Release-x64|
+MSVC-curl_schannel-Release-x64-HTTP_ONLY|
+MSVC-curl_schannel-Release-x64-Shared|
 
 ### [OpenSSL](https://www.openssl.org/) vs. [schannel](https://docs.microsoft.com/en-us/windows/win32/secauthn/secure-channel) (aka WinSSL):
 Parameter|Comments

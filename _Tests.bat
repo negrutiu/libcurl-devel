@@ -6,7 +6,7 @@ set index=0
 
 pushd "%~dp0\bin"
 for /d %%d in (*-curl_openssl-*.*) do call :test_dir "%%d\bin" openssl
-for /d %%d in (*-curl_winssl-*.*)  do call :test_dir "%%d\bin" winssl
+for /d %%d in (*-curl_schannel-*.*)  do call :test_dir "%%d\bin" schannel
 popd
 
 echo.
