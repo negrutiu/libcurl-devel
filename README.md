@@ -69,7 +69,7 @@ Protocols & Ciphers|`schannel` has different capabilities depending on the Windo
 ### Licenses:
 Project|License
 :---|:---
-This project itself|[0BSD](LICENSE)
+This project itself|[0BSD](LICENSE.md)
 libcurl|[MIT/X inspired](https://curl.haxx.se/docs/copyright.html)
 OpenSSL|[Dual License](https://www.openssl.org/source/license.html)
 nghttp2|[MIT](https://github.com/nghttp2/nghttp2/blob/master/COPYING)
