@@ -228,8 +228,8 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=%ARCH% ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-Legacy ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_ZLIB_DIR="" ^
-	BUILD_ZLIB_LNK="" ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%-Legacy" ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
@@ -243,8 +243,8 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=%ARCH% ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-Legacy ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_ZLIB_DIR="" ^
-	BUILD_ZLIB_LNK="" ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%-Legacy" ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
@@ -286,8 +286,8 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=%ARCH% ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_ZLIB_DIR="" ^
-	BUILD_ZLIB_LNK="" ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%" ^
@@ -300,8 +300,8 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=%ARCH% ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_openssl-%CONFIG%-%ARCH%-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=OPENSSL ^
-	BUILD_ZLIB_DIR="" ^
-	BUILD_ZLIB_LNK="" ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%" ^
@@ -395,8 +395,8 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=%ARCH% ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_schannel-%CONFIG%-%ARCH%-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=SCHANNEL ^
-	BUILD_ZLIB_DIR="" ^
-	BUILD_ZLIB_LNK="" ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
@@ -407,8 +407,8 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_ARCH=%ARCH% ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-curl_schannel-%CONFIG%-%ARCH%-HTTP_ONLY ^
 	BUILD_SSL_BACKEND=SCHANNEL ^
-	BUILD_ZLIB_DIR="" ^
-	BUILD_ZLIB_LNK="" ^
+	BUILD_ZLIB_DIR="%~dp0\bin\%BUILDER%-zlib-%CONFIG%-%ARCH%" ^
+	BUILD_ZLIB_LNK=static ^
 	BUILD_NGHTTP2_DIR="%~dp0\bin\%BUILDER%-nghttp2-%CONFIG%-%ARCH%" ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
