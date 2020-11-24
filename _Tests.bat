@@ -59,8 +59,8 @@ if /i "%~2" equ "openssl" (
 
 for /f "delims=" %%i in ('%~1 -V ^| findstr "curl"') do set txt=!txt! %%i
 
-del "%~1\test-trace.md" 2> NUL
-del "%~1\test-data.md" 2> NUL
+del "%~dp1\test-trace.md" 2> NUL
+del "%~dp1\test-data.md" 2> NUL
 
 echo !txt!
 exit /B
