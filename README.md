@@ -2,6 +2,8 @@
 
 [![License: 0BSD](https://img.shields.io/badge/License-0BSD-blue.svg)](/LICENSE)
 [![Latest Release](https://img.shields.io/badge/dynamic/json.svg?label=Latest%20Release&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fnegrutiu%2Flibcurl-devel%2Freleases%2Flatest&query=%24.name&colorB=orange)](../../releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/negrutiu/libcurl-devel/total.svg?label=Downloads&colorB=green)](../../releases/latest)
+
 
 ### Webpage:
 https://github.com/negrutiu/libcurl-devel
