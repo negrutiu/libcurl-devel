@@ -33,7 +33,7 @@ if not exist "%VCVARSALL%" for /f "tokens=1* delims=: " %%i in ('"%VSWHERE%" -ve
 if not exist "%VCVARSALL%" for /f "tokens=1* delims=: " %%i in ('"%VSWHERE%" -version 15 -requires Microsoft.Component.MSBuild 2^> NUL') do if /i "%%i"=="installationPath" set VCVARSALL=%%j\VC\Auxiliary\Build\VCVarsAll.bat&& set BUILD_PLATFORMTOOLSET=v141
 if not exist "%VCVARSALL%" echo ERROR: Missing "%VCVARSALL%" && pause && exit /B 1
 
-REM | NASM (required starting with OpenSSL 1.0.2)
+REM | NASM (required since OpenSSL 1.0.2)
 REM | Use powershell to read NASM path from registry to properly handle paths with spaces (e.g. "C:\Program Files\NASM")
 set NASM_PATH=
 for /f "usebackq delims=*" %%a in (`powershell -Command "(gp 'HKCU:\Software\nasm').'(Default)'"`) do set NASM_PATH=%%a
@@ -108,7 +108,7 @@ del "bin\build*.flag" 2> NUL > NUL
 
 REM | Start time
 for /f "delims=*" %%t in ('powershell -Command "(Get-Date).ToString()"') do set BUILD_T0=%%t
-echo Time: %BUILD_T0%
+echo [%BUILDER% %CONFIG%] Time: %BUILD_T0%
 
 
 REM | Notice the `call` in `start "" cmd /C call <script> <params>`
@@ -198,12 +198,12 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 
 
 REM | Wait for build-running-*.flag to appear
-echo Starting libraries . . .
+echo [%BUILDER% %CONFIG%] Starting libraries . . .
 :WAIT_4LIBS_2START
 	if not exist "bin\build-running-%BUILDER%*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4LIBS_2START
 
 REM | Wait for build-running-*.flag to go away
-echo Building libraries . . .
+echo [%BUILDER% %CONFIG%] Building libraries . . .
 :WAIT_4LIBS_2FINISH
 	if exist "bin\build-running-%BUILDER%*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4LIBS_2FINISH
 
@@ -213,7 +213,7 @@ if exist "bin\build-error-%BUILDER%*%CONFIG%*.flag" exit /B 1
 REM | Intermediate time
 for /f "delims=*" %%t in ('powershell -Command "(Get-Date).ToString()"') do set BUILD_T1=%%t
 for /f "usebackq delims=*" %%t in (`powershell -Command "(New-TimeSpan -Start '%BUILD_T0%' -End '%BUILD_T1%').ToString()"`) do set BUILD_DT=%%t
-echo Time: %BUILD_T1% ( +%BUILD_DT% )
+echo [%BUILDER% %CONFIG%] Time: %BUILD_T1% ( +%BUILD_DT% )
 
 
 REM =============================================
@@ -413,22 +413,22 @@ start "" %COMSPEC% /C call "%~f0" /build ^
 
 
 REM | Wait for build-running-*.flag to appear
-echo Starting curl . . .
+echo [%BUILDER% %CONFIG%] Starting curl . . .
 :WAIT_4CURL_2START
 	if not exist "bin\build-running-%BUILDER%-curl*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4CURL_2START
 
 REM | Wait for build-running-*.flag to go away
-echo Building curl . . .
+echo [%BUILDER% %CONFIG%] Building curl . . .
 :WAIT_4CURL_2FINISH
 	if exist "bin\build-running-%BUILDER%-curl*%CONFIG%*.flag" ping.exe -n 2 127.0.0.1 > NUL && goto :WAIT_4CURL_2FINISH
 
 REM | End time
 for /f "delims=*" %%t in ('powershell -Command "(Get-Date).ToString()"') do set BUILD_T1=%%t
 for /f "usebackq delims=*" %%t in (`powershell -Command "(New-TimeSpan -Start '%BUILD_T0%' -End '%BUILD_T1%').ToString()"`) do set BUILD_DT=%%t
-echo Time: %BUILD_T1% ( +%BUILD_DT% )
+echo [%BUILDER% %CONFIG%] Time: %BUILD_T1% ( +%BUILD_DT% )
 
-echo.
-pause
+REM echo.
+REM pause
 exit /B 0
 
 
