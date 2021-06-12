@@ -108,7 +108,6 @@ for /f "tokens=1 delims= " %%i in ('git log -1 --format^=%%ai') do set YMD=%%i
 
 cd /d "%~dp0"
 git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff
-git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%_cmake.diff
 
 echo Removing "-DEV" version suffix...
 powershell -Command "(gc curl\include\curl\curlver.h) -replace '-DEV', ''| Out-File -encoding ASCII curl\include\curl\curlver.h"
