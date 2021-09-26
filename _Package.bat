@@ -55,6 +55,24 @@ xcopy "openssl\crypto\*.*"					"%package%\src\openssl\crypto\" /EI
 xcopy "openssl\ssl\*.*"						"%package%\src\openssl\ssl\" /EI
 xcopy "openssl\engines\*.*"					"%package%\src\openssl\engines\" /EI
 
+xcopy "nghttp2\AUTHORS"						"%package%\src\nghttp2\" /IY
+xcopy "nghttp2\CONTRIBUTION"				"%package%\src\nghttp2\" /IY
+xcopy "nghttp2\COPYING"						"%package%\src\nghttp2\" /IY
+xcopy "nghttp2\LICENSE"						"%package%\src\nghttp2\" /IY
+xcopy "nghttp2\NEWS"						"%package%\src\nghttp2\" /IY
+xcopy "nghttp2\README*.*"					"%package%\src\nghttp2\" /IY
+xcopy "nghttp2\lib\*.h"						"%package%\src\nghttp2\lib\" /IY
+xcopy "nghttp2\lib\*.c"						"%package%\src\nghttp2\lib\" /IY
+
+xcopy "zlib\FAQ"							"%package%\src\zlib\" /IY
+xcopy "zlib\README"							"%package%\src\zlib\" /IY
+xcopy "zlib\*.h"							"%package%\src\zlib\" /IY
+xcopy "zlib\*.c"							"%package%\src\zlib\" /IY
+xcopy "zlib\*.pdf"							"%package%\src\zlib\" /IY
+
+REM | Extract LICENSE from zlib.h header. Read all lines until "*/" is found
+powershell -ExecutionPolicy bypass -Command "foreach ($ln in gc -totalcount 64 .\zlib\zlib.h) { $ln; if ($ln -match '\w*\*/\w*') {break} }"> "%package%\src\zlib\LICENSE"
+
 echo -------------------------------------------------------------------------------
 echo NOTES.md
 echo -------------------------------------------------------------------------------
