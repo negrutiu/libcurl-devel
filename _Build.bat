@@ -69,20 +69,6 @@ if not exist "%MINGW32%\bin\gcc.exe" set MINGW32=%MINGW32_INSTDIR%
 if not exist "%MINGW32%\bin\gcc.exe" set MINGW32=%MSYS2%\mingw32
 if not exist "%MINGW32%\bin\gcc.exe" echo ERROR: Missing mingw32. Run `pacman -S mingw-w64-i686-toolchain` in msys2 && pause && exit /B 2
 
-REM | sspi.h
-set sspi32_h=%MINGW32%\i686-w64-mingw32\include\sspi.h
-findstr SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS "%sspi32_h%" > NUL
-if %errorlevel% neq 0 set sspi32_ok=FALSE
-
-set sspi64_h=%MINGW64%\x86_64-w64-mingw32\include\sspi.h
-findstr SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS "%sspi64_h%" > NUL
-if %errorlevel% neq 0 set sspi64_ok=FALSE
-
-if /i "%sspi32_ok%,%sspi64_ok%" neq "," echo ERROR: To support nghttp2 /w SChannel the file "sspi.h" from mingw32/64 requires patching && echo Run these commands:
-if /i "%sspi32_ok%" neq "" echo   move /Y "%sspi32_h%" "%sspi32_h%.bak" && echo   copy /Y "%CD%\_Patches\sspi.h" "%sspi32_h%"
-if /i "%sspi64_ok%" neq "" echo   move /Y "%sspi64_h%" "%sspi64_h%.bak" && echo   copy /Y "%CD%\_Patches\sspi.h" "%sspi64_h%"
-if /i "%sspi32_ok%,%sspi64_ok%" neq "," pause && exit /B 2
-
 REM | cmake
 cmake --version > NUL
 if %errorlevel% neq 0 echo ERROR: Missing cmake. Install it from `https://cmake.org/` && pause && exit /B 1
@@ -745,10 +731,7 @@ if /i "%BUILD_NGHTTP2_LNK%" equ "shared" (
 	set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DUSE_NGHTTP2
 )
 
-REM | To use HTTP2 /w SChannel curl requires a recent version of sspi.h from Windows SDK
-REM | The sspi.h from mingw is missing multiple definitions therefore a "patched" sspi.h is required
 REM | Force use of ALPN (to activate HTTP2 /w SChannel)
-REM | Related topic: https://github.com/curl/curl/issues/2591
 if /i "%BUILDER%" equ "mingw" set CMAKE_CURL_C_FLAGS=!CMAKE_CURL_C_FLAGS! -DHAS_ALPN
 
 REM | To activate TLS-SRP, defining USE_TLS_SRP cmake variable is apparently not enough
