@@ -10,6 +10,7 @@ libcurl-devel-*.7z.bak
 *nogit*
 
 cacert.pem
+curl-ca-bundle*.crt
 
 .vs/
 ipch/
