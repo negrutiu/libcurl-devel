@@ -432,10 +432,12 @@ REM | Command line parameters
 shift
 :loop_params
 	if "%~1" equ "" goto :loop_params_end
+	echo set %~1=%~2
 	set %~1=%~2
 	shift & shift
 	goto :loop_params
 :loop_params_end
+echo(
 
 call :GET_DIR_NAME "%BUILD_OUTDIR%"
 
