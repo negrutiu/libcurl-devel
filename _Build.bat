@@ -467,6 +467,9 @@ if /i "%BUILD_ARCH%" neq "x64" set MINGW=%MINGW32%
 if /i "%BUILDER%" equ "mingw" set PATH=%MINGW%\bin;%MSYS2%\usr\bin;%PATH%
 REM if /i "%BUILDER%" equ "mingw" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -D__USE_MINGW_ANSI_STDIO=0
 
+if /i "%BUILDER%" equ "mingw" if /i "%CONFIG%" equ "Debug" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -Og
+if /i "%BUILDER%" equ "mingw" if /i "%CONFIG%" equ "Release" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -O3
+
 REM | Prevent mingw builds from linking to libgcc_*.dll
 if /i "%BUILDER%" equ "mingw" set BUILD_C_FLAGS=!BUILD_C_FLAGS! -static-libgcc
 
