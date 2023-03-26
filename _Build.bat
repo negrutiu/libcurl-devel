@@ -206,6 +206,10 @@ REM =============================================
 :PARALLEL_CURL_OPENSSL
 REM =============================================
 
+REM | NOTES:
+REM | > We use -D_UNISTD_H to counter the effect of curl commit 474a947e, 11 Oct 2022, "cmake: enable more detection on Windows"
+REM |   We prevent "unistd.h" from being used because it defines ftruncate(..) which relies on FindFirstVolume/FindNextVolume/GetFileSizeEx => unavailable in NT4
+
 set ARCH=Win32
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_CURL=1 ^
@@ -218,7 +222,7 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
 	BUILD_OPENSSL_LNK=static ^
-	BUILD_C_FLAGS="-march=pentium2 -U_WIN32_WINNT -D_WIN32_WINNT=0x0400" ^
+	BUILD_C_FLAGS="-march=pentium2 -U_WIN32_WINNT -D_WIN32_WINNT=0x0400 -D_UNISTD_H" ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF -DENABLE_INET_PTON=OFF"
 
 set ARCH=x64
@@ -233,7 +237,7 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_NGHTTP2_LNK=static ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
 	BUILD_OPENSSL_LNK=static ^
-	BUILD_C_FLAGS="-march=x86-64 -U_WIN32_WINNT -D_WIN32_WINNT=0x0502" ^
+	BUILD_C_FLAGS="-march=x86-64 -U_WIN32_WINNT -D_WIN32_WINNT=0x0502 -D_UNISTD_H" ^
 	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF -DENABLE_INET_PTON=OFF"
 
 set ARCH=Win32
