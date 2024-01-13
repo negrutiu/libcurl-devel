@@ -549,6 +549,9 @@ if not exist .build\BUILD\CMakeCache.txt (
 		!CMAKE_NGHTTP2_VARIABLES! ^
 		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS!"
 		
+    if /i "%BUILDER%,%CRT%" equ "MSVC,static" powershell -Command "(gc .build\CMakeCache.txt) -replace '/MDd', '/MTd' | Out-File -encoding ASCII .build\CMakeCache.txt"
+    if /i "%BUILDER%,%CRT%" equ "MSVC,static" powershell -Command "(gc .build\CMakeCache.txt) -replace '/MD', '/MT' | Out-File -encoding ASCII .build\CMakeCache.txt"
+
 	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
 )
 
