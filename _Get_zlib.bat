@@ -97,7 +97,7 @@ if /I "%answer%" equ "y" goto :PATCH
 exit /B 1
 :PATCH
 cd /d "%~dp0"
-git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%-cmake.diff
+git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%-cmake.diff _Patches\_patch-%LIBNAME%-crt.diff
 
 echo.
 pause

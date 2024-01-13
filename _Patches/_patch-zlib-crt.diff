@@ -1,0 +1,15 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7f1b69f..4b47705 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -174,6 +174,10 @@ elseif(BUILD_SHARED_LIBS AND WIN32)
+     set_target_properties(zlib PROPERTIES SUFFIX "1.dll")
+ endif()
+ 
++if(MSVC)
++    set_target_properties(zlib zlibstatic PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<STREQUAL:${CRT},shared>:DLL>")
++endif()
++
+ if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
+     install(TARGETS zlib zlibstatic
+         RUNTIME DESTINATION "${INSTALL_BIN_DIR}"

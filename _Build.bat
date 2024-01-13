@@ -496,21 +496,16 @@ echo todo> "%FLAG_RUNNING%"
 title %DIRNAME%-zlib
 
 REM | Configure
+REM | Starting with zlib/1.3 the library always builds with /MD[d]
+REM | We've customized CMakeLists.txt to internally set MSVC_RUNTIME_LIBRARY based on `CRT`
 if not exist .build\BUILD\CMakeCache.txt (
 	cmake -G "%BUILD_CMAKE_GENERATOR%" -S "%ROOTDIR%\zlib" -B .build ^
+        -DCRT=%CRT% ^
 		-DCMAKE_VERBOSE_MAKEFILE=%VERBOSE% ^
 		-DCMAKE_BUILD_TYPE=%CONFIG% ^
 		-DCMAKE_INSTALL_PREFIX="%BUILD_OUTDIR%" ^
 		-DCMAKE_C_FLAGS="!BUILD_C_FLAGS!"
 	if !errorlevel! neq 0 echo errorlevel=%errorlevel% && move /Y "%FLAG_RUNNING%" "%FLAG_ERROR%" && pause && exit /B 666
-)
-
-if /i "%BUILDER%,%CRT%" equ "MSVC,static" (
-	REM | By default zlib links to shared CRT library
-	REM | zlib doesn't expose any variable to control the CRT linkage, therefore we'll do some replacing in files...
-	echo Configure static CRT...
-	powershell -Command "(gc .build\CMakeCache.txt) -replace '/MDd', '/MTd' | Out-File -encoding ASCII .build\CMakeCache.txt"
-	powershell -Command "(gc .build\CMakeCache.txt) -replace '/MD',  '/MT'  | Out-File -encoding ASCII .build\CMakeCache.txt"
 )
 
 REM | Build
