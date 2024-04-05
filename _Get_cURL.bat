@@ -107,7 +107,10 @@ REM :: Remember last tag's commit time before changing directory
 for /f "tokens=1 delims= " %%i in ('git log -1 --format^=%%ai') do set YMD=%%i
 
 cd /d "%~dp0"
-git apply --verbose --whitespace=fix --directory=%LIBNAME% _Patches\_patch-%LIBNAME%.diff _Patches\_patch-%LIBNAME%-xprequirement.diff
+
+set patches=
+for /f "" %%f in ('dir /b _Patches\%LIBNAME%*.diff') do set patches=!patches! "_Patches\%%~f"
+git apply --verbose --whitespace=fix --directory=%LIBNAME% !patches! || echo -- patching failed
 
 echo Removing "-DEV" version suffix...
 powershell -Command "(gc curl\include\curl\curlver.h) -replace '-DEV', ''| Out-File -encoding ASCII curl\include\curl\curlver.h"
