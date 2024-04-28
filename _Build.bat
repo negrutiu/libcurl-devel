@@ -579,10 +579,7 @@ title %DIRNAME%-openssl
 REM | Make a copy of the source code
 echo Cloning the source code...
 pushd "%BUILD_OUTDIR%"
-	echo fuzz> exclude.txt
-	xcopy "%ROOTDIR%\openssl\*.*" .build\ /EXCLUDE:exclude.txt /QEIYD
-	del exclude.txt
-	mkdir .build\fuzz 2> NUL
+	xcopy "%ROOTDIR%\openssl\*.*" .build\ /QEIYD
 popd
 
 REM | Features
