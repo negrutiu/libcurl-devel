@@ -158,19 +158,23 @@ REM =============================================
 :PARALLEL_OPENSSL
 REM =============================================
 
+REM | `no-capieng` : uses bcrypt, inexistent in nt4
+REM | `no-async`   : uses fibers, inexistent in nt4
+REM | `no-threads` : uses SRWLOCK, inexistent in nt4
+REM | `no-threads` : without it curl.exe crashes in nt4
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_OPENSSL=1 ^
 	BUILD_ARCH=Win32 ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-Legacy ^
 	BUILD_C_FLAGS="-march=pentium2 -D_WIN32_WINNT=0x0400" ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="no-capieng no-async no-pinshared 386"
+	BUILD_OPENSSL_CONFIGURE_EXTRA="386 no-deprecated no-capieng no-async no-threads no-pinshared"
 
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_OPENSSL=1 ^
 	BUILD_ARCH=x64 ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-Legacy ^
 	BUILD_C_FLAGS="-march=x86-64 -D_WIN32_WINNT=0x0502" ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="no-capieng no-async no-pinshared"
+	BUILD_OPENSSL_CONFIGURE_EXTRA="no-deprecated no-capieng no-async no-threads no-pinshared"
 
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_OPENSSL=1 ^
@@ -223,7 +227,7 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
 	BUILD_OPENSSL_LNK=static ^
 	BUILD_C_FLAGS="-march=pentium2 -U_WIN32_WINNT -D_WIN32_WINNT=0x0400 -D_UNISTD_H" ^
-	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF -DENABLE_INET_PTON=OFF"
+	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
 set ARCH=x64
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
@@ -238,7 +242,7 @@ if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_OPENSSL_DIR="%~dp0\bin\%BUILDER%-openssl-%CONFIG%-%ARCH%-Legacy" ^
 	BUILD_OPENSSL_LNK=static ^
 	BUILD_C_FLAGS="-march=x86-64 -U_WIN32_WINNT -D_WIN32_WINNT=0x0502 -D_UNISTD_H" ^
-	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON -DMAKE_USE_OPENLDAP=OFF -DENABLE_INET_PTON=OFF"
+	BUILD_CURL_CONFIGURE_EXTRA="-DHTTP_ONLY=ON"
 
 set ARCH=Win32
 start "" %COMSPEC% /C call "%~f0" /build ^
