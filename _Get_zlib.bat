@@ -100,7 +100,7 @@ cd /d "%~dp0"
 
 set patches=
 for /f "" %%f in ('dir /b _Patches\%LIBNAME%*.diff') do set patches=!patches! "_Patches\%%~f"
-git apply --verbose --whitespace=fix --directory=%LIBNAME% !patches! || echo -- patching failed
+if "%patches%" neq "" git apply --verbose --whitespace=fix --directory=%LIBNAME% !patches! || echo -- patching failed
 
 echo.
 pause
