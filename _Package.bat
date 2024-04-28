@@ -54,6 +54,7 @@ xcopy "openssl\*.h"							"%package%\src\openssl\" /IY
 xcopy "openssl\crypto\*.*"					"%package%\src\openssl\crypto\" /EI
 xcopy "openssl\ssl\*.*"						"%package%\src\openssl\ssl\" /EI
 xcopy "openssl\engines\*.*"					"%package%\src\openssl\engines\" /EI
+xcopy "openssl\providers\*.*"				"%package%\src\openssl\providers\" /EI
 
 xcopy "nghttp2\AUTHORS"						"%package%\src\nghttp2\" /IY
 xcopy "nghttp2\CONTRIBUTION"				"%package%\src\nghttp2\" /IY
