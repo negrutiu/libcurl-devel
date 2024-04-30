@@ -159,22 +159,20 @@ REM =============================================
 REM =============================================
 
 REM | `no-capieng` : uses bcrypt, inexistent in nt4
-REM | `no-async`   : uses fibers, inexistent in nt4
-REM | `no-threads` : uses SRWLOCK, inexistent in nt4
-REM | `no-threads` : without it curl.exe crashes in nt4
+REM | `no-async`   : calls kernel32!ConvertFiberToThread, inexistent in nt4
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_OPENSSL=1 ^
 	BUILD_ARCH=Win32 ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-Win32-Legacy ^
 	BUILD_C_FLAGS="-march=pentium2 -D_WIN32_WINNT=0x0400" ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="386 no-deprecated no-capieng no-async no-threads no-pinshared"
+	BUILD_OPENSSL_CONFIGURE_EXTRA="386 no-deprecated no-capieng no-async no-pinshared"
 
 if /i "%BUILDER%" equ "mingw" start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_OPENSSL=1 ^
 	BUILD_ARCH=x64 ^
 	BUILD_OUTDIR=%~dp0\bin\%BUILDER%-openssl-%CONFIG%-x64-Legacy ^
 	BUILD_C_FLAGS="-march=x86-64 -D_WIN32_WINNT=0x0502" ^
-	BUILD_OPENSSL_CONFIGURE_EXTRA="no-deprecated no-capieng no-async no-threads no-pinshared"
+	BUILD_OPENSSL_CONFIGURE_EXTRA="no-deprecated no-capieng no-async no-pinshared"
 
 start "" %COMSPEC% /C call "%~f0" /build ^
 	BUILD_OPENSSL=1 ^
