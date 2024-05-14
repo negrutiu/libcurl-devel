@@ -43,11 +43,11 @@ xcopy "curl\include\*.*"					"%package%\src\curl\include\" /EI
 xcopy "curl\lib\*.*"						"%package%\src\curl\lib\" /EI
 xcopy "curl\src\*.*"						"%package%\src\curl\src\" /EI
 
-xcopy "openssl\LICENSE"						"%package%\src\openssl\" /IY
-xcopy "openssl\AUTHORS"						"%package%\src\openssl\" /IY
-xcopy "openssl\ACKNOWLEDGEMENTS"			"%package%\src\openssl\" /IY
-xcopy "openssl\NEWS"						"%package%\src\openssl\" /IY
-xcopy "openssl\CHANGES"						"%package%\src\openssl\" /IY
+xcopy "openssl\LICENSE.*"					"%package%\src\openssl\" /IY
+xcopy "openssl\AUTHORS.*"					"%package%\src\openssl\" /IY
+xcopy "openssl\ACKNOWLEDGEMENTS.*"			"%package%\src\openssl\" /IY
+xcopy "openssl\NEWS.*"						"%package%\src\openssl\" /IY
+xcopy "openssl\CHANGES.*"					"%package%\src\openssl\" /IY
 xcopy "openssl\NOTES*.*"					"%package%\src\openssl\" /IY
 xcopy "openssl\README*.*"					"%package%\src\openssl\" /IY
 xcopy "openssl\*.h"							"%package%\src\openssl\" /IY
